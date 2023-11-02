@@ -1,13 +1,11 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Button, Avatar, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
 import { BackIcon, BellIcon, FilterIcon } from './icons/icons';
 import { AppContext } from './context/context';
 import { redirect, useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react'
-import axios from 'axios'
-import { MasterSelectPayloadType } from './types/type';
 
 
 const Header = ( { title, showActions }: { title?: string, showActions?: boolean } ) =>
@@ -84,7 +82,7 @@ const Header = ( { title, showActions }: { title?: string, showActions?: boolean
                   <DropdownItem key="settings" onClick={() => handleChangeRoute( '/settings' )}>
                      Settings
                   </DropdownItem>
-                  <DropdownItem key="settings" onClick={toggleMask}>
+                  <DropdownItem key="mask" onClick={toggleMask}>
                      {context?.isMasked ? 'Disable Mask' : 'Enable Mask'}
                   </DropdownItem>
                   <DropdownItem key="logout" color="danger" onClick={handleSignOut}>

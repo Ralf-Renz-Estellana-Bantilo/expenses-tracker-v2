@@ -45,11 +45,11 @@ const PreviousExpenses = () =>
                      <ModalHeader className="flex flex-col gap-1 font-bold">Expenses List</ModalHeader>
                      <ModalBody>
                         <div className="flex items-center gap-3">
-                           <div className="flex items-center border-1 border-border-color bg-slate-500 backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-lg p-2 justify-between text-default-500 flex-1 ">
+                           <div className="flex items-center border-1 border-blue-800 bg-blue-500 backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-lg p-2 justify-between text-default-500 flex-1 ">
                               <h3>Date: </h3>
                               <span>{preview?.date}</span>
                            </div>
-                           <div className="flex items-center border-1 border-border-color bg-slate-500 backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-lg p-2 justify-between text-default-500 flex-1">
+                           <div className="flex items-center border-1 border-red-800 bg-red-500 backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-lg p-2 justify-between text-default-500 flex-1">
                               <h3>Total: </h3>
                               <span> {formatMoney( preview?.total ?? 0 )}</span>
                            </div>

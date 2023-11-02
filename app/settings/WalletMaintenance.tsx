@@ -40,6 +40,7 @@ const WalletMaintenance = () =>
             description,
             amount: Number( amount ),
          }
+
          handleUpdateWalletBudget( newBudget, ACTION_TYPE )
 
          const alertMessage = ID != DEFAULT_FORM.ID ? 'New expense has been added!' : 'Expense has been updated!'
@@ -83,6 +84,19 @@ const WalletMaintenance = () =>
       {
          handleSave( onClose )
       }
+   }
+
+   const showWalletBudgetDialog = ( walletBudget: WalletBudgeType | null ) =>
+   {
+      const walletBudgetForm = walletBudget ? {
+         ID: walletBudget.ID,
+         title: walletBudget.title,
+         description: walletBudget.description,
+         amount: `${walletBudget.amount}`,
+      } : DEFAULT_FORM
+
+      onOpen()
+      setFormData( walletBudgetForm )
    }
 
    return (
@@ -143,16 +157,15 @@ const WalletMaintenance = () =>
          <Wrapper>
             <WrapperHeader className='flex items-center justify-between'>
                <h3 className='font-semibold text-accent-secondary'>Wallet Budget Maintenance</h3>
-               <Button isIconOnly color="primary" variant="light" aria-label="Take a photo" size='sm' onClick={onOpen}>
+               <Button isIconOnly color="primary" variant="light" aria-label="Take a photo" size='sm' onClick={() => showWalletBudgetDialog( null )}>
                   <PlusIcon />
                </Button>
             </WrapperHeader>
             <WrapperContent className='flex flex-col' scrollable>
                <SuspenseContainer data={context?.walletBudget}>
                   {context?.walletBudget?.map( ( budget, index ) => (
-                     <div key={index} className="flex p-2 justify-between items-center border-1 cursor-pointer border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10">
+                     <div key={index} className="flex p-2 justify-between items-center border-1 cursor-pointer border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10" onDoubleClick={() => showWalletBudgetDialog( budget )}>
                         <div className="flex items-center gap-3">
-                           {/* <BillIcon /> */}
                            <Image src={require( `@/public/assets/icons/peso.png` )} alt='icon' height={27} />
                            <div className="flex flex-col">
                               <span>{budget.title}</span>

@@ -80,7 +80,10 @@ export default function ComponentContextProvider ( { children }: { children: Rea
    {
       const payload: MasterSelectPayloadType = {
          table: 'monthly_expenses_view',
-         filter: { user },
+         filter: {
+            user,
+            year: new Date().getFullYear()
+         },
          sort: {
             monthID: 'DESC',
          }
