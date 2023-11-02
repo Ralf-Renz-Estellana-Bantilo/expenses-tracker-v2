@@ -83,7 +83,7 @@ const PreviousExpenses = () =>
             <WrapperHeader className='flex items-center justify-between'>
                <h3 className='font-semibold text-accent-secondary'>Previous Expenses <code className='font-normal'>({getCurrentMonth()})</code> </h3>
             </WrapperHeader>
-            <WrapperContent className='flex flex-col' scrollable={true}>
+            <WrapperContent className='flex flex-col' scrollable>
                <SuspenseContainer data={context?.previousExpenses}>
                   {context?.previousExpenses?.map( expense => (
                      <div key={expense.date} onClick={() => previewExpense( expense )} className="flex p-2 justify-between items-center cursor-pointer border-1 border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10">

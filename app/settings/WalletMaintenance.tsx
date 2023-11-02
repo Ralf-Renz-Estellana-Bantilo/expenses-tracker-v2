@@ -146,7 +146,7 @@ const WalletMaintenance = () =>
                   <PlusIcon />
                </Button>
             </WrapperHeader>
-            <WrapperContent className='flex flex-col' scrollable={true}>
+            <WrapperContent className='flex flex-col' scrollable>
                <SuspenseContainer data={context?.walletBudget}>
                   {context?.walletBudget?.map( ( budget, index ) => (
                      <div key={index} className="flex p-2 justify-between items-center border-1 cursor-pointer border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10">

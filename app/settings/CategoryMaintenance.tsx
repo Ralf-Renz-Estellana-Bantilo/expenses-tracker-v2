@@ -19,7 +19,7 @@ const CategoryMaintenance = () =>
                <PlusIcon />
             </Button> */}
          </WrapperHeader>
-         <WrapperContent className='flex flex-col'>
+         <WrapperContent className='flex flex-col' scrollable>
             <SuspenseContainer data={context?.categories} noDataMsg='No categories found!'>
                {context?.categories?.map( category => (
                   <div className="flex p-2 justify-between items-center border-1 border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10" key={category.ID}>
