@@ -5,49 +5,46 @@ export const CATEGORIES_TABLE: CategoryType[] = [
    {
       ID: 1,
       description: 'Foods & Drinks',
-      icon: '',
       status: 1,
    },
    {
       ID: 2,
       description: 'Transportation',
-      icon: '',
       status: 1,
    },
    {
       ID: 3,
       description: 'Load/Communication',
-      icon: '',
       status: 1,
    },
    {
       ID: 4,
       description: 'Life Insurance',
-      icon: '',
       status: 1,
    },
    {
       ID: 5,
       description: 'Rent',
-      icon: '',
       status: 1,
    },
    {
       ID: 6,
       description: 'Electric Bill',
-      icon: '',
       status: 1,
    },
    {
       ID: 7,
       description: 'Water Bill',
-      icon: '',
       status: 1,
    },
    {
       ID: 8,
       description: 'Family',
-      icon: '',
+      status: 1,
+   },
+   {
+      ID: 9,
+      description: 'Clothings',
       status: 1,
    },
 ]
@@ -135,8 +132,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 1,
       description: 'Snack',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Tue Oct 10 2023 07:12:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Tue Oct 10 2023 07:12:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -144,8 +141,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 2,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Tue Oct 10 2023 08:42:56 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Tue Oct 10 2023 08:42:56 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -153,8 +150,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 1,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Tue Oct 10 2023 08:52:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Tue Oct 10 2023 08:52:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -162,8 +159,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 1,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Tue Oct 10 2023 10:12:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Tue Oct 10 2023 10:12:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -171,8 +168,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 3,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Tue Oct 10 2023 10:32:03 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Tue Oct 10 2023 10:32:03 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -180,8 +177,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 1,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Tue Oct 10 2023 17:12:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Tue Oct 10 2023 17:12:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -189,8 +186,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 2,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Tue Oct 10 2023 17:45:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Tue Oct 10 2023 17:45:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -198,8 +195,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 1,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Wed Oct 11 2023 09:12:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Wed Oct 11 2023 09:12:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -207,8 +204,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 2,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Wed Oct 11 2023 09:22:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Wed Oct 11 2023 09:22:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -216,8 +213,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 5,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Wed Oct 11 2023 09:32:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Wed Oct 11 2023 09:32:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -225,8 +222,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 6,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Wed Oct 11 2023 19:32:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Wed Oct 11 2023 19:32:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -234,8 +231,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 1,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Thu Oct 12 2023 07:32:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Thu Oct 12 2023 07:32:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -243,8 +240,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 1,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Thu Oct 12 2023 08:32:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Thu Oct 12 2023 08:32:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -252,8 +249,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 2,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Thu Oct 12 2023 09:32:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Thu Oct 12 2023 09:32:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -261,8 +258,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 3,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Thu Oct 12 2023 10:32:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Thu Oct 12 2023 10:32:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -270,8 +267,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 1,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Thu Oct 12 2023 11:32:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Thu Oct 12 2023 11:32:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -279,8 +276,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 1,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Thu Oct 12 2023 12:32:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Thu Oct 12 2023 12:32:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -288,8 +285,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 5,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Thu Oct 12 2023 13:32:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Thu Oct 12 2023 13:32:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -297,8 +294,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 2,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Fri Oct 13 2023 07:32:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Fri Oct 13 2023 07:32:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -306,8 +303,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 1,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Fri Oct 13 2023 08:32:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Fri Oct 13 2023 08:32:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -315,8 +312,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 1,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Fri Oct 13 2023 09:32:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Fri Oct 13 2023 09:32:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -324,8 +321,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 1,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Fri Oct 13 2023 10:32:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Fri Oct 13 2023 10:32:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -333,8 +330,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 7,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Sat Oct 14 2023 10:32:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Sat Oct 14 2023 10:32:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -342,8 +339,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 8,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: 'Sat Oct 14 2023 16:32:53 GMT+0800 (Taipei Standard Time)',
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: 'Sat Oct 14 2023 16:32:53 GMT+0800 (Taipei Standard Time)',
       status: 1,
    },
    {
@@ -351,8 +348,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 1,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: `${new Date()}`,
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: `${new Date()}`,
       status: 1,
    },
    {
@@ -360,8 +357,8 @@ export const EXPENSES_TABLE: ExpensesType[] = [
       categoryID: 2,
       description: '',
       amount: Math.floor( Math.random() * MAX_AMOUNT ),
-      createdBy: 'ralfrenzbantilo@gmail.com',
-      createdOn: `${new Date()}`,
+      created_by: 'ralfrenzbantilo@gmail.com',
+      created_on: `${new Date()}`,
       status: 1,
    },
 ]
@@ -376,7 +373,7 @@ export const TODAYS_EXPENSES_VIEW = ( user = 'ralfrenzbantilo@gmail.com' ) =>
    // const user = 'ralfrenzbantilo@gmail.com'
    const today = new Date().toLocaleDateString()
 
-   const filterExpenses = EXPENSES_TABLE.filter( ( expense ) => formatDate( expense.createdOn ) === today && expense.createdBy === user )
+   const filterExpenses = EXPENSES_TABLE.filter( ( expense ) => formatDate( expense.created_on ) === today && expense.created_by === user )
 
    const refactorExpenses = Array.from( filterExpenses, ( expense ) =>
    {
@@ -403,10 +400,10 @@ export const PREVIOUS_EXPENSES_VIEW = ( user = 'ralfrenzbantilo@gmail.com' ) =>
    {
 
       const today = new Date().toLocaleDateString()
-      const month = Number( formatDate( expense.createdOn ).split( '/' )[0] )
-      const year = Number( formatDate( expense.createdOn ).split( '/' )[2] )
+      const month = Number( formatDate( expense.created_on ).split( '/' )[0] )
+      const year = Number( formatDate( expense.created_on ).split( '/' )[2] )
 
-      if ( ( month === currentMonth && year === currentYear && user === expense.createdBy ) && formatDate( expense.createdOn ) !== today )
+      if ( ( month === currentMonth && year === currentYear && user === expense.created_by ) && formatDate( expense.created_on ) !== today )
       {
          filterPreviousExpenses.push( expense )
       }
@@ -414,17 +411,17 @@ export const PREVIOUS_EXPENSES_VIEW = ( user = 'ralfrenzbantilo@gmail.com' ) =>
 
    filterPreviousExpenses.sort( function ( a, b )
    {
-      let dateA = new Date( a.createdOn ) as any;
-      let dateB = new Date( b.createdOn ) as any;
+      let dateA = new Date( a.created_on ) as any;
+      let dateB = new Date( b.created_on ) as any;
 
       return dateB - dateA
    } );
 
-   const uniqueDate = [...new Set( filterPreviousExpenses.map( exp => formatDate( exp.createdOn ) ) )]
+   const uniqueDate = [...new Set( filterPreviousExpenses.map( exp => formatDate( exp.created_on ) ) )]
 
    const result = Array.from( uniqueDate, date =>
    {
-      const filterExpensesPerDate = filterPreviousExpenses.filter( exp => formatDate( exp.createdOn ) === formatDate( date ) )
+      const filterExpensesPerDate = filterPreviousExpenses.filter( exp => formatDate( exp.created_on ) === formatDate( date ) )
       let total = 0
       filterExpensesPerDate.forEach( ( { amount } ) => total += amount )
 

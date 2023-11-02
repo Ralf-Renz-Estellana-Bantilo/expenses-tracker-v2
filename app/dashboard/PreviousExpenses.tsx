@@ -2,29 +2,23 @@
 
 import React, { ContextType, useState } from 'react'
 import { AppContext } from '../context/context';
-import { Button, Chip, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react';
+import { Button, Chip, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ScrollShadow, useDisclosure } from '@nextui-org/react';
 import { Wrapper, WrapperContent, WrapperFooter, WrapperHeader } from '../components/Wrapper';
-import { formatMoney } from '../utils/utils';
-import { ExpensesType } from '../types/type';
+import { formatMoney, getCurrentMonth } from '../utils/utils';
+import { PreviousExpensesType } from '../types/type';
 import { BillIcon } from '../icons/icons';
 import { CATEGORIES_TABLE } from '../database/database';
 import moment from 'moment'
-
-type PreviousExpenseType = {
-   ID: number;
-   date: string;
-   total: number;
-   expensesList: ExpensesType[];
-}
+import SuspenseContainer from '../components/SuspenseContainer';
 
 const PreviousExpenses = () =>
 {
    const context = AppContext()
    const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-   const [preview, setPreview] = useState<PreviousExpenseType | null>( null )
+   const [preview, setPreview] = useState<PreviousExpensesType | null>( null )
 
-   const previewExpense = ( expense: PreviousExpenseType ) =>
+   const previewExpense = ( expense: PreviousExpensesType ) =>
    {
       setPreview( expense )
       onOpen()
@@ -35,9 +29,7 @@ const PreviousExpenses = () =>
       return CATEGORIES_TABLE.find( category => category.ID === categoryID )
    }
 
-   const hasPreviousExpenses = context?.previousExpenses && context?.previousExpenses.length > 0
-
-   const totalPreviousExpenses = context?.previousExpenses.reduce( ( accumulator, item ) => accumulator + item.total, 0 ) ?? 0
+   const totalPreviousExpenses = context?.previousExpenses?.reduce( ( accumulator, item ) => Number( accumulator ) + Number( item.total ), 0 ) ?? 0
 
    return (
       <>
@@ -60,23 +52,23 @@ const PreviousExpenses = () =>
                            </div>
                            <div className="flex items-center border-1 border-border-color bg-slate-500 backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-lg p-2 justify-between text-default-500 flex-1">
                               <h3>Total: </h3>
-                              <span>₱ {formatMoney( preview?.total ?? 0 )}</span>
+                              <span> {formatMoney( preview?.total ?? 0 )}</span>
                            </div>
                         </div>
-                        <div className="flex flex-col max-h-[60vh] overflow-auto">
+                        <ScrollShadow className="flex flex-col max-h-[48vh] overflow-auto">
                            {preview?.expensesList.map( ( expense, index ) => (
                               <div key={index} className="flex p-2 justify-between items-center border-1 border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10">
                                  <div className="flex items-center gap-3">
                                     <BillIcon />
                                     <div className="flex flex-col">
                                        <span>{findCategory( expense.categoryID )?.description}</span>
-                                       <small className='text-default-500'>{moment( expense.createdOn ).format( 'LT' )} {`${expense.description && `• ${expense.description}`}`}</small>
+                                       <small className='text-default-500'>{moment( expense.created_on ).format( 'LT' )} {`${expense.description && `• ${expense.description}`}`}</small>
                                     </div>
                                  </div>
-                                 <span className='text-accent-secondary font-semibold'>₱ {formatMoney( expense.amount )}</span>
+                                 <span className='text-accent-secondary font-semibold'> {formatMoney( expense.amount )}</span>
                               </div>
                            ) )}
-                        </div>
+                        </ScrollShadow>
                      </ModalBody>
                      <ModalFooter>
                         <Button variant="light" color='danger' onPress={onClose}>
@@ -89,25 +81,24 @@ const PreviousExpenses = () =>
          </Modal>
          <Wrapper>
             <WrapperHeader className='flex items-center justify-between'>
-               <h3 className='font-semibold text-accent-secondary'>Previous Expenses</h3>
+               <h3 className='font-semibold text-accent-secondary'>Previous Expenses <code className='font-normal'>({getCurrentMonth()})</code> </h3>
             </WrapperHeader>
-            {hasPreviousExpenses ? <>
-               <WrapperContent className='flex flex-col'>
-                  {context?.previousExpenses.map( expense => (
+            <WrapperContent className='flex flex-col' scrollable={true}>
+               <SuspenseContainer data={context?.previousExpenses}>
+                  {context?.previousExpenses?.map( expense => (
                      <div key={expense.date} onClick={() => previewExpense( expense )} className="flex p-2 justify-between items-center cursor-pointer border-1 border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10">
                         <div className="flex items-center gap-2">
                            <span>{moment( expense.date ).format( 'll' )}</span>
                         </div>
-                        <span className='text-accent-secondary font-semibold'>₱ {formatMoney( expense.total )}</span>
+                        <span className='text-accent-secondary font-semibold'> {formatMoney( expense.total )}</span>
                      </div>
                   ) )}
-               </WrapperContent>
-               <WrapperFooter className='flex items-center justify-between'>
-                  <h3 className='text-default-500'>Total:</h3>
-                  <p className='text-default-500'>₱ {formatMoney( totalPreviousExpenses )}</p>
-               </WrapperFooter>
-            </> : <WrapperContent className='text-center'>
-               <Chip color="warning" variant="bordered">No data found!</Chip> </WrapperContent>}
+               </SuspenseContainer>
+            </WrapperContent>
+            <WrapperFooter className='flex items-center justify-between'>
+               <h3 className='text-default-500'>Total:</h3>
+               <p className='text-default-500'> {formatMoney( totalPreviousExpenses )}</p>
+            </WrapperFooter>
 
          </Wrapper>
       </>

@@ -5,6 +5,7 @@ import { Quicksand } from 'next/font/google'
 import ContentContainer from './ContentContainer'
 import { getServerSession } from 'next-auth'
 import SessionProvider from './components/SessionProvider'
+import axios from 'axios';
 
 const quicksand = Quicksand( { subsets: ['latin'] } )
 

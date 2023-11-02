@@ -36,13 +36,24 @@ export const POST = async ( req: Request, res: Response ) =>
 
       if ( key )
       {
+         const primaryKeys: string[] = Object.keys( key )
+         const indexing: string[] = []
+
+         for ( let a = 0; a < primaryKeys.length; a++ )
+         {
+            const primaryKey = primaryKeys[a];
+            const primaryValue = Object.values( key )[a];
+
+            indexing.push( `${primaryKey} = ${primaryValue}` )
+         }
+
+
          query = `UPDATE ${table} SET ${fieldsNum.join(
             ", "
-         )} WHERE ${Object.keys( key )} = ${Object.values( key )}`;
+         )} WHERE ${indexing.join( ' AND ' )}`;
       }
 
       const results = await db.promise().query( query, objValues );
-      console.log( results[0] )
       return NextResponse.json( results[0], { status: 200 } );
    } catch ( err )
    {

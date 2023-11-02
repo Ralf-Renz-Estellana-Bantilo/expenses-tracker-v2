@@ -41,7 +41,6 @@ export const POST = async ( req: Request, res: Response ) =>
             if ( a == tables.length - 1 )
             {
                resolve( responseArray );
-               console.log( responseArray )
             }
          } );
       }

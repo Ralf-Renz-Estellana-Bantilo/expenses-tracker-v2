@@ -1,22 +1,40 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button, Avatar, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
-import { BellIcon, FilterIcon } from './icons/icons';
+import { BackIcon, BellIcon, FilterIcon } from './icons/icons';
 import { AppContext } from './context/context';
-import { redirect } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react'
+import axios from 'axios'
+import { MasterSelectPayloadType } from './types/type';
 
 
-const Header = () =>
+const Header = ( { title, showActions }: { title?: string, showActions?: boolean } ) =>
 {
    const context = AppContext()
    const { data: session } = useSession();
+   const router = useRouter()
 
    const handleSignOut = () =>
    {
       signOut()
       redirect( '/login' )
+   }
+
+   const handleChangeRoute = ( path: string ) =>
+   {
+      router.push( path )
+   }
+
+   const toggleMask = () =>
+   {
+      if ( context )
+      {
+         const { setIsMasked } = context
+
+         setIsMasked( prevState => !prevState )
+      }
    }
 
    if ( !session )
@@ -26,15 +44,25 @@ const Header = () =>
 
    return (
       <div className="z-20 flex items-center justify-between p-2 sticky top-0 border-b-1 border-border-color bg-container-primary">
-         <h3 className='font-bold text-accent-primary text-lg'>{`< ${context?.activeTab.description} />`}</h3>
+         <div className="flex items-center gap-2">
+            {title && <Button isIconOnly color="default" variant="light" aria-label="Take a photo" onClick={() => handleChangeRoute( '/dashboard' )}>
+               <BackIcon />
+            </Button>}
+
+            <h3 className='font-bold text-accent-primary text-lg'>
+               {title ? title : context?.activeTab.description}
+            </h3>
+         </div>
 
          <div className="flex gap-2">
-            <Button isIconOnly color="default" variant="light" aria-label="Take a photo">
-               <FilterIcon />
-            </Button>
-            <Button isIconOnly color="default" variant="light" aria-label="Take a photo">
-               <BellIcon />
-            </Button>
+            {showActions || showActions === undefined && <>
+               <Button isIconOnly color="default" variant="light" aria-label="Take a photo">
+                  <FilterIcon />
+               </Button>
+               <Button isIconOnly color="default" variant="light" aria-label="Take a photo">
+                  <BellIcon />
+               </Button>
+            </>}
             <Dropdown className='dark bg-container-primary border-1 border-border-color' placement="bottom-end">
                <DropdownTrigger>
                   <Avatar
@@ -45,21 +73,19 @@ const Header = () =>
                   />
                </DropdownTrigger>
                <DropdownMenu aria-label="Profile Actions" variant="flat">
-                  <DropdownItem key="profile" className="h-14 gap-2">
+                  <DropdownItem key="profile" className="h-14 gap-2" onClick={() => handleChangeRoute( '/profile' )}>
                      <p className="font-semibold">Signed in as</p>
                      <p className="font-semibold">{session.user?.email}</p>
                   </DropdownItem>
-                  <DropdownItem key="settings">
-                     My Settings
-                  </DropdownItem>
-                  <DropdownItem key="team_settings">Team Settings</DropdownItem>
-                  <DropdownItem key="analytics">
+                  <DropdownItem key="analytics" onClick={() => handleChangeRoute( '/analytics' )}>
                      Analytics
                   </DropdownItem>
-                  <DropdownItem key="system">System</DropdownItem>
-                  <DropdownItem key="configurations">Configurations</DropdownItem>
-                  <DropdownItem key="help_and_feedback">
-                     Help & Feedback
+                  <DropdownItem key="configurations" onClick={() => handleChangeRoute( '/configurations' )}>Configurations</DropdownItem>
+                  <DropdownItem key="settings" onClick={() => handleChangeRoute( '/settings' )}>
+                     Settings
+                  </DropdownItem>
+                  <DropdownItem key="settings" onClick={toggleMask}>
+                     {context?.isMasked ? 'Disable Mask' : 'Enable Mask'}
                   </DropdownItem>
                   <DropdownItem key="logout" color="danger" onClick={handleSignOut}>
                      Log Out

@@ -1,3 +1,6 @@
+'use client'
+
+import { ScrollShadow } from '@nextui-org/react'
 import React, { ReactNode } from 'react'
 
 const Wrapper = ( { children, className }: { children: ReactNode, className?: string } ) =>
@@ -14,10 +17,10 @@ const WrapperHeader = ( { children, className }: { children: ReactNode, classNam
    )
 }
 
-const WrapperContent = ( { children, className }: { children: ReactNode, className?: string } ) =>
+const WrapperContent = ( { children, className, scrollable }: { children: ReactNode, className?: string, scrollable?: boolean } ) =>
 {
    return (
-      <div className={`py-2 ${className}`}>{children}</div>
+      <ScrollShadow className={`py-2 ${className} ${scrollable && 'max-h-[50vh]'}`}>{children}</ScrollShadow>
    )
 }
 

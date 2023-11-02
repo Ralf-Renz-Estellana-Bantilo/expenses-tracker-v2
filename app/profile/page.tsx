@@ -5,18 +5,21 @@ import React from 'react'
 import { Wrapper, WrapperContent, WrapperFooter, WrapperHeader } from '../components/Wrapper'
 import { useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
-import { MONTHS_TABLE } from '../database/database'
 import { formatMoney } from '../utils/utils'
+import SuspenseContainer from '../components/SuspenseContainer'
+import { AppContext } from '../context/context'
 
 const ProfilePage = () =>
 {
-
+   const context = AppContext()
    const { data: session } = useSession();
 
    if ( !session )
    {
       redirect( '/' )
    }
+
+   let totalExpenses: number = context?.monthlyExpenses?.reduce( ( sum, item ) => Number( sum ) + Number( item.total ), 0 ) ?? 0
 
    return (
       <div className='flex flex-col gap-3'>
@@ -31,19 +34,21 @@ const ProfilePage = () =>
             <WrapperHeader className='flex items-center justify-between'>
                <h3 className='font-semibold text-accent-secondary'>Monthly Expenses</h3>
             </WrapperHeader>
-            <WrapperContent className='flex flex-col'>
-               {MONTHS_TABLE.sort( ( a, b ) => b.ID - a.ID ).map( month => (
-                  <div className="flex p-2 justify-between items-center border-1 border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10" key={month.ID}>
-                     <div className="flex items-center gap-2">
-                        <span>{month.description}</span>
+            <WrapperContent className='flex flex-col' scrollable={true}>
+               <SuspenseContainer data={context?.monthlyExpenses}>
+                  {context?.monthlyExpenses?.map( month => (
+                     <div className="flex p-2 justify-between items-center border-1 border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10" key={month.total}>
+                        <div className="flex items-center gap-2">
+                           <span>{month.month}</span>
+                        </div>
+                        <p className='text-accent-secondary font-semibold'> {formatMoney( month.total )}</p>
                      </div>
-                     <p className='text-accent-secondary font-semibold'>₱ {formatMoney( Math.floor( Math.random() * 5_000 ) )}</p>
-                  </div>
-               ) )}
+                  ) )}
+               </SuspenseContainer>
             </WrapperContent>
             <WrapperFooter className='flex items-center justify-between'>
                <h3 className='text-default-500'>Total:</h3>
-               <p className='text-default-500'>₱ 11,000</p>
+               <p className='text-default-500'> {formatMoney( totalExpenses )}</p>
             </WrapperFooter>
          </Wrapper>
       </div>

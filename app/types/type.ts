@@ -10,24 +10,16 @@ export type TabType = {
 export type ContextType = {
    tabs: TabType[],
    activeTab: TabType,
+   categories: CategoryType[] | null,
+   todayExpenses: TodaysExpensesType[] | null,
+   previousExpenses: PreviousExpensesType[] | null,
+   monthlyExpenses: MonthlyExpensesType[] | null,
+   walletBudget: WalletBudgeType[] | null,
+   isMasked: boolean,
+   setIsMasked: Dispatch<SetStateAction<boolean>>,
    setActiveTab: Dispatch<SetStateAction<TabType>>,
-   todayExpenses: {
-      category: string | undefined;
-      ID: number;
-      categoryID: number;
-      description?: string | undefined;
-      amount: number;
-      createdBy: string;
-      createdOn: string;
-      status: StatusType;
-   }[],
-   previousExpenses: {
-      ID: number,
-      date: string;
-      total: number;
-      expensesList: ExpensesType[];
-   }[],
    handleUpdateExpense: ( newExpense: ExpensesType & { category: string | undefined }, type: 'add' | 'edit' ) => void
+   handleUpdateWalletBudget: ( newBudget: WalletBudgeType, type: 'add' | 'edit' ) => void
 }
 
 export type StatusType = 0 | 1
@@ -35,7 +27,6 @@ export type StatusType = 0 | 1
 export type CategoryType = {
    ID: number;
    description: string;
-   icon: string;
    status: StatusType;
 }
 
@@ -51,20 +42,27 @@ export type ExpensesType = {
    categoryID: number;
    description?: string;
    amount: number;
-   createdBy: string;
-   createdOn: string;
-   status: StatusType;
+   created_by?: string;
+   created_on?: string;
+   status?: StatusType;
 }
 
 export type TodaysExpensesType = {
-   category: string | undefined;
    ID: number;
    categoryID: number;
+   category: string | undefined;
    description?: string | undefined;
    amount: number;
-   createdBy: string;
-   createdOn: string;
-   status: StatusType;
+   created_by?: string;
+   created_on?: string;
+   status?: StatusType;
+}
+
+export type PreviousExpensesType = {
+   ID?: number,
+   date: string;
+   total: number;
+   expensesList: ExpensesType[];
 }
 
 export type AlertType = {
@@ -73,4 +71,48 @@ export type AlertType = {
    position?: 'top-left' | 'top-right' | 'top-center' | 'bottom-right' | 'bottom-left' | 'bottom-center'
    theme?: 'dark' | 'light' | 'colored'
    autoClose?: number
+}
+
+export type MasterSelectPayloadType = {
+   table: string,
+   filter?: any,
+   column?: string,
+   sort?: any,
+}
+
+export type MasterDataPayloadType = {
+   tables: string,
+}
+
+export type SaveDataPayloadType = {
+   table: string,
+   values: any
+   key?: any
+}
+
+export type SaveDataResponseType = {
+   affectedRows: number,
+   changedRows: number,
+   fieldCount: number,
+   info: string,
+   insertId: number,
+   serverStatus: number,
+   warningStatus: number,
+}
+
+export type MonthlyExpensesType = {
+   user: string,
+   monthID: number,
+   month: string,
+   total: number,
+}
+
+export type WalletBudgeType = {
+   ID: number,
+   title: string,
+   description: string,
+   amount: number,
+   created_by?: string;
+   created_on?: string;
+   status?: StatusType;
 }

@@ -45,14 +45,14 @@ const ExpensesModal = ( { isOpen, onOpenChange, data }: ExpensesModalType ) =>
 
             const categoryList = CATEGORIES_TABLE.find( ( cat ) => cat.ID === Number( formData.categoryID ) )
 
-            const newExpense: typeof todayExpenses[0] = {
+            const newExpense: TodaysExpensesType = {
                ID,
                category: categoryList?.description,
                categoryID: Number( categoryID ),
                description,
                amount: Number( amount ),
-               createdBy: session?.user?.email || '',
-               createdOn: `${new Date()}`,
+               created_by: session?.user?.email || '',
+               created_on: `${new Date()}`,
                status: 1,
             }
 
@@ -135,19 +135,19 @@ const ExpensesModal = ( { isOpen, onOpenChange, data }: ExpensesModalType ) =>
                <>
                   <ModalHeader className="flex flex-col gap-1 font-bold">Add New Expense</ModalHeader>
                   <ModalBody>
-                     <Select
+                     {context?.categories && <Select
                         label="Select category"
                         variant='bordered'
                         selectedKeys={[formData.categoryID]}
                         onChange={handleChangeInput}
                         name='categoryID'
                      >
-                        {CATEGORIES_TABLE.map( ( category ) => (
+                        {context?.categories.map( ( category ) => (
                            <SelectItem startContent={<BillIcon />} key={category.ID} value={category.ID}>
                               {category.description}
                            </SelectItem>
                         ) )}
-                     </Select>
+                     </Select>}
                      <Input
                         value={formData.description}
                         onChange={handleChangeInput}

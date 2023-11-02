@@ -11,10 +11,12 @@
   },
   "dependencies": {
     "@nextui-org/react": "^2.1.13",
+    "axios": "^1.6.0",
     "encoding": "^0.1.13",
     "firebase": "^10.5.0",
     "framer-motion": "^10.16.4",
     "moment": "^2.29.4",
+    "mysql2": "^3.6.2",
     "next": "13.5.4",
     "next-auth": "^4.24.3",
     "react": "^18",
