@@ -10,6 +10,7 @@ import { AppContext } from '../context/context'
 import { WalletBudgeType } from '../types/type'
 import { toast } from 'react-toastify'
 import SuspenseContainer from '../components/SuspenseContainer'
+import Image from 'next/image'
 
 const DEFAULT_FORM = {
    ID: 0,
@@ -152,6 +153,7 @@ const WalletMaintenance = () =>
                      <div key={index} className="flex p-2 justify-between items-center border-1 cursor-pointer border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10">
                         <div className="flex items-center gap-3">
                            {/* <BillIcon /> */}
+                           <Image src={require( `@/public/assets/icons/peso.png` )} alt='icon' height={27} />
                            <div className="flex flex-col">
                               <span>{budget.title}</span>
                               <small className='text-default-500 whitespace-nowrap overflow-clip text-ellipsis max-w-xs'>{moment( budget.created_on ).format( 'll' )} {`${budget.description && `• ${budget.description}`}`}</small>

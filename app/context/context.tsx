@@ -2,10 +2,9 @@ import React, { createContext, useState, ReactNode, useEffect, useContext } from
 import { DashboardIcon, ProfileIcon, SettingsIcon } from "../icons/icons";
 import { CategoryType, ContextType, ExpensesType, MasterSelectPayloadType, MonthlyExpensesType, PreviousExpensesType, SaveDataPayloadType, SaveDataResponseType, TabType, TodaysExpensesType, WalletBudgeType } from "../types/type";
 import { usePathname } from "next/navigation";
-import { PREVIOUS_EXPENSES_VIEW, TODAYS_EXPENSES_VIEW } from "../database/database";
 import { useSession } from 'next-auth/react'
 import { fetchMasterSelect, fetchSaveData } from "../controller/controller";
-import { formatPreviousExpenses } from "../utils/utils";
+import { formatPreviousExpenses, getIcons } from "../utils/utils";
 
 export const ComponentContext = createContext<ContextType | null>( null )
 
@@ -115,7 +114,15 @@ export default function ComponentContextProvider ( { children }: { children: Rea
          }
 
          const response = await fetchMasterSelect( payload ) as CategoryType[]
-         setCategories( response )
+
+         const categorylist = Array.from( response, ( category ) =>
+         {
+            return {
+               ...category,
+               imgPath: getIcons( category.ID ) as string
+            }
+         } )
+         setCategories( categorylist )
       } catch ( error )
       {
          alert( error )

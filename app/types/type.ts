@@ -27,6 +27,7 @@ export type StatusType = 0 | 1
 export type CategoryType = {
    ID: number;
    description: string;
+   imgPath?: string,
    status: StatusType;
 }
 
@@ -104,6 +105,7 @@ export type MonthlyExpensesType = {
    user: string,
    monthID: number,
    month: string,
+   monthCode: string,
    total: number,
 }
 

@@ -5,11 +5,12 @@ import { AppContext } from '../context/context';
 import { Button, useDisclosure } from '@nextui-org/react';
 import { Wrapper, WrapperContent, WrapperFooter, WrapperHeader } from '../components/Wrapper';
 import { BillIcon, PlusIcon } from '../icons/icons';
-import { formatMoney } from '../utils/utils';
+import { formatMoney, getIcons } from '../utils/utils';
 import ExpensesModal from '../components/modals/ExpensesModal';
 import moment from 'moment';
 import { TodaysExpensesType } from '../types/type';
 import SuspenseContainer from '../components/SuspenseContainer';
+import Image from 'next/image';
 
 const TodaysExpenses = () =>
 {
@@ -41,7 +42,7 @@ const TodaysExpenses = () =>
                   {context?.todayExpenses?.map( ( expense, index ) => (
                      <div key={index} className="flex p-2 justify-between items-center border-1 cursor-pointer border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10" onDoubleClick={() => showExpenseDialog( expense )}>
                         <div className="flex items-center gap-3">
-                           <BillIcon />
+                           <Image src={require( `@/public/assets/icons/${getIcons( expense.categoryID )}.png` ).default} alt='icon' height={27} />
                            <div className="flex flex-col">
                               <span>{expense.category}</span>
                               <small className='text-default-500 whitespace-nowrap overflow-clip text-ellipsis max-w-xs'>{moment( expense.created_on ).format( 'LT' )} {`${expense.description && `• ${expense.description}`}`}</small>

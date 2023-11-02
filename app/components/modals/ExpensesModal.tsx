@@ -1,13 +1,12 @@
 'use client'
 
 import { AppContext } from '@/app/context/context';
-import { CATEGORIES_TABLE } from '@/app/database/database';
-import { BillIcon } from '@/app/icons/icons';
 import { TodaysExpensesType } from '@/app/types/type';
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem } from '@nextui-org/react';
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { toast } from 'react-toastify'
+import Image from 'next/image';
 
 type ExpensesModalType = {
    isOpen: boolean,
@@ -41,9 +40,9 @@ const ExpensesModal = ( { isOpen, onOpenChange, data }: ExpensesModalType ) =>
          if ( context )
          {
             const { ID, amount, categoryID, description } = formData
-            const { handleUpdateExpense, todayExpenses } = context
+            const { handleUpdateExpense, categories } = context
 
-            const categoryList = CATEGORIES_TABLE.find( ( cat ) => cat.ID === Number( formData.categoryID ) )
+            const categoryList = categories?.find( ( cat ) => cat.ID === Number( formData.categoryID ) )
 
             const newExpense: TodaysExpensesType = {
                ID,
@@ -111,7 +110,7 @@ const ExpensesModal = ( { isOpen, onOpenChange, data }: ExpensesModalType ) =>
       } else
       {
          setFormData( {
-            ...formData,
+            ...DEFAULT_FORM,
             ID: Math.floor( Math.random() * 1000 ),
          } )
       }
@@ -143,7 +142,7 @@ const ExpensesModal = ( { isOpen, onOpenChange, data }: ExpensesModalType ) =>
                         name='categoryID'
                      >
                         {context?.categories.map( ( category ) => (
-                           <SelectItem startContent={<BillIcon />} key={category.ID} value={category.ID}>
+                           <SelectItem startContent={<Image src={require( `@/public/assets/icons/${category.imgPath}.png` ).default} alt='icon' height={27} />} key={category.ID} value={category.ID}>
                               {category.description}
                            </SelectItem>
                         ) )}

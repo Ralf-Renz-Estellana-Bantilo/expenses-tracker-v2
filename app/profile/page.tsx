@@ -8,6 +8,7 @@ import { redirect } from 'next/navigation'
 import { formatMoney } from '../utils/utils'
 import SuspenseContainer from '../components/SuspenseContainer'
 import { AppContext } from '../context/context'
+import Image from 'next/image'
 
 const ProfilePage = () =>
 {
@@ -39,6 +40,7 @@ const ProfilePage = () =>
                   {context?.monthlyExpenses?.map( month => (
                      <div className="flex p-2 justify-between items-center border-1 border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10" key={month.total}>
                         <div className="flex items-center gap-2">
+                           <Image src={require( `@/public/assets/icons/${month.monthCode}.png` ).default} alt='icon' height={27} />
                            <span>{month.month}</span>
                         </div>
                         <p className='text-accent-secondary font-semibold'> {formatMoney( month.total )}</p>

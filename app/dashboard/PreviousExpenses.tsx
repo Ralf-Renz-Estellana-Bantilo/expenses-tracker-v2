@@ -1,15 +1,14 @@
 'use client'
 
-import React, { ContextType, useState } from 'react'
+import React, { useState } from 'react'
 import { AppContext } from '../context/context';
-import { Button, Chip, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ScrollShadow, useDisclosure } from '@nextui-org/react';
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ScrollShadow, useDisclosure } from '@nextui-org/react';
 import { Wrapper, WrapperContent, WrapperFooter, WrapperHeader } from '../components/Wrapper';
-import { formatMoney, getCurrentMonth } from '../utils/utils';
+import { formatMoney, getCurrentMonth, getIcons } from '../utils/utils';
 import { PreviousExpensesType } from '../types/type';
-import { BillIcon } from '../icons/icons';
-import { CATEGORIES_TABLE } from '../database/database';
 import moment from 'moment'
 import SuspenseContainer from '../components/SuspenseContainer';
+import Image from 'next/image';
 
 const PreviousExpenses = () =>
 {
@@ -26,7 +25,7 @@ const PreviousExpenses = () =>
 
    const findCategory = ( categoryID: number ) =>
    {
-      return CATEGORIES_TABLE.find( category => category.ID === categoryID )
+      return context?.categories?.find( ( { ID } ) => ID === categoryID )
    }
 
    const totalPreviousExpenses = context?.previousExpenses?.reduce( ( accumulator, item ) => Number( accumulator ) + Number( item.total ), 0 ) ?? 0
@@ -59,7 +58,7 @@ const PreviousExpenses = () =>
                            {preview?.expensesList.map( ( expense, index ) => (
                               <div key={index} className="flex p-2 justify-between items-center border-1 border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10">
                                  <div className="flex items-center gap-3">
-                                    <BillIcon />
+                                    <Image src={require( `@/public/assets/icons/${getIcons( expense.categoryID )}.png` ).default} alt='icon' height={27} />
                                     <div className="flex flex-col">
                                        <span>{findCategory( expense.categoryID )?.description}</span>
                                        <small className='text-default-500'>{moment( expense.created_on ).format( 'LT' )} {`${expense.description && `• ${expense.description}`}`}</small>

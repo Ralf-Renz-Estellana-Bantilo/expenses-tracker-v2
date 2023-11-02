@@ -73,3 +73,20 @@ export const maskNumber = ( money: string ) =>
       return money
    }
 }
+
+export const getIcons = ( ID?: number ) =>
+{
+   let icons = [
+      'food',
+      'transportation',
+      'communication',
+      'insurance',
+      'rent',
+      'bill',
+      'family',
+      'clothes',
+      'shopping'
+   ]
+
+   return ID ? icons[( ID - 1 ) % icons.length] : icons
+}
