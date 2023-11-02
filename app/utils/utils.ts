@@ -85,7 +85,8 @@ export const getIcons = ( ID?: number ) =>
       'bill',
       'family',
       'clothes',
-      'shopping'
+      'shopping',
+      'purchase'
    ]
 
    return ID ? icons[( ID - 1 ) % icons.length] : icons

@@ -13,6 +13,7 @@ import SuspenseContainer from '../components/SuspenseContainer'
 import Image from 'next/image'
 
 const DEFAULT_FORM = {
+   header: 'Add New Wallet Budget',
    ID: 0,
    title: '',
    description: '',
@@ -89,6 +90,7 @@ const WalletMaintenance = () =>
    const showWalletBudgetDialog = ( walletBudget: WalletBudgeType | null ) =>
    {
       const walletBudgetForm = walletBudget ? {
+         header: 'Update Wallet Budget',
          ID: walletBudget.ID,
          title: walletBudget.title,
          description: walletBudget.description,
@@ -111,7 +113,7 @@ const WalletMaintenance = () =>
             <ModalContent>
                {( onClose ) => (
                   <>
-                     <ModalHeader className="flex flex-col gap-1 font-bold">Add New Wallet Budget</ModalHeader>
+                     <ModalHeader className="flex flex-col gap-1 font-bold">{formData.header}</ModalHeader>
                      <ModalBody className='flex flex-col gap-2'>
                         <Input
                            value={formData.title}
@@ -172,7 +174,7 @@ const WalletMaintenance = () =>
                               <small className='text-default-500 whitespace-nowrap overflow-clip text-ellipsis max-w-xs'>{moment( budget.created_on ).format( 'll' )} {`${budget.description && `• ${budget.description}`}`}</small>
                            </div>
                         </div>
-                        <span className='text-accent-secondary font-semibold'> {formatMoney( budget.amount )}</span>
+                        <span className='text-accent-secondary font-semibold'> {formatMoney( budget.amount, context.isMasked )}</span>
                      </div>
                   ) )}
                </SuspenseContainer>
