@@ -37,12 +37,12 @@ const ExpensesModal = ( { isOpen, onOpenChange, data }: ExpensesModalType ) =>
    const handleSave = ( onClose: () => void ): void =>
    {
       const { showAlert } = useAlert()
+      const { ID, amount, categoryID, description } = formData
 
-      if ( ( !Object.values( formData ).includes( '' ) && Number( formData.amount ) !== 0 ) || formData.description === '' )
+      if ( categoryID !== '' && Number( amount ) !== 0 && amount !== '' )
       {
          if ( context )
          {
-            const { ID, amount, categoryID, description } = formData
             const { handleUpdateExpense, categories } = context
 
             const ACTION_TYPE = ID === DEFAULT_FORM.ID ? 'add' : 'edit'
@@ -96,10 +96,7 @@ const ExpensesModal = ( { isOpen, onOpenChange, data }: ExpensesModalType ) =>
          } )
       } else
       {
-         setFormData( {
-            ...DEFAULT_FORM,
-            ID: Math.floor( Math.random() * 1000 ),
-         } )
+         setFormData( DEFAULT_FORM )
       }
 
       return () =>

@@ -28,11 +28,10 @@ const WalletMaintenance = () =>
    const handleSave = ( onClose: () => void ) =>
    {
       const { showAlert } = useAlert()
+      const { ID, amount, description, title } = formData
 
-      if ( !Object.values( formData ).includes( '' ) && Number( formData.amount ) !== 0 && context )
+      if ( title !== '' && description !== '' && amount !== '' && Number( amount ) !== 0 && context )
       {
-         const { ID, amount, description, title } = formData
-
          const ACTION_TYPE = ID === DEFAULT_FORM.ID ? 'add' : 'edit'
 
          const { handleUpdateWalletBudget } = context
