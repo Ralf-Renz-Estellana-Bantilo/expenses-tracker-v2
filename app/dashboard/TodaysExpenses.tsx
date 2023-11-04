@@ -11,6 +11,7 @@ import moment from 'moment';
 import { TodaysExpensesType } from '../types/type';
 import SuspenseContainer from '../components/SuspenseContainer';
 import Image from 'next/image';
+import CardList from '../components/CardList';
 
 const TodaysExpenses = () =>
 {
@@ -24,6 +25,15 @@ const TodaysExpenses = () =>
       setPreview( expense )
    }
 
+   const getDescription = ( created_on: string, description?: string | undefined ) =>
+   {
+      const timeStamp = `${moment( created_on ).format( 'LT' )}`
+      const shortDescription = `${`${description && `• ${description}`}`}`
+
+      const result = [timeStamp, shortDescription].join( ' ' )
+
+      return result
+   }
 
    const totalTodaysExpenses: number = context?.todayExpenses?.reduce( ( accumulator, item ) => Number( accumulator ) + Number( item.amount ), 0 ) ?? 0
 
@@ -39,17 +49,16 @@ const TodaysExpenses = () =>
             </WrapperHeader>
             <WrapperContent className='flex flex-col' scrollable>
                <SuspenseContainer data={context?.todayExpenses}>
-                  {context?.todayExpenses?.map( ( expense, index ) => (
-                     <div key={index} className="flex p-2 justify-between items-center border-1 cursor-pointer border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10" onDoubleClick={() => showExpenseDialog( expense )}>
-                        <div className="flex items-center gap-3">
-                           <Image src={require( `@/public/assets/icons/${getIcons( expense.categoryID )}.png` ).default} alt='icon' height={27} />
-                           <div className="flex flex-col">
-                              <span>{expense.category}</span>
-                              <small className='text-default-500 whitespace-nowrap overflow-clip text-ellipsis max-w-xs'>{moment( expense.created_on ).format( 'LT' )} {`${expense.description && `• ${expense.description}`}`}</small>
-                           </div>
-                        </div>
-                        <span className='text-accent-secondary font-semibold'> {formatMoney( expense.amount )}</span>
-                     </div>
+
+                  {context?.todayExpenses?.map( ( expense ) => (
+                     <CardList
+                        key={expense.ID}
+                        title={expense.category}
+                        description={getDescription( expense.created_on ?? '', expense.description )}
+                        iconName={getIcons( expense.categoryID ) as string}
+                        value={formatMoney( expense.amount )}
+                        handleDblClick={() => showExpenseDialog( expense )}
+                     />
                   ) )}
                </SuspenseContainer>
             </WrapperContent>

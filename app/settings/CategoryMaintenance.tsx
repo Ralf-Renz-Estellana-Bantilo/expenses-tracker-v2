@@ -7,6 +7,7 @@ import { Button } from '@nextui-org/react'
 import { BillIcon, DeleteIcon, EditIcon, PlusIcon } from '../icons/icons'
 import SuspenseContainer from '../components/SuspenseContainer'
 import Image from 'next/image'
+import CardList from '../components/CardList'
 
 const CategoryMaintenance = () =>
 {
@@ -23,20 +24,11 @@ const CategoryMaintenance = () =>
          <WrapperContent className='flex flex-col' scrollable>
             <SuspenseContainer data={context?.categories} noDataMsg='No categories found!'>
                {context?.categories?.map( category => (
-                  <div className="flex p-2 justify-between items-center border-1 border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10" key={category.ID}>
-                     <div className="flex items-center gap-2">
-                        <Image src={require( `@/public/assets/icons/${category.imgPath}.png` ).default} alt='icon' height={27} />
-                        <span>{category.description}</span>
-                     </div>
-                     {/* <div className="flex items-center gap-1">
-                        <Button isIconOnly color="warning" variant="light" aria-label="Edit Category" size='sm' disabled>
-                           <EditIcon />
-                        </Button>
-                        <Button isIconOnly color="danger" variant="light" aria-label="Remove Category" size='sm' disabled>
-                           <DeleteIcon />
-                        </Button>
-                     </div> */}
-                  </div>
+                  <CardList
+                     key={category.ID}
+                     iconName={category.imgPath}
+                     title={category.description}
+                  />
                ) )}
             </SuspenseContainer>
          </WrapperContent>

@@ -5,10 +5,11 @@ import { AppContext } from '../context/context';
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ScrollShadow, useDisclosure } from '@nextui-org/react';
 import { Wrapper, WrapperContent, WrapperFooter, WrapperHeader } from '../components/Wrapper';
 import { formatMoney, getCurrentMonth, getIcons } from '../utils/utils';
-import { PreviousExpensesType } from '../types/type';
+import { PreviousExpensesType, TodaysExpensesType } from '../types/type';
 import moment from 'moment'
 import SuspenseContainer from '../components/SuspenseContainer';
 import Image from 'next/image';
+import CardList from '../components/CardList';
 
 const PreviousExpenses = () =>
 {
@@ -55,8 +56,8 @@ const PreviousExpenses = () =>
                            </div>
                         </div>
                         <ScrollShadow className="flex flex-col max-h-[48vh] overflow-auto">
-                           {preview?.expensesList.map( ( expense, index ) => (
-                              <div key={index} className="flex p-2 justify-between items-center border-1 border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10">
+                           {preview?.expensesList.map( ( expense ) => (
+                              <div key={expense.ID} className="flex p-2 justify-between items-center border-1 border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10">
                                  <div className="flex items-center gap-3">
                                     <Image src={require( `@/public/assets/icons/${getIcons( expense.categoryID )}.png` ).default} alt='icon' height={27} />
                                     <div className="flex flex-col">
@@ -85,12 +86,12 @@ const PreviousExpenses = () =>
             <WrapperContent className='flex flex-col' scrollable>
                <SuspenseContainer data={context?.previousExpenses}>
                   {context?.previousExpenses?.map( expense => (
-                     <div key={expense.date} onClick={() => previewExpense( expense )} className="flex p-2 justify-between items-center cursor-pointer border-1 border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10">
-                        <div className="flex items-center gap-2">
-                           <span>{moment( expense.date ).format( 'll' )}</span>
-                        </div>
-                        <span className='text-accent-secondary font-semibold'> {formatMoney( expense.total )}</span>
-                     </div>
+                     <CardList
+                        key={expense.ID}
+                        title={moment( expense.date ).format( 'll' )}
+                        value={formatMoney( expense.total )}
+                        handleClick={() => previewExpense( expense )}
+                     />
                   ) )}
                </SuspenseContainer>
             </WrapperContent>

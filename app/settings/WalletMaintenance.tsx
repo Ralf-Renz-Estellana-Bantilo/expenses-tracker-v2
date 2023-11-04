@@ -11,6 +11,7 @@ import { WalletBudgeType } from '../types/type'
 import { toast } from 'react-toastify'
 import SuspenseContainer from '../components/SuspenseContainer'
 import Image from 'next/image'
+import CardList from '../components/CardList'
 
 const DEFAULT_FORM = {
    header: 'Add New Wallet Budget',
@@ -101,6 +102,16 @@ const WalletMaintenance = () =>
       setFormData( walletBudgetForm )
    }
 
+   const getDescription = ( created_on: string, description?: string | undefined ) =>
+   {
+      const timeStamp = `${moment( created_on ).format( 'LT' )}`
+      const shortDescription = `${`${description && `• ${description}`}`}`
+
+      const result = [timeStamp, shortDescription].join( ' ' )
+
+      return result
+   }
+
    return (
       <>
          <Modal
@@ -165,17 +176,15 @@ const WalletMaintenance = () =>
             </WrapperHeader>
             <WrapperContent className='flex flex-col' scrollable>
                <SuspenseContainer data={context?.walletBudget}>
-                  {context?.walletBudget?.map( ( budget, index ) => (
-                     <div key={index} className="flex p-2 justify-between items-center border-1 cursor-pointer border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10" onDoubleClick={() => showWalletBudgetDialog( budget )}>
-                        <div className="flex items-center gap-3">
-                           <Image src={require( `@/public/assets/icons/peso.png` )} alt='icon' height={27} />
-                           <div className="flex flex-col">
-                              <span>{budget.title}</span>
-                              <small className='text-default-500 whitespace-nowrap overflow-clip text-ellipsis max-w-xs'>{moment( budget.created_on ).format( 'll' )} {`${budget.description && `• ${budget.description}`}`}</small>
-                           </div>
-                        </div>
-                        <span className='text-accent-secondary font-semibold'> {formatMoney( budget.amount, context.isMasked )}</span>
-                     </div>
+                  {context?.walletBudget?.map( ( budget ) => (
+                     <CardList
+                        key={budget.ID}
+                        iconName='peso'
+                        title={budget.title}
+                        description={getDescription( budget.created_on ?? '', budget.description )}
+                        value={formatMoney( budget.amount, context.isMasked )}
+                        handleDblClick={() => showWalletBudgetDialog( budget )}
+                     />
                   ) )}
                </SuspenseContainer>
             </WrapperContent>
