@@ -138,21 +138,24 @@ export default function ComponentContextProvider ( { children }: { children: Rea
 
    useEffect( () =>
    {
-      if ( tabs.map( ( { path } ) => path ).includes( pathname ) )
+      if ( session )
       {
-         const activeRoute = tabs.find( tab => tab.path === pathname )
-         setActiveTab( activeRoute || defaultTabInfo )
+         if ( tabs.map( ( { path } ) => path ).includes( pathname ) )
+         {
+            const activeRoute = tabs.find( tab => tab.path === pathname )
+            setActiveTab( activeRoute || defaultTabInfo )
+         }
+         Promise.all( [
+            getTodayExpenses(),
+            getPreviousExpenses(),
+            getCategories(),
+            getMonthlyExpenses(),
+            getBudgetWallet(),
+         ] ).then( () =>
+         {
+            console.log( 'Resources loaded!' )
+         } ).catch( error => console.error( error ) )
       }
-      Promise.all( [
-         getTodayExpenses(),
-         getPreviousExpenses(),
-         getCategories(),
-         getMonthlyExpenses(),
-         getBudgetWallet(),
-      ] ).then( () =>
-      {
-         console.log( 'Resources loaded!' )
-      } ).catch( error => console.error( error ) )
    }, [] )
 
 
