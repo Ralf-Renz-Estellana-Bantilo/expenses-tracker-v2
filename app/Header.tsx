@@ -79,11 +79,11 @@ const Header = ( { title, showActions }: { title?: string, showActions?: boolean
                      Analytics
                   </DropdownItem>
                   <DropdownItem key="configurations" onClick={() => handleChangeRoute( '/configurations' )}>Configurations</DropdownItem>
-                  <DropdownItem key="settings" onClick={() => handleChangeRoute( '/settings' )}>
-                     Settings
-                  </DropdownItem>
                   <DropdownItem key="mask" onClick={toggleMask}>
                      {context?.isMasked ? 'Disable Mask' : 'Enable Mask'}
+                  </DropdownItem>
+                  <DropdownItem key="settings" onClick={() => handleChangeRoute( '/settings' )}>
+                     Settings
                   </DropdownItem>
                   <DropdownItem key="logout" color="danger" onClick={handleSignOut}>
                      Log Out
