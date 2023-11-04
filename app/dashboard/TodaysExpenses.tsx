@@ -5,7 +5,7 @@ import { AppContext } from '../context/context';
 import { Button, useDisclosure } from '@nextui-org/react';
 import { Wrapper, WrapperContent, WrapperFooter, WrapperHeader } from '../components/Wrapper';
 import { BillIcon, PlusIcon } from '../icons/icons';
-import { formatMoney, getIcons } from '../utils/utils';
+import { formatMoney, getExpenseDescription, getIcons } from '../utils/utils';
 import ExpensesModal from '../components/modals/ExpensesModal';
 import moment from 'moment';
 import { TodaysExpensesType } from '../types/type';
@@ -23,16 +23,6 @@ const TodaysExpenses = () =>
    {
       onOpen()
       setPreview( expense )
-   }
-
-   const getDescription = ( created_on: string, description?: string | undefined ) =>
-   {
-      const timeStamp = `${moment( created_on ).format( 'LT' )}`
-      const shortDescription = `${`${description && `• ${description}`}`}`
-
-      const result = [timeStamp, shortDescription].join( ' ' )
-
-      return result
    }
 
    const totalTodaysExpenses: number = context?.todayExpenses?.reduce( ( accumulator, item ) => Number( accumulator ) + Number( item.amount ), 0 ) ?? 0
@@ -54,7 +44,7 @@ const TodaysExpenses = () =>
                      <CardList
                         key={expense.ID}
                         title={expense.category}
-                        description={getDescription( expense.created_on ?? '', expense.description )}
+                        description={getExpenseDescription( expense.created_on ?? '', expense.description )}
                         iconName={getIcons( expense.categoryID ) as string}
                         value={formatMoney( expense.amount )}
                         handleDblClick={() => showExpenseDialog( expense )}

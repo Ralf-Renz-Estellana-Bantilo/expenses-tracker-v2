@@ -5,7 +5,7 @@ import { Wrapper, WrapperContent, WrapperHeader } from '../components/Wrapper'
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react'
 import { PlusIcon } from '../icons/icons'
 import moment from 'moment'
-import { formatMoney } from '../utils/utils'
+import { formatMoney, getExpenseDescription } from '../utils/utils'
 import { AppContext } from '../context/context'
 import { WalletBudgeType } from '../types/type'
 import { toast } from 'react-toastify'
@@ -102,16 +102,6 @@ const WalletMaintenance = () =>
       setFormData( walletBudgetForm )
    }
 
-   const getDescription = ( created_on: string, description?: string | undefined ) =>
-   {
-      const timeStamp = `${moment( created_on ).format( 'LT' )}`
-      const shortDescription = `${`${description && `• ${description}`}`}`
-
-      const result = [timeStamp, shortDescription].join( ' ' )
-
-      return result
-   }
-
    return (
       <>
          <Modal
@@ -181,7 +171,7 @@ const WalletMaintenance = () =>
                         key={budget.ID}
                         iconName='peso'
                         title={budget.title}
-                        description={getDescription( budget.created_on ?? '', budget.description )}
+                        description={getExpenseDescription( budget.created_on ?? '', budget.description )}
                         value={formatMoney( budget.amount, context.isMasked )}
                         handleDblClick={() => showWalletBudgetDialog( budget )}
                      />

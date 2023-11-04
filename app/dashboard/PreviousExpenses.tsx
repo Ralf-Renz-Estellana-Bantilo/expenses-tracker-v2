@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { AppContext } from '../context/context';
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ScrollShadow, useDisclosure } from '@nextui-org/react';
 import { Wrapper, WrapperContent, WrapperFooter, WrapperHeader } from '../components/Wrapper';
-import { formatMoney, getCurrentMonth, getIcons } from '../utils/utils';
+import { formatMoney, getCurrentMonth, getExpenseDescription, getIcons } from '../utils/utils';
 import { PreviousExpensesType, TodaysExpensesType } from '../types/type';
 import moment from 'moment'
 import SuspenseContainer from '../components/SuspenseContainer';
@@ -57,16 +57,13 @@ const PreviousExpenses = () =>
                         </div>
                         <ScrollShadow className="flex flex-col max-h-[48vh] overflow-auto">
                            {preview?.expensesList.map( ( expense ) => (
-                              <div key={expense.ID} className="flex p-2 justify-between items-center border-1 border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10">
-                                 <div className="flex items-center gap-3">
-                                    <Image src={require( `@/public/assets/icons/${getIcons( expense.categoryID )}.png` ).default} alt='icon' height={27} />
-                                    <div className="flex flex-col">
-                                       <span>{findCategory( expense.categoryID )?.description}</span>
-                                       <small className='text-default-500'>{moment( expense.created_on ).format( 'LT' )} {`${expense.description && `• ${expense.description}`}`}</small>
-                                    </div>
-                                 </div>
-                                 <span className='text-accent-secondary font-semibold'> {formatMoney( expense.amount )}</span>
-                              </div>
+                              <CardList
+                                 key={expense.ID}
+                                 iconName={getIcons( expense.categoryID ) as string}
+                                 title={findCategory( expense.categoryID )?.description}
+                                 description={getExpenseDescription( expense.created_on, expense.description )}
+                                 value={formatMoney( expense.amount )}
+                              />
                            ) )}
                         </ScrollShadow>
                      </ModalBody>
