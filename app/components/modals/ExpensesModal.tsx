@@ -5,8 +5,8 @@ import { TodaysExpensesType } from '@/app/types/type';
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem } from '@nextui-org/react';
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
-import { toast } from 'react-toastify'
 import Image from 'next/image';
+import useAlert from '@/app/hook/useAlert';
 
 type ExpensesModalType = {
    isOpen: boolean,
@@ -19,6 +19,7 @@ const DEFAULT_FORM = {
    categoryID: '1',
    description: '',
    amount: '',
+   header: 'Add New Expense',
 }
 
 const ExpensesModal = ( { isOpen, onOpenChange, data }: ExpensesModalType ) =>
@@ -27,20 +28,24 @@ const ExpensesModal = ( { isOpen, onOpenChange, data }: ExpensesModalType ) =>
    const context = AppContext()
    const [formData, setFormData] = useState( DEFAULT_FORM )
 
-   const handleChangeInput = useCallback( ( e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> ) =>
+   const handleChangeInput = useCallback( ( e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> ): void =>
    {
       const { name, value } = e.target;
       setFormData( { ...formData, [name]: value } );
    }, [formData, isOpen, onOpenChange, data] )
 
-   const handleSave = ( onClose: () => void ) =>
+   const handleSave = ( onClose: () => void ): void =>
    {
-      if ( !Object.values( formData ).includes( '' ) || formData.description === '' )
+      const { showAlert } = useAlert()
+
+      if ( ( !Object.values( formData ).includes( '' ) && Number( formData.amount ) !== 0 ) || formData.description === '' )
       {
          if ( context )
          {
             const { ID, amount, categoryID, description } = formData
             const { handleUpdateExpense, categories } = context
+
+            const ACTION_TYPE = ID === DEFAULT_FORM.ID ? 'add' : 'edit'
 
             const categoryList = categories?.find( ( cat ) => cat.ID === Number( formData.categoryID ) )
 
@@ -55,40 +60,21 @@ const ExpensesModal = ( { isOpen, onOpenChange, data }: ExpensesModalType ) =>
                status: 1,
             }
 
-            handleUpdateExpense( newExpense, data ? 'edit' : 'add' )
+            handleUpdateExpense( newExpense, ACTION_TYPE )
 
-            const alertMessage = !data ? 'New expense has been added!' : 'Expense has been updated!'
+            const alertMessage = ACTION_TYPE === 'add' ? 'New expense has been added!' : 'Expense has been updated!'
 
             setFormData( DEFAULT_FORM )
-            toast.success( alertMessage, {
-               position: "bottom-right",
-               autoClose: 3000,
-               hideProgressBar: false,
-               closeOnClick: true,
-               pauseOnHover: true,
-               draggable: true,
-               progress: undefined,
-               theme: "dark",
-            } );
-
+            showAlert( { type: 'success', message: alertMessage } )
             onClose()
          }
       } else
       {
-         toast.error( 'Error saving new expense!', {
-            position: "bottom-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-         } );
+         showAlert( { type: 'warning', message: 'Error! Form data is invalid!' } )
       }
    }
 
-   const handleKeyPress = ( { key }: React.KeyboardEvent<HTMLInputElement> | KeyboardEvent, onClose: () => void ) =>
+   const handleKeyPress = ( { key }: React.KeyboardEvent<HTMLInputElement> | KeyboardEvent, onClose: () => void ): void =>
    {
       if ( key === 'Enter' )
       {
@@ -105,7 +91,8 @@ const ExpensesModal = ( { isOpen, onOpenChange, data }: ExpensesModalType ) =>
             ID,
             amount: amount.toString(),
             categoryID: categoryID.toString(),
-            description: description ?? ''
+            description: description ?? '',
+            header: 'Update Expense'
          } )
       } else
       {
@@ -132,17 +119,19 @@ const ExpensesModal = ( { isOpen, onOpenChange, data }: ExpensesModalType ) =>
          <ModalContent>
             {( onClose ) => (
                <>
-                  <ModalHeader className="flex flex-col gap-1 font-bold">Add New Expense</ModalHeader>
+                  <ModalHeader className="flex flex-col gap-1 font-bold">{formData.header}</ModalHeader>
                   <ModalBody>
                      {context?.categories && <Select
                         label="Select category"
                         variant='bordered'
+                        color='primary'
+                        isRequired
                         selectedKeys={[formData.categoryID]}
                         onChange={handleChangeInput}
                         name='categoryID'
                      >
                         {context?.categories.map( ( category ) => (
-                           <SelectItem startContent={<Image src={require( `@/public/assets/icons/${category.imgPath}.png` ).default} alt='icon' height={27} />} key={category.ID} value={category.ID}>
+                           <SelectItem color='primary' startContent={<Image src={require( `@/public/assets/icons/${category.imgPath}.png` ).default} alt='icon' height={27} />} key={category.ID} value={category.ID}>
                               {category.description}
                            </SelectItem>
                         ) )}
@@ -155,16 +144,24 @@ const ExpensesModal = ( { isOpen, onOpenChange, data }: ExpensesModalType ) =>
                         label="Short description"
                         placeholder="Enter short description"
                         variant="bordered"
+                        color='primary'
                      />
                      <Input
                         value={formData.amount}
                         onChange={handleChangeInput}
                         onKeyDown={( event ) => handleKeyPress( event, onClose )}
                         name='amount'
+                        isRequired
                         label="Amount"
                         type='number'
                         placeholder="Enter amount"
                         variant="bordered"
+                        color='primary'
+                        startContent={
+                           <div className="pointer-events-none flex items-center">
+                              <span className="text-default-400 text-small">₱</span>
+                           </div>
+                        }
                      />
                   </ModalBody>
                   <ModalFooter>

@@ -73,7 +73,7 @@ export type AlertType = {
    message: string,
    position?: 'top-left' | 'top-right' | 'top-center' | 'bottom-right' | 'bottom-left' | 'bottom-center'
    theme?: 'dark' | 'light' | 'colored'
-   autoClose?: number
+   timeout?: number
 }
 
 export type MasterSelectPayloadType = {

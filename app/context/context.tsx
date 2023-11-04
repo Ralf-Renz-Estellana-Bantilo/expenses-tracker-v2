@@ -158,7 +158,7 @@ export default function ComponentContextProvider ( { children }: { children: Rea
 
    const handleUpdateExpense = async ( newExpense: TodaysExpensesType, type: 'add' | 'edit' ) =>
    {
-      isTodayExpensePending.current = true
+      isTodayExpensePending.current = type === 'add'
 
       let updatedExpenses = null
       let payload: SaveDataPayloadType = {
@@ -203,7 +203,7 @@ export default function ComponentContextProvider ( { children }: { children: Rea
 
    const handleUpdateWalletBudget = async ( newBudget: WalletBudgeType, type: 'add' | 'edit' ) =>
    {
-      isWalletBudgetPending.current = true
+      isWalletBudgetPending.current = type === 'add'
 
       let updatedWalletBudget = null
       let payload: SaveDataPayloadType = {

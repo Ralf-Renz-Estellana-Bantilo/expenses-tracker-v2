@@ -4,21 +4,19 @@ import React, { useState } from 'react'
 import { Wrapper, WrapperContent, WrapperHeader } from '../components/Wrapper'
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react'
 import { PlusIcon } from '../icons/icons'
-import moment from 'moment'
 import { formatMoney, getExpenseDescription } from '../utils/utils'
 import { AppContext } from '../context/context'
 import { WalletBudgeType } from '../types/type'
-import { toast } from 'react-toastify'
 import SuspenseContainer from '../components/SuspenseContainer'
-import Image from 'next/image'
 import { CardList, CardListSkeleton } from '../components/CardList'
+import useAlert from '../hook/useAlert'
 
 const DEFAULT_FORM = {
-   header: 'Add New Wallet Budget',
    ID: 0,
    title: '',
    description: '',
    amount: '',
+   header: 'Add New Wallet Budget',
 }
 
 const WalletMaintenance = () =>
@@ -29,7 +27,9 @@ const WalletMaintenance = () =>
 
    const handleSave = ( onClose: () => void ) =>
    {
-      if ( !Object.values( formData ).includes( '' ) && context )
+      const { showAlert } = useAlert()
+
+      if ( !Object.values( formData ).includes( '' ) && Number( formData.amount ) !== 0 && context )
       {
          const { ID, amount, description, title } = formData
 
@@ -46,32 +46,14 @@ const WalletMaintenance = () =>
 
          handleUpdateWalletBudget( newBudget, ACTION_TYPE )
 
-         const alertMessage = ID != DEFAULT_FORM.ID ? 'New expense has been added!' : 'Expense has been updated!'
+         const alertMessage = ACTION_TYPE === 'add' ? 'New expense has been added!' : 'Expense has been updated!'
 
          setFormData( DEFAULT_FORM )
-         toast.success( alertMessage, {
-            position: "bottom-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-         } );
+         showAlert( { type: 'success', message: alertMessage } )
          onClose()
       } else
       {
-         toast.error( 'Error saving new expense!', {
-            position: "bottom-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-         } );
+         showAlert( { type: 'warning', message: 'Error! Form data is invalid!' } )
       }
    }
 
@@ -122,7 +104,9 @@ const WalletMaintenance = () =>
                            onChange={handleChangeInput}
                            onKeyDown={( event ) => handleKeyPress( event, onClose )}
                            name='title'
+                           color='primary'
                            label="Budget Title"
+                           isRequired
                            placeholder="Enter budget title"
                            variant="bordered"
                         />
@@ -131,6 +115,8 @@ const WalletMaintenance = () =>
                            onChange={handleChangeInput}
                            onKeyDown={( event ) => handleKeyPress( event, onClose )}
                            name='description'
+                           color='primary'
+                           isRequired
                            label="Short description"
                            placeholder="Enter short description"
                            variant="bordered"
@@ -140,10 +126,17 @@ const WalletMaintenance = () =>
                            onChange={handleChangeInput}
                            onKeyDown={( event ) => handleKeyPress( event, onClose )}
                            name='amount'
+                           color='primary'
                            label="Amount"
+                           isRequired
                            type='number'
                            placeholder="Enter amount"
                            variant="bordered"
+                           startContent={
+                              <div className="pointer-events-none flex items-center">
+                                 <span className="text-default-400 text-small">₱</span>
+                              </div>
+                           }
                         />
                      </ModalBody>
                      <ModalFooter>

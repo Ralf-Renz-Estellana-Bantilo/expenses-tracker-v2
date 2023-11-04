@@ -1,22 +1,9 @@
-import React from 'react'
 import { AlertType } from '../types/type';
-import { toast } from 'react-toastify'
+import { ToastOptions, toast } from 'react-toastify'
 
-const useAlert = ( { type, message, autoClose, position, theme }: AlertType ) =>
+const useAlert = () =>
 {
-   const defaultToastProp = {
-      position: position ?? "bottom-right",
-      autoClose: autoClose ?? 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: theme ?? "dark",
-   }
-
-   let showAlert = null
-   toast.success( 'New expense has been added!', {
+   let config: ToastOptions<{}> = {
       position: "bottom-right",
       autoClose: 5000,
       hideProgressBar: false,
@@ -25,9 +12,31 @@ const useAlert = ( { type, message, autoClose, position, theme }: AlertType ) =>
       draggable: true,
       progress: undefined,
       theme: "dark",
-   } );
+   }
 
-   return showAlert
+
+   const showAlert = ( { type, message, timeout, position, theme }: AlertType ) =>
+   {
+      config.position = position ?? config.position
+      config.autoClose = timeout ?? config.autoClose
+      config.theme = theme ?? config.theme
+
+      if ( type === 'success' )
+      {
+         toast.success( message, config );
+      } else if ( type === 'error' )
+      {
+         toast.error( message, config );
+      } else if ( type === 'info' )
+      {
+         toast.info( message, config );
+      } else if ( type === 'warning' )
+      {
+         toast.warning( message, config );
+      }
+   }
+
+   return { showAlert }
 }
 
 export default useAlert
