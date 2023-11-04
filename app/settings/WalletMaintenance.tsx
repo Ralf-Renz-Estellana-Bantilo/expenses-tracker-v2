@@ -41,6 +41,7 @@ const WalletMaintenance = () =>
             title,
             description,
             amount: Number( amount ),
+            created_on: `${new Date()}`,
          }
 
          handleUpdateWalletBudget( newBudget, ACTION_TYPE )
@@ -171,7 +172,7 @@ const WalletMaintenance = () =>
                         key={budget.ID}
                         iconName='peso'
                         title={budget.title}
-                        description={getExpenseDescription( budget.created_on ?? '', budget.description )}
+                        description={getExpenseDescription( budget.created_on, budget.description, 'll' )}
                         value={formatMoney( budget.amount, context.isMasked )}
                         handleDblClick={() => showWalletBudgetDialog( budget )}
                      />

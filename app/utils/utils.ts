@@ -92,9 +92,9 @@ export const getIcons = ( ID?: number ) =>
    return ID ? icons[( ID - 1 ) % icons.length] : icons
 }
 
-export const getExpenseDescription = ( created_on: string | undefined, description?: string | undefined ) =>
+export const getExpenseDescription = ( created_on: string | undefined, description?: string | undefined, timeFormat?: string | undefined ) =>
 {
-   const timeStamp = `${moment( created_on ?? '' ).format( 'LT' )}`
+   const timeStamp = `${moment( created_on ?? '' ).format( timeFormat ? timeFormat : 'LT' )}`
    const shortDescription = `${`${description && `• ${description}`}`}`
 
    return [timeStamp, shortDescription].join( ' ' )
