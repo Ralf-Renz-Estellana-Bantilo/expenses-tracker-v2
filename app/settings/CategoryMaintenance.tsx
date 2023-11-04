@@ -7,7 +7,7 @@ import { Button } from '@nextui-org/react'
 import { BillIcon, DeleteIcon, EditIcon, PlusIcon } from '../icons/icons'
 import SuspenseContainer from '../components/SuspenseContainer'
 import Image from 'next/image'
-import CardList from '../components/CardList'
+import { CardList } from '../components/CardList'
 
 const CategoryMaintenance = () =>
 {

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, JSX } from 'react'
+import { Dispatch, SetStateAction, JSX, MutableRefObject } from 'react'
 
 export type TabType = {
    ID: number;
@@ -16,6 +16,8 @@ export type ContextType = {
    monthlyExpenses: MonthlyExpensesType[] | null,
    walletBudget: WalletBudgeType[] | null,
    isMasked: boolean,
+   isTodayExpensePending: MutableRefObject<boolean>,
+   isWalletBudgetPending: MutableRefObject<boolean>,
    setIsMasked: Dispatch<SetStateAction<boolean>>,
    setActiveTab: Dispatch<SetStateAction<TabType>>,
    handleUpdateExpense: ( newExpense: ExpensesType & { category: string | undefined }, type: 'add' | 'edit' ) => void

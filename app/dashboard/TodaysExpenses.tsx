@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { AppContext } from '../context/context';
-import { Button, useDisclosure } from '@nextui-org/react';
+import { Button, Skeleton, useDisclosure } from '@nextui-org/react';
 import { Wrapper, WrapperContent, WrapperFooter, WrapperHeader } from '../components/Wrapper';
 import { BillIcon, PlusIcon } from '../icons/icons';
 import { formatMoney, getExpenseDescription, getIcons } from '../utils/utils';
@@ -11,7 +11,7 @@ import moment from 'moment';
 import { TodaysExpensesType } from '../types/type';
 import SuspenseContainer from '../components/SuspenseContainer';
 import Image from 'next/image';
-import CardList from '../components/CardList';
+import { CardList, CardListSkeleton } from '../components/CardList';
 
 const TodaysExpenses = () =>
 {
@@ -39,7 +39,7 @@ const TodaysExpenses = () =>
             </WrapperHeader>
             <WrapperContent className='flex flex-col' scrollable>
                <SuspenseContainer data={context?.todayExpenses}>
-
+                  {context?.isTodayExpensePending.current && <CardListSkeleton />}
                   {context?.todayExpenses?.map( ( expense ) => (
                      <CardList
                         key={expense.ID}

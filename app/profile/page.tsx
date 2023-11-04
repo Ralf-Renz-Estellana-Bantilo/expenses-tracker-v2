@@ -9,7 +9,7 @@ import { formatMoney } from '../utils/utils'
 import SuspenseContainer from '../components/SuspenseContainer'
 import { AppContext } from '../context/context'
 import Image from 'next/image'
-import CardList from '../components/CardList'
+import { CardList } from '../components/CardList'
 
 const ProfilePage = () =>
 {

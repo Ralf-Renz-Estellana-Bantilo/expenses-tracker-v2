@@ -11,7 +11,7 @@ import { WalletBudgeType } from '../types/type'
 import { toast } from 'react-toastify'
 import SuspenseContainer from '../components/SuspenseContainer'
 import Image from 'next/image'
-import CardList from '../components/CardList'
+import { CardList, CardListSkeleton } from '../components/CardList'
 
 const DEFAULT_FORM = {
    header: 'Add New Wallet Budget',
@@ -167,6 +167,7 @@ const WalletMaintenance = () =>
             </WrapperHeader>
             <WrapperContent className='flex flex-col' scrollable>
                <SuspenseContainer data={context?.walletBudget}>
+                  {context?.isWalletBudgetPending.current && <CardListSkeleton />}
                   {context?.walletBudget?.map( ( budget ) => (
                      <CardList
                         key={budget.ID}

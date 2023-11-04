@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode, useEffect, useContext } from "react";
+import React, { createContext, useState, ReactNode, useEffect, useContext, useRef } from "react";
 import { DashboardIcon, ProfileIcon, SettingsIcon } from "../icons/icons";
 import { CategoryType, ContextType, ExpensesType, MasterSelectPayloadType, MonthlyExpensesType, PreviousExpensesType, SaveDataPayloadType, SaveDataResponseType, TabType, TodaysExpensesType, WalletBudgeType } from "../types/type";
 import { usePathname } from "next/navigation";
@@ -44,6 +44,9 @@ export default function ComponentContextProvider ( { children }: { children: Rea
    const [previousExpenses, setPreviousExpenses] = useState<PreviousExpensesType[] | null>( null )
    const [monthlyExpenses, setMonthlyExpenses] = useState<MonthlyExpensesType[] | null>( null )
    const [walletBudget, setWalletBudget] = useState<WalletBudgeType[] | null>( null )
+
+   const isTodayExpensePending = useRef( false )
+   const isWalletBudgetPending = useRef( false )
 
    const [isMasked, setIsMasked] = useState( true )
 
@@ -155,6 +158,8 @@ export default function ComponentContextProvider ( { children }: { children: Rea
 
    const handleUpdateExpense = async ( newExpense: TodaysExpensesType, type: 'add' | 'edit' ) =>
    {
+      isTodayExpensePending.current = true
+
       let updatedExpenses = null
       let payload: SaveDataPayloadType = {
          table: 'expenses',
@@ -193,10 +198,13 @@ export default function ComponentContextProvider ( { children }: { children: Rea
       }
       setTodayExpenses( updatedExpenses! )
       getMonthlyExpenses()
+      isTodayExpensePending.current = false
    }
 
    const handleUpdateWalletBudget = async ( newBudget: WalletBudgeType, type: 'add' | 'edit' ) =>
    {
+      isWalletBudgetPending.current = true
+
       let updatedWalletBudget = null
       let payload: SaveDataPayloadType = {
          table: 'wallet_budget',
@@ -233,6 +241,7 @@ export default function ComponentContextProvider ( { children }: { children: Rea
          updatedWalletBudget = [newBudget, ...walletBudgetCopy] as WalletBudgeType[]
       }
       setWalletBudget( updatedWalletBudget! )
+      isWalletBudgetPending.current = false
    }
 
    const value: ContextType = {
@@ -244,6 +253,8 @@ export default function ComponentContextProvider ( { children }: { children: Rea
       walletBudget,
       categories,
       isMasked,
+      isTodayExpensePending,
+      isWalletBudgetPending,
       setIsMasked,
       setActiveTab,
       handleUpdateExpense,

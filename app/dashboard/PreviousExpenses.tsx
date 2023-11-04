@@ -9,7 +9,7 @@ import { PreviousExpensesType, TodaysExpensesType } from '../types/type';
 import moment from 'moment'
 import SuspenseContainer from '../components/SuspenseContainer';
 import Image from 'next/image';
-import CardList from '../components/CardList';
+import { CardList } from '../components/CardList';
 
 const PreviousExpenses = () =>
 {
