@@ -31,6 +31,8 @@ const PreviousExpenses = () =>
 
    const totalPreviousExpenses = context?.previousExpenses?.reduce( ( accumulator, item ) => Number( accumulator ) + Number( item.total ), 0 ) ?? 0
 
+   const monthCode = getCurrentMonth().slice( 0, 3 ).toUpperCase()
+
    return (
       <>
          <Modal
@@ -85,6 +87,7 @@ const PreviousExpenses = () =>
                   {context?.previousExpenses?.map( expense => (
                      <CardList
                         key={expense.ID}
+                        iconName={monthCode}
                         title={moment( expense.date ).format( 'll' )}
                         value={formatMoney( expense.total )}
                         handleClick={() => previewExpense( expense )}
