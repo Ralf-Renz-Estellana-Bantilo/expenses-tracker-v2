@@ -3,10 +3,11 @@
 import { AppContext } from '@/app/context/context';
 import { TodaysExpensesType } from '@/app/types/type';
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem } from '@nextui-org/react';
-import React, { memo, useCallback, useEffect, useState } from 'react'
+import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image';
 import useAlert from '@/app/hook/useAlert';
+import useCredit from '@/app/hook/useCredit';
 
 type ExpensesModalType = {
    isOpen: boolean,
@@ -26,6 +27,7 @@ const ExpensesModal = ( { isOpen, onOpenChange, data }: ExpensesModalType ) =>
 {
    const { data: session } = useSession();
    const context = AppContext()
+   const { totalBalance } = useCredit()
    const [formData, setFormData] = useState( DEFAULT_FORM )
 
    const handleChangeInput = useCallback( ( e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement> ): void =>
@@ -81,6 +83,23 @@ const ExpensesModal = ( { isOpen, onOpenChange, data }: ExpensesModalType ) =>
          handleSave( onClose )
       }
    }
+
+   const isInvalid = useMemo( (): { status: boolean, message: string } =>
+   {
+      let status: boolean = Number( formData.amount ) > totalBalance
+      let message: string = ''
+
+      if ( status )
+      {
+         message = `Balance ₱ ${totalBalance}: Error! Insufficient balance!`
+      } else if ( Number( formData.amount ) <= 0 && formData.amount !== '' )
+      {
+         message = 'Error! Invalid amount!'
+         status = true
+      }
+
+      return { status, message }
+   }, [formData.amount] );
 
    useEffect( () =>
    {
@@ -148,12 +167,14 @@ const ExpensesModal = ( { isOpen, onOpenChange, data }: ExpensesModalType ) =>
                         onChange={handleChangeInput}
                         onKeyDown={( event ) => handleKeyPress( event, onClose )}
                         name='amount'
+                        isInvalid={isInvalid.status}
+                        color={isInvalid.status ? "danger" : 'primary'}
+                        errorMessage={isInvalid.status && isInvalid.message}
                         isRequired
                         label="Amount"
                         type='number'
                         placeholder="Enter amount"
                         variant="bordered"
-                        color='primary'
                         startContent={
                            <div className="pointer-events-none flex items-center">
                               <span className="text-default-400 text-small">₱</span>

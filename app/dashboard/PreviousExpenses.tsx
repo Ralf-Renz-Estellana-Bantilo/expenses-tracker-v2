@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { AppContext } from '../context/context';
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ScrollShadow, useDisclosure } from '@nextui-org/react';
 import { Wrapper, WrapperContent, WrapperFooter, WrapperHeader } from '../components/Wrapper';
@@ -29,7 +29,12 @@ const PreviousExpenses = () =>
       return context?.categories?.find( ( { ID } ) => ID === categoryID )
    }
 
-   const totalPreviousExpenses = context?.previousExpenses?.reduce( ( accumulator, item ) => Number( accumulator ) + Number( item.total ), 0 ) ?? 0
+   const totalPreviousExpenses: number = useMemo( () =>
+   {
+      const result = context?.previousExpenses?.reduce( ( accumulator, item ) => Number( accumulator ) + Number( item.total ), 0 ) ?? 0
+
+      return result
+   }, [context?.previousExpenses] )
 
    const monthCode = getCurrentMonth().slice( 0, 3 ).toUpperCase()
 

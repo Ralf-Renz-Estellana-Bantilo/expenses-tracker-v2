@@ -1,7 +1,7 @@
 'use client'
 
 import { Avatar } from '@nextui-org/react'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Wrapper, WrapperContent, WrapperFooter, WrapperHeader } from '../components/Wrapper'
 import { useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
@@ -21,7 +21,12 @@ const ProfilePage = () =>
       redirect( '/' )
    }
 
-   let totalExpenses: number = context?.monthlyExpenses?.reduce( ( sum, item ) => Number( sum ) + Number( item.total ), 0 ) ?? 0
+   const totalExpenses: number = useMemo( () =>
+   {
+      const result = context?.monthlyExpenses?.reduce( ( sum, item ) => Number( sum ) + Number( item.total ), 0 ) ?? 0
+
+      return result
+   }, [context?.monthlyExpenses] )
 
    return (
       <div className='flex flex-col gap-3'>
