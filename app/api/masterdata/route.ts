@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import db from '../../database/db';
-import { MasterSelectPayloadType } from '@/app/types/type';
+import { createNewDbConnection } from '../../database/db';
 
 /* 
 const MASTERDATA_PAYLOAD_SYNTAX = {
@@ -10,6 +9,8 @@ const MASTERDATA_PAYLOAD_SYNTAX = {
 
 export const POST = async ( req: Request, res: Response ) =>
 {
+   const db = createNewDbConnection();
+
    const { tables } = await req.json();
    let responseArray: any = [];
    await new Promise( function ( resolve, reject )
@@ -40,11 +41,13 @@ export const POST = async ( req: Request, res: Response ) =>
 
             if ( a == tables.length - 1 )
             {
+               db.end()
                resolve( responseArray );
             }
          } );
       }
    } );
 
+   db.end()
    return NextResponse.json( responseArray )
 }

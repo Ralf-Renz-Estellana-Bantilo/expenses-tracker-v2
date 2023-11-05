@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import db from '../../database/db';
+import { createNewDbConnection } from '../../database/db';
 
 /* 
 const SAVEDATA_PAYLOAD_SYNTAX = {
@@ -15,6 +15,7 @@ const SAVEDATA_PAYLOAD_SYNTAX = {
 */
 export const POST = async ( req: Request, res: Response ) =>
 {
+   const db = createNewDbConnection();
 
    try
    {
@@ -54,9 +55,11 @@ export const POST = async ( req: Request, res: Response ) =>
       }
 
       const results = await db.promise().query( query, objValues );
+      db.end()
       return NextResponse.json( results[0], { status: 200 } );
    } catch ( err )
    {
+      db.end()
       return NextResponse.json( { message: 'Error!', data: err }, { status: 500 } );
    }
 }
