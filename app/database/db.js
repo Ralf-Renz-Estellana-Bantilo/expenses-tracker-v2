@@ -1,10 +1,10 @@
 import { createConnection } from 'mysql2';
 
 const db_config_dev = {
-  host: process.env.NEXTDEVHOST,
-  user: process.env.NEXTDEVUSER,
-  password: process.env.NEXTDEVPASSWORD, 
-  database: process.env.NEXTDEVDATABASE,
+  host: process.env.NEXT_HOST,
+  user: process.env.NEXT_USER,
+  password: process.env.NEXT_PASSWORD, 
+  database: process.env.NEXT_DATABASE,
 }
 const db_config_prod = {
   host: process.env.NEXTPRODHOST,
