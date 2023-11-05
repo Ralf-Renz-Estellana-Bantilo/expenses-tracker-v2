@@ -163,7 +163,7 @@ export default function ComponentContextProvider ( { children }: { children: Rea
    {
       isTodayExpensePending.current = type === 'add'
 
-      let updatedExpenses = null
+      let updatedExpenses: ExpensesDataType[] | null = null
       let payload: SaveDataPayloadType = {
          table: 'expenses',
          values: {
@@ -185,7 +185,7 @@ export default function ComponentContextProvider ( { children }: { children: Rea
                   category: newExpense.category,
                }
                : expense
-         )
+         ) as ExpensesDataType[]
 
          payload.key = {
             ID: newExpense.ID
@@ -197,7 +197,7 @@ export default function ComponentContextProvider ( { children }: { children: Rea
       {
          newExpense.ID = response.insertId
          const todayExpensesCopy = todayExpenses ? todayExpenses : []
-         updatedExpenses = [newExpense, ...todayExpensesCopy] as TodaysExpensesType[]
+         updatedExpenses = [newExpense, ...todayExpensesCopy] as ExpensesDataType[]
       }
       setTodayExpenses( updatedExpenses! )
       getMonthlyExpenses()
@@ -208,7 +208,7 @@ export default function ComponentContextProvider ( { children }: { children: Rea
    {
       isWalletBudgetPending.current = type === 'add'
 
-      let updatedWalletBudget = null
+      let updatedWalletBudget: WalletBudgeType[] | null = null
       let payload: SaveDataPayloadType = {
          table: 'wallet_budget',
          values: {
@@ -229,7 +229,7 @@ export default function ComponentContextProvider ( { children }: { children: Rea
                   ...payloadValues,
                }
                : budget
-         )
+         ) as WalletBudgeType[]
 
          payload.key = {
             ID: newBudget.ID
