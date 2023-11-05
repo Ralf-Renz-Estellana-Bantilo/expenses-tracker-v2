@@ -4,8 +4,8 @@ import { TodaysExpensesType } from "../types/type"
 
 export const formatMoney = ( money: string | number, isSecret?: boolean ) =>
 {
-   const amount = Number( Number( money ).toFixed( 2 ) )
-   const result = amount.toLocaleString( undefined, { minimumFractionDigits: 2 } )
+   const amount = Number( money ).toFixed( 2 )
+   const result = Number( amount ).toLocaleString( undefined, { minimumFractionDigits: 2 } )
 
    return isSecret ? `₱ ${maskNumber( `${amount}` )}` : `₱ ${result}`
 }
@@ -62,7 +62,7 @@ export const maskNumber = ( money: string ) =>
       {
          const integerPart = parts[0];
          const decimalPart = parts[1];
-         const maskedInteger = '*'.repeat( integerPart.length - 3 ) + integerPart.slice( -3 );
+         const maskedInteger = '*'.repeat( integerPart.length - 2 ) + integerPart.slice( -2 );
          return `${maskedInteger}.${decimalPart}`;
       } else
       {
