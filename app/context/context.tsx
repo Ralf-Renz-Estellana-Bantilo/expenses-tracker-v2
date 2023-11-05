@@ -54,60 +54,88 @@ export default function ComponentContextProvider ( { children }: { children: Rea
 
    const getTodayExpenses = async () =>
    {
-      const payload: MasterSelectPayloadType = {
-         table: 'today_expenses_view',
-         filter: { created_by: user },
-         sort: {
-            ID: 'DESC',
+      try
+      {
+         const payload: MasterSelectPayloadType = {
+            table: 'today_expenses_view',
+            filter: { created_by: user },
+            sort: {
+               ID: 'DESC',
+            }
          }
+         const response = await fetchMasterSelect( payload ) as ExpensesDataType[]
+         setTodayExpenses( response )
+      } catch ( error )
+      {
+         console.log( error )
+         alert( error )
       }
-      const response = await fetchMasterSelect( payload ) as ExpensesDataType[]
-      setTodayExpenses( response )
    }
 
    const getPreviousExpenses = async () =>
    {
-      const payload: MasterSelectPayloadType = {
-         table: 'previous_expenses_view',
-         filter: { created_by: user },
-         sort: {
-            ID: 'DESC',
+      try
+      {
+         const payload: MasterSelectPayloadType = {
+            table: 'previous_expenses_view',
+            filter: { created_by: user },
+            sort: {
+               ID: 'DESC',
+            }
          }
+         const response = await fetchMasterSelect( payload ) as ExpensesDataType[]
+         const result = formatPreviousExpenses( response )
+         setPreviousExpenses( result )
+      } catch ( error )
+      {
+         console.log( error )
+         alert( error )
       }
-      const response = await fetchMasterSelect( payload ) as ExpensesDataType[]
-      const result = formatPreviousExpenses( response )
-      setPreviousExpenses( result )
    }
 
    const getMonthlyExpenses = async () =>
    {
-      const payload: MasterSelectPayloadType = {
-         table: 'monthly_expenses_view',
-         filter: {
-            user,
-            year: new Date().getFullYear()
-         },
-         sort: {
-            monthID: 'DESC',
+      try
+      {
+         const payload: MasterSelectPayloadType = {
+            table: 'monthly_expenses_view',
+            filter: {
+               user,
+               year: new Date().getFullYear()
+            },
+            sort: {
+               monthID: 'DESC',
+            }
          }
+         const response = await fetchMasterSelect( payload ) as MonthlyExpensesType[]
+         setMonthlyExpenses( response )
+      } catch ( error )
+      {
+         console.log( error )
+         alert( error )
       }
-      const response = await fetchMasterSelect( payload ) as MonthlyExpensesType[]
-      setMonthlyExpenses( response )
    }
 
    const getBudgetWallet = async () =>
    {
-      const payload: MasterSelectPayloadType = {
-         table: 'wallet_budget',
-         filter: {
-            created_by: user,
-         },
-         sort: {
-            ID: 'DESC',
+      try
+      {
+         const payload: MasterSelectPayloadType = {
+            table: 'wallet_budget',
+            filter: {
+               created_by: user,
+            },
+            sort: {
+               ID: 'DESC',
+            }
          }
+         const response = await fetchMasterSelect( payload ) as WalletBudgeType[]
+         setWalletBudget( response )
+      } catch ( error )
+      {
+         console.log( error )
+         alert( error )
       }
-      const response = await fetchMasterSelect( payload ) as WalletBudgeType[]
-      setWalletBudget( response )
    }
 
    const getCategories = async () =>
@@ -154,97 +182,117 @@ export default function ComponentContextProvider ( { children }: { children: Rea
          ] ).then( () =>
          {
             console.log( 'Resources loaded!' )
-         } ).catch( error => console.error( error ) )
+         } ).catch( error =>
+         {
+            console.error( error )
+            alert( error )
+         } )
       }
    }, [] )
 
 
    const handleUpdateExpense = async ( newExpense: TodaysExpensesType, type: 'add' | 'edit' ) =>
    {
-      isTodayExpensePending.current = type === 'add'
-
-      let updatedExpenses: ExpensesDataType[] | null = null
-      let payload: SaveDataPayloadType = {
-         table: 'expenses',
-         values: {
-            amount: newExpense.amount,
-            description: newExpense.description,
-            categoryID: newExpense.categoryID,
-            created_by: session?.user?.email,
-         }
-      }
-
-      if ( type === 'edit' )
+      try
       {
-         const payloadValues = { ...payload.values }
-         updatedExpenses = todayExpenses?.map( expense =>
-            expense.ID === newExpense.ID
-               ? {
-                  ...expense,
-                  ...payloadValues,
-                  category: newExpense.category,
-               }
-               : expense
-         ) as ExpensesDataType[]
+         isTodayExpensePending.current = type === 'add'
 
-         payload.key = {
-            ID: newExpense.ID
+         let updatedExpenses: ExpensesDataType[] | null = null
+         let payload: SaveDataPayloadType = {
+            table: 'expenses',
+            values: {
+               amount: newExpense.amount,
+               description: newExpense.description,
+               categoryID: newExpense.categoryID,
+               created_by: session?.user?.email,
+            }
          }
+
+         if ( type === 'edit' )
+         {
+            const payloadValues = { ...payload.values }
+            updatedExpenses = todayExpenses?.map( expense =>
+               expense.ID === newExpense.ID
+                  ? {
+                     ...expense,
+                     ...payloadValues,
+                     category: newExpense.category,
+                  }
+                  : expense
+            ) as ExpensesDataType[]
+
+            payload.key = {
+               ID: newExpense.ID
+            }
+         }
+
+         const response = await fetchSaveData( payload ) as SaveDataResponseType
+         if ( type === 'add' )
+         {
+            newExpense.ID = response.insertId
+            const todayExpensesCopy = todayExpenses ? todayExpenses : []
+            updatedExpenses = [newExpense, ...todayExpensesCopy] as ExpensesDataType[]
+         }
+         setTodayExpenses( updatedExpenses! )
+         getMonthlyExpenses()
+         isTodayExpensePending.current = false
+      } catch ( error )
+      {
+         console.log( error )
+         alert( error )
       }
 
-      const response = await fetchSaveData( payload ) as SaveDataResponseType
-      if ( type === 'add' )
-      {
-         newExpense.ID = response.insertId
-         const todayExpensesCopy = todayExpenses ? todayExpenses : []
-         updatedExpenses = [newExpense, ...todayExpensesCopy] as ExpensesDataType[]
-      }
-      setTodayExpenses( updatedExpenses! )
-      getMonthlyExpenses()
-      isTodayExpensePending.current = false
    }
 
    const handleUpdateWalletBudget = async ( newBudget: WalletBudgeType, type: 'add' | 'edit' ) =>
    {
-      isWalletBudgetPending.current = type === 'add'
-
-      let updatedWalletBudget: WalletBudgeType[] | null = null
-      let payload: SaveDataPayloadType = {
-         table: 'wallet_budget',
-         values: {
-            title: newBudget.title,
-            description: newBudget.description,
-            amount: newBudget.amount,
-            created_by: user,
-         }
-      }
-
-      if ( type === 'edit' )
+      try
       {
-         const payloadValues = { ...payload.values }
-         updatedWalletBudget = walletBudget?.map( budget =>
-            budget.ID === newBudget.ID
-               ? {
-                  ...budget,
-                  ...payloadValues,
-               }
-               : budget
-         ) as WalletBudgeType[]
+         isWalletBudgetPending.current = type === 'add'
 
-         payload.key = {
-            ID: newBudget.ID
+         let updatedWalletBudget: WalletBudgeType[] | null = null
+         let payload: SaveDataPayloadType = {
+            table: 'wallet_budget',
+            values: {
+               title: newBudget.title,
+               description: newBudget.description,
+               amount: newBudget.amount,
+               created_by: user,
+            }
          }
+
+         if ( type === 'edit' )
+         {
+            const payloadValues = { ...payload.values }
+            updatedWalletBudget = walletBudget?.map( budget =>
+               budget.ID === newBudget.ID
+                  ? {
+                     ...budget,
+                     ...payloadValues,
+                  }
+                  : budget
+            ) as WalletBudgeType[]
+
+            payload.key = {
+               ID: newBudget.ID
+            }
+         }
+
+         const response = await fetchSaveData( payload ) as SaveDataResponseType
+         if ( type === 'add' )
+         {
+            newBudget.ID = response.insertId
+            const walletBudgetCopy = walletBudget ? walletBudget : []
+            updatedWalletBudget = [newBudget, ...walletBudgetCopy] as WalletBudgeType[]
+         }
+         setWalletBudget( updatedWalletBudget! )
+         isWalletBudgetPending.current = false
+      } catch ( error )
+      {
+         console.log( error )
+         alert( error )
       }
 
-      const response = await fetchSaveData( payload ) as SaveDataResponseType
-      if ( type === 'add' )
-      {
-         newBudget.ID = response.insertId
-         const walletBudgetCopy = walletBudget ? walletBudget : []
-         updatedWalletBudget = [newBudget, ...walletBudgetCopy] as WalletBudgeType[]
-      }
-      setWalletBudget( updatedWalletBudget! )
-      isWalletBudgetPending.current = false
    }
 
    const value: ContextType = {
