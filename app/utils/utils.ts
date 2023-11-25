@@ -62,7 +62,7 @@ export const maskNumber = ( money: string ) =>
       {
          const integerPart = parts[0];
          const decimalPart = parts[1];
-         const maskedInteger = '*'.repeat( integerPart.length - 2 ) + integerPart.slice( -2 );
+         const maskedInteger = '•'.repeat( integerPart.length - 2 ) + integerPart.slice( -2 );
          return `${maskedInteger}.${decimalPart}`;
       } else
       {
@@ -86,7 +86,8 @@ export const getIcons = ( ID?: number ) =>
       'family',
       'clothes',
       'shopping',
-      'purchase'
+      'purchase',
+      'others',
    ]
 
    return ID ? icons[( ID - 1 ) % icons.length] : icons
