@@ -35,6 +35,17 @@ const Header = ( { title, showActions }: { title?: string, showActions?: boolean
       }
    }
 
+   const backToDashboard = () =>
+   {
+      if ( context )
+      {
+         const { setActiveTab } = context
+
+         handleChangeRoute( '/dashboard' )
+         setActiveTab( context?.tabs[0] )
+      }
+   }
+
    if ( !session )
    {
       redirect( '/login' )
@@ -43,7 +54,7 @@ const Header = ( { title, showActions }: { title?: string, showActions?: boolean
    return (
       <div className="z-20 flex items-center justify-between p-2 sticky top-0 border-b-1 border-border-color bg-container-primary">
          <div className="flex items-center gap-2">
-            {title && <Button isIconOnly color="default" variant="light" aria-label="Take a photo" onClick={() => handleChangeRoute( '/dashboard' )}>
+            {title && <Button isIconOnly color="default" variant="light" aria-label="Take a photo" onClick={backToDashboard}>
                <BackIcon />
             </Button>}
 
