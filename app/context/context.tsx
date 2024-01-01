@@ -1,9 +1,9 @@
 import React, { createContext, useState, ReactNode, useEffect, useContext, useRef } from "react";
 import { DashboardIcon, ProfileIcon, SettingsIcon } from "../icons/icons";
-import { CategoryType, ContextType, ExpensesType, MasterSelectPayloadType, MonthlyExpensesType, PreviousExpensesType, SaveDataPayloadType, SaveDataResponseType, TabType, TodaysExpensesType, WalletBudgeType } from "../types/type";
+import { CategoryType, ContextType, DashboardSummaryType, ExpensesType, MasterSelectPayloadType, MonthlyExpensesType, PreviousExpensesType, SaveDataPayloadType, SaveDataResponseType, TabType, TodaysExpensesType, WalletBudgeType } from "../types/type";
 import { usePathname } from "next/navigation";
 import { useSession } from 'next-auth/react'
-import { fetchMasterSelect, fetchSaveData } from "../controller/controller";
+import { fetchMasterSelect, fetchSaveData, fetchSummary } from "../controller/controller";
 import { formatPreviousExpenses, getIcons } from "../utils/utils";
 
 export const ComponentContext = createContext<ContextType | null>( null )
@@ -14,7 +14,7 @@ export default function ComponentContextProvider ( { children }: { children: Rea
 {
 
    const { data: session } = useSession();
-   const user = session?.user?.email
+   const user = session?.user?.email ?? 'unknown@user.com'
 
    const pathname = usePathname()
    const [tabs] = useState<TabType[]>( [
@@ -44,6 +44,7 @@ export default function ComponentContextProvider ( { children }: { children: Rea
    const [previousExpenses, setPreviousExpenses] = useState<PreviousExpensesType[] | null>( null )
    const [monthlyExpenses, setMonthlyExpenses] = useState<MonthlyExpensesType[] | null>( null )
    const [walletBudget, setWalletBudget] = useState<WalletBudgeType[] | null>( null )
+   const [summary, setSummary] = useState<DashboardSummaryType | null>( null )
 
    const isTodayExpensePending = useRef( false )
    const isWalletBudgetPending = useRef( false )
@@ -138,6 +139,19 @@ export default function ComponentContextProvider ( { children }: { children: Rea
       }
    }
 
+   const getSummary = async () =>
+   {
+      try
+      {
+         const response = await fetchSummary( { user } ) as DashboardSummaryType[]
+         setSummary( response[0] ?? null )
+      } catch ( error )
+      {
+         console.log( error )
+         alert( error )
+      }
+   }
+
    const getCategories = async () =>
    {
       try
@@ -179,6 +193,7 @@ export default function ComponentContextProvider ( { children }: { children: Rea
             getCategories(),
             getMonthlyExpenses(),
             getBudgetWallet(),
+            getSummary(),
          ] ).then( () =>
          {
             console.log( 'Resources loaded!' )
@@ -306,6 +321,7 @@ export default function ComponentContextProvider ( { children }: { children: Rea
       isMasked,
       isTodayExpensePending,
       isWalletBudgetPending,
+      summary,
       setIsMasked,
       setActiveTab,
       handleUpdateExpense,

@@ -18,6 +18,7 @@ export type ContextType = {
    isMasked: boolean,
    isTodayExpensePending: MutableRefObject<boolean>,
    isWalletBudgetPending: MutableRefObject<boolean>,
+   summary: DashboardSummaryType | null,
    setIsMasked: Dispatch<SetStateAction<boolean>>,
    setActiveTab: Dispatch<SetStateAction<TabType>>,
    handleUpdateExpense: ( newExpense: ExpensesType & { category: string | undefined }, type: 'add' | 'edit' ) => void
@@ -26,21 +27,21 @@ export type ContextType = {
 
 export type StatusType = 0 | 1
 
-export type CategoryType = {
+export interface CategoryType {
    ID: number;
    description: string;
    imgPath?: string,
    status: StatusType;
 }
 
-export type MonthType = {
+export interface MonthType {
    ID: number;
    code: string;
    description: string;
    status: number;
 }
 
-export type ExpensesType = {
+export interface ExpensesType {
    ID: number;
    categoryID: number;
    description?: string;
@@ -50,18 +51,11 @@ export type ExpensesType = {
    status?: StatusType;
 }
 
-export type TodaysExpensesType = {
-   ID: number;
-   categoryID: number;
+export interface TodaysExpensesType extends ExpensesType {
    category: string | undefined;
-   description?: string | undefined;
-   amount: number;
-   created_by?: string;
-   created_on?: string;
-   status?: StatusType;
 }
 
-export type PreviousExpensesType = {
+export interface PreviousExpensesType {
    ID?: number,
    date: string;
    total: number;
@@ -76,24 +70,24 @@ export type AlertType = {
    timeout?: number
 }
 
-export type MasterSelectPayloadType = {
+export interface MasterSelectPayloadType {
    table: string,
    filter?: any,
    column?: string,
    sort?: any,
 }
 
-export type MasterDataPayloadType = {
+export interface MasterDataPayloadType {
    tables: string,
 }
 
-export type SaveDataPayloadType = {
+export interface SaveDataPayloadType {
    table: string,
    values: any
    key?: any
 }
 
-export type SaveDataResponseType = {
+export interface SaveDataResponseType {
    affectedRows: number,
    changedRows: number,
    fieldCount: number,
@@ -103,7 +97,7 @@ export type SaveDataResponseType = {
    warningStatus: number,
 }
 
-export type MonthlyExpensesType = {
+export interface MonthlyExpensesType {
    user: string,
    monthID: number,
    month: string,
@@ -111,7 +105,7 @@ export type MonthlyExpensesType = {
    total: number,
 }
 
-export type WalletBudgeType = {
+export interface WalletBudgeType {
    ID: number,
    title: string,
    description: string,
@@ -119,4 +113,29 @@ export type WalletBudgeType = {
    created_by?: string;
    created_on?: string;
    status?: StatusType;
+}
+
+export interface AnalyticsPercentageType {
+   categoryID: number,
+   category: string,
+   total: string,
+   monthly_total: string,
+   percentage: string,
+   created_by: string,
+}
+
+export interface AnalyticsDailyAverageType {
+   user: string,
+   daily_average: number,
+}
+
+export interface AnalyticsMonthlyAverageType {
+   user: string,
+   monthly_average: number,
+}
+
+export interface DashboardSummaryType {
+   totalExpenses: string | number,
+   totalBudget: string | number,
+   totalBalance: string | number,
 }

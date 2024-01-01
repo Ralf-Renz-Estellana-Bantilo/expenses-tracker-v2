@@ -4,13 +4,15 @@ import React from 'react'
 import { Wrapper } from '../components/Wrapper'
 import { AppContext } from '../context/context'
 import { formatMoney } from '../utils/utils'
-import useCredit from '../hook/useCredit'
 
 const Summary = () =>
 {
 
    const context = AppContext()
-   const { totalBalance, totalBudget, totalExpenses } = useCredit()
+
+   const totalBalance = context?.summary?.totalBalance ?? 0
+   const totalBudget = context?.summary?.totalBudget ?? 0
+   const totalExpenses = context?.summary?.totalExpenses ?? 0
 
    return (
       <Wrapper className='flex flex-col'>
