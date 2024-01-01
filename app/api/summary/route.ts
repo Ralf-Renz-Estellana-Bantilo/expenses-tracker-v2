@@ -9,8 +9,8 @@ export const POST = async ( req: Request, res: Response ) =>
 
    const query = `SELECT 
       SUM(exp.amount) AS totalExpenses,
-	   ROUND((SELECT SUM(wal.amount) FROM wallet_budget wal WHERE created_by = '${user}')) AS totalBudget,
-	   (ROUND((SELECT SUM(wal.amount) FROM wallet_budget wal WHERE created_by = '${user}')) - SUM(exp.amount)) AS totalBalance
+	   ROUND((SELECT SUM(wal.amount) FROM wallet_budget wal WHERE created_by = '${user}'), 2) AS totalBudget,
+	   (ROUND((SELECT SUM(wal.amount) FROM wallet_budget wal WHERE created_by = '${user}'), 2) - SUM(exp.amount)) AS totalBalance
       FROM expenses_view exp
       WHERE created_by = '${user}';`;
    const result = await db.promise().query( query );
