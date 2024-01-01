@@ -8,6 +8,7 @@ import { useSession } from 'next-auth/react'
 import Image from 'next/image';
 import useAlert from '@/app/hook/useAlert';
 import useCredit from '@/app/hook/useCredit';
+import { formatMoney } from '@/app/utils/utils';
 
 type ExpensesModalType = {
    isOpen: boolean,
@@ -41,7 +42,7 @@ const ExpensesModal = ( { isOpen, onOpenChange, data }: ExpensesModalType ) =>
       const { showAlert } = useAlert()
       const { ID, amount, categoryID, description } = formData
 
-      if ( categoryID !== '' && Number( amount ) !== 0 && amount !== '' )
+      if ( categoryID !== '' && Number( amount ) !== 0 && amount !== '' && !isInvalid.status )
       {
          if ( context )
          {
@@ -91,7 +92,7 @@ const ExpensesModal = ( { isOpen, onOpenChange, data }: ExpensesModalType ) =>
 
       if ( status )
       {
-         message = `Balance ₱ ${totalBalance}: Error! Insufficient balance!`
+         message = `Error! Insufficient balance!`
       } else if ( Number( formData.amount ) <= 0 && formData.amount !== '' )
       {
          message = 'Error! Invalid amount!'
@@ -130,7 +131,7 @@ const ExpensesModal = ( { isOpen, onOpenChange, data }: ExpensesModalType ) =>
          backdrop='blur'
          isOpen={isOpen}
          onOpenChange={onOpenChange}
-         placement="bottom-center"
+         placement="center"
       >
          <ModalContent>
             {( onClose ) => (

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Button, Avatar, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-org/react";
-import { BackIcon, BellIcon, FilterIcon } from './icons/icons';
+import { AnalyticsIcon, BackIcon, BellIcon, EyeFilledIcon, EyeOutlineIcon, EyeSlashFilledIcon, EyeSlashOutlineIcon, FilterIcon, LogoutIcon, SettingsIcon } from './icons/icons';
 import { AppContext } from './context/context';
 import { redirect, useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react'
@@ -46,10 +46,10 @@ const Header = ( { title, showActions }: { title?: string, showActions?: boolean
       }
    }
 
-   if ( !session )
-   {
-      redirect( '/login' )
-   }
+   // if ( !session )
+   // {
+   //    redirect( '/login' )
+   // }
 
    return (
       <div className="z-20 flex items-center justify-between p-2 sticky top-0 border-b-1 border-border-color bg-container-primary">
@@ -72,32 +72,49 @@ const Header = ( { title, showActions }: { title?: string, showActions?: boolean
                   <BellIcon />
                </Button>
             </>}
-            <Dropdown className='dark bg-container-primary border-1 border-border-color' placement="bottom-end">
+            <Dropdown className='dark bg-container-primary border-1 border-border-color'>
                <DropdownTrigger>
                   <Avatar
                      isBordered
                      as="button"
                      className="transition-transform"
-                     src={session.user?.image ?? "https://i.pravatar.cc/150?u=a042581f4e29026024d"}
+                     src={session?.user?.image ?? "https://i.pravatar.cc/150?u=a042581f4e29026024d"}
                   />
                </DropdownTrigger>
                <DropdownMenu aria-label="Profile Actions" variant="flat">
                   <DropdownItem key="profile" className="h-14 gap-2" onClick={() => handleChangeRoute( '/profile' )}>
                      <p className="font-semibold">Signed in as</p>
-                     <p className="font-semibold">{session.user?.email}</p>
+                     <p className="font-semibold">{session?.user?.email ?? 'nouser@gmail.com'}</p>
                   </DropdownItem>
                   <DropdownItem key="analytics" onClick={() => handleChangeRoute( '/analytics' )}>
-                     Analytics
+                     <span className='flex gap-2'>
+                        <AnalyticsIcon />
+                        Analytics
+                     </span>
                   </DropdownItem>
-                  <DropdownItem key="configurations" onClick={() => handleChangeRoute( '/configurations' )}>Configurations</DropdownItem>
+                  <DropdownItem key="configurations" onClick={() => handleChangeRoute( '/configurations' )}>
+                     <span className='flex gap-2'>
+                        <FilterIcon />
+                        Configurations
+                     </span>
+                  </DropdownItem>
                   <DropdownItem key="mask" onClick={toggleMask}>
-                     {context?.isMasked ? 'Disable Mask' : 'Enable Mask'}
+                     <span className='flex gap-2'>
+                        {context?.isMasked ? <EyeOutlineIcon /> : <EyeSlashOutlineIcon />}
+                        {context?.isMasked ? 'Disable Mask' : 'Enable Mask'}
+                     </span>
                   </DropdownItem>
                   <DropdownItem key="settings" onClick={() => handleChangeRoute( '/settings' )}>
-                     Settings
+                     <span className='flex gap-2'>
+                        <SettingsIcon />
+                        Settings
+                     </span>
                   </DropdownItem>
                   <DropdownItem key="logout" color="danger" onClick={handleSignOut}>
-                     Log Out
+                     <span className='flex gap-2'>
+                        <LogoutIcon />
+                        Log Out
+                     </span>
                   </DropdownItem>
                </DropdownMenu>
             </Dropdown>

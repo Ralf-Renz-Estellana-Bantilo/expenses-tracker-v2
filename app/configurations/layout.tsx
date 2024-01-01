@@ -1,12 +1,20 @@
 import Header from "../Header"
-import NavFooter from "../NavFooter"
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
-export default function ConfigurationsLayout ( {
+export default async function ConfigurationsLayout ( {
    children, // will be a page or nested layout
 }: {
    children: React.ReactNode
 } )
 {
+
+   const session = await getServerSession();
+   if ( !session || !session.user )
+   {
+      redirect( "/login" );
+   }
+
    return (
       <section className="flex flex-col h-screen relative">
          <Header title="Configurations" showActions={false} />

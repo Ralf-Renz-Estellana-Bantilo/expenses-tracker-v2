@@ -91,7 +91,7 @@ const WalletMaintenance = () =>
             backdrop='blur'
             isOpen={isOpen}
             onOpenChange={onOpenChange}
-            placement="bottom-center"
+            placement="center"
          >
             <ModalContent>
                {( onClose ) => (

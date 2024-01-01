@@ -100,3 +100,30 @@ export const getExpenseDescription = ( created_on: string | undefined, descripti
 
    return [timeStamp, shortDescription].join( ' ' )
 }
+
+export const setRandomColor = ( ID: number | string ) =>
+{
+   const COLORS = [
+      '#8884d8',
+      '#82ca9d',
+      '#994D1C',
+      '#B31312',
+      '#C5E898',
+      '#EBE3D5',
+      '#87C4FF',
+      '#00A9FF',
+      '#F875AA',
+      '#F9B572',
+      '#DADDB1',
+      '#F4CE14',
+      '#DAFFFB',
+      '#D988B9',
+      '#79AC78',
+      '#662549',
+      '#FF9B82',
+      '#A2C579',
+      '#9A3B3B',
+   ]
+
+   return COLORS[( Number( ID ) - 1 ) % COLORS.length]
+}
