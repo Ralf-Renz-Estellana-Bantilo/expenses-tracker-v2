@@ -1,10 +1,7 @@
-import React from 'react'
+import React from "react"
 
-const ConfigurationsPage = () =>
-{
-   return (
-      <div>ConfigurationsPage</div>
-   )
+const ConfigurationsPage = () => {
+  return <div>ConfigurationsPage</div>
 }
 
 export default ConfigurationsPage

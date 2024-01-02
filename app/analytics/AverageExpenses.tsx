@@ -1,58 +1,67 @@
-'use client'
+"use client"
 
-import React, { useEffect, useState } from 'react'
-import { useSession } from 'next-auth/react';
-import { fetchDailyExpenses, fetchMonthlyExpenses } from '../controller/controller';
-import { get } from 'http';
-import { AnalyticsDailyAverageType, AnalyticsMonthlyAverageType } from '../types/type';
-import { formatMoney } from '../utils/utils';
+import React, { useEffect, useState } from "react"
+import { useSession } from "next-auth/react"
+import {
+  fetchDailyExpenses,
+  fetchMonthlyExpenses,
+} from "../controller/controller"
+import {
+  AnalyticsDailyAverageType,
+  AnalyticsMonthlyAverageType,
+} from "../types/type"
+import { formatMoney } from "../utils/utils"
 
-const AverageExpenses = () =>
-{
-   const { data: session } = useSession();
+const AverageExpenses = () => {
+  const { data: session } = useSession()
 
-   const [average, setAverage] = useState( {
-      daily: 0,
-      monthly: 0,
-   } )
+  const [average, setAverage] = useState({
+    daily: 0,
+    monthly: 0,
+  })
 
-   const user = session?.user?.email
+  const user = session?.user?.email
 
-   const getExpensesAverage = async () =>
-   {
-      if ( user )
-      {
-         const getDailyExpenses: AnalyticsDailyAverageType[] = await fetchDailyExpenses( { user } )
-         const getMonthlyExpenses: AnalyticsMonthlyAverageType[] = await fetchMonthlyExpenses( { user } )
+  const getExpensesAverage = async () => {
+    if (user) {
+      const getDailyExpenses: AnalyticsDailyAverageType[] =
+        await fetchDailyExpenses({ user })
+      const getMonthlyExpenses: AnalyticsMonthlyAverageType[] =
+        await fetchMonthlyExpenses({ user })
 
-         setAverage( {
-            daily: getDailyExpenses[0].daily_average,
-            monthly: getMonthlyExpenses[0].monthly_average,
-         } )
-      }
-   }
+      setAverage({
+        daily: getDailyExpenses[0].daily_average,
+        monthly: getMonthlyExpenses[0].monthly_average,
+      })
+    }
+  }
 
-   useEffect( () =>
-   {
-      getExpensesAverage()
-   }, [] )
-   return (
-      <div className="flex gap-3">
-         <div className="flex flex-col border-1 border-border-color rounded-lg flex-1 p-2">
-            <h3 className='text-center text-sm text-accent-secondary'>
-               Daily Expenses Average
-            </h3>
-            <span className='text-2xl font-semibold text-accent-primary text-center'>{formatMoney( average.daily )}</span>
-         </div>
-         <div className="flex flex-col border-1 border-border-color rounded-lg flex-1 p-2">
-            <h3 className='text-center text-sm text-accent-secondary'>
-               Monthly Expenses Average
-            </h3>
-            <span className='text-2xl font-semibold text-accent-primary
-                text-center'>{formatMoney( average.monthly )}</span>
-         </div>
+  useEffect(() => {
+    getExpensesAverage()
+  }, [])
+  return (
+    <div className="flex gap-3">
+      <div className="flex flex-col border-1 border-border-color rounded-lg flex-1 p-2">
+        <h3 className="text-center text-sm text-accent-secondary">
+          Daily Expenses Average
+        </h3>
+        <span className="text-2xl font-semibold text-accent-primary text-center">
+          {formatMoney(average.daily)}
+        </span>
       </div>
-   )
+      <div className="flex flex-col border-1 border-border-color rounded-lg flex-1 p-2">
+        <h3 className="text-center text-sm text-accent-secondary">
+          Monthly Expenses Average
+        </h3>
+        <span
+          className="text-2xl font-semibold text-accent-primary
+        text-center"
+        >
+          {formatMoney(average.monthly)}
+        </span>
+      </div>
+    </div>
+  )
 }
 
 export default AverageExpenses
