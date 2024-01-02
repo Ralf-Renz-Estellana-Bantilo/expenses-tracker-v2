@@ -4,25 +4,25 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap");
 * {
-   margin: 0;
-   padding: 0;
-   box-sizing: border-box;
-   font-family: "Quicksand";
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Quicksand" !important;
 }
 
 :root {
   --light-blue: #17212c;
   /* --light-blue: #181d22; */
   --dark-blue: #101214;
-  --foreground-color: #CBDDE0;
+  --foreground-color: #cbdde0;
   --border-color: #25313f;
 }
 
 /* Custom CSS */
 ::-webkit-scrollbar {
-   width: 5px;
-   height: 5px;
-   display: none;
+  width: 5px;
+  height: 5px;
+  display: none;
 }
 ::-webkit-scrollbar-thumb {
   background-color: #00aeff;
@@ -43,5 +43,9 @@ body {
 }
 
 .gradient-background {
-   background-image: radial-gradient(164.75% 100%, var(--light-blue) 0%,var(--dark-blue) 48.73%);
+  background-image: radial-gradient(
+    164.75% 100%,
+    var(--light-blue) 0%,
+    var(--dark-blue) 48.73%
+  );
 }
