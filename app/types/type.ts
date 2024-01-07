@@ -114,6 +114,7 @@ export interface MonthlyExpensesType {
   monthID: number
   month: string
   monthCode: string
+  year: number
   total: number
 }
 

@@ -1,7 +1,14 @@
 "use client"
 
-import { Avatar } from "@nextui-org/react"
-import React, { useMemo } from "react"
+import {
+  Avatar,
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@nextui-org/react"
+import React, { Key, useEffect, useMemo, useState } from "react"
 import {
   Wrapper,
   WrapperContent,
@@ -16,23 +23,41 @@ import { AppContext } from "../context/context"
 import Image from "next/image"
 import { CardList } from "../components/CardList"
 
+const CURRENT_YEAR = new Date().getFullYear()
+
 const ProfilePage = () => {
   const context = AppContext()
   const { data: session } = useSession()
 
-  if (!session) {
+  const [yearList, setYearList] = useState<number[]>([CURRENT_YEAR])
+  const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR)
+
+  if (!session || !context) {
     redirect("/")
   }
 
+  const monthlyExpenses = context.monthlyExpenses?.filter(
+    (expense) => expense.year === selectedYear
+  )
+
   const totalExpenses: number = useMemo(() => {
     const result =
-      context?.monthlyExpenses?.reduce(
+      monthlyExpenses?.reduce(
         (sum, item) => Number(sum) + Number(item.total),
         0
       ) ?? 0
 
     return result
-  }, [context?.monthlyExpenses])
+  }, [monthlyExpenses])
+
+  useEffect(() => {
+    if (!context) return
+
+    const yearList = [
+      ...new Set(context.monthlyExpenses?.map((expense) => expense.year)),
+    ].sort((a, b) => b - a)
+    setYearList(yearList)
+  }, [])
 
   return (
     <div className="flex flex-col gap-3">
@@ -59,10 +84,27 @@ const ProfilePage = () => {
           <h3 className="font-semibold text-accent-secondary">
             Monthly Expenses
           </h3>
+          <Dropdown>
+            <DropdownTrigger>
+              <Button variant="light">{selectedYear}</Button>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Dynamic Actions">
+              {yearList.map((year) => (
+                <DropdownItem
+                  key={year}
+                  color={year === selectedYear ? "primary" : "default"}
+                  className={year === selectedYear ? "bg-primary" : ""}
+                  onClick={() => setSelectedYear(year)}
+                >
+                  {year}
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
         </WrapperHeader>
         <WrapperContent className="flex flex-col" scrollable>
           <SuspenseContainer data={context?.monthlyExpenses}>
-            {context?.monthlyExpenses?.map((month, index) => (
+            {monthlyExpenses?.map((month, index) => (
               <CardList
                 key={index}
                 iconName={month.monthCode}

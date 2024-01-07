@@ -49,7 +49,7 @@ const Header = ({
     if (context) {
       const { setIsMasked, isMasked } = context
       const newValue = !isMasked
-      sessionStorage.setItem("isMasked", `${newValue}`)
+      localStorage.setItem("isMasked", `${newValue}`)
       setIsMasked(newValue)
     }
   }

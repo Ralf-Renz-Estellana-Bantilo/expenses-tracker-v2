@@ -129,13 +129,8 @@ export default function ComponentContextProvider({
     try {
       const payload: MasterSelectPayloadType = {
         table: "monthly_expenses_view",
-        filter: {
-          user,
-          year: new Date().getFullYear(),
-        },
-        sort: {
-          monthID: "DESC",
-        },
+        filter: { user },
+        sort: { monthID: "DESC" },
       }
       const response = (await fetchMasterSelect(
         payload
@@ -205,14 +200,9 @@ export default function ComponentContextProvider({
         setActiveTab(activeRoute || defaultTabInfo)
       }
 
-      const isMaskSessionValue = sessionStorage.getItem("isMasked")
-      let isMaskedValue
-      if (isMaskSessionValue) {
-        isMaskedValue = isMaskSessionValue === "true"
-      } else {
-        isMaskedValue = true
-        sessionStorage.setItem("isMasked", "true")
-      }
+      const isMaskSessionValue = localStorage.getItem("isMasked")
+      let isMaskedValue = isMaskSessionValue === "true" ?? true
+      localStorage.setItem("isMasked", `${isMaskedValue}`)
       setIsMasked(isMaskedValue)
       Promise.all([
         getTodayExpenses(),
@@ -220,7 +210,6 @@ export default function ComponentContextProvider({
         getCategories(),
         getMonthlyExpenses(),
         getBudgetWallet(),
-        getSummary(),
       ])
         .then(() => {
           console.log("Resources loaded!")
@@ -278,7 +267,6 @@ export default function ComponentContextProvider({
       }
       setTodayExpenses(updatedExpenses!)
       getMonthlyExpenses()
-      getSummary()
       isTodayExpensePending.current = false
     } catch (error) {
       console.log(error)
@@ -330,7 +318,6 @@ export default function ComponentContextProvider({
         ] as WalletBudgeType[]
       }
       setWalletBudget(updatedWalletBudget!)
-      getSummary()
       isWalletBudgetPending.current = false
     } catch (error) {
       console.log(error)
