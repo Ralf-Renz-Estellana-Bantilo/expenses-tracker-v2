@@ -1,5 +1,10 @@
 import { Dispatch, SetStateAction, JSX, MutableRefObject } from "react"
 
+interface TAuthor {
+  created_by?: string
+  created_on?: string
+}
+
 export type TabType = {
   ID: number
   description: string
@@ -47,13 +52,11 @@ export interface MonthType {
   status: number
 }
 
-export interface ExpensesType {
+export interface ExpensesType extends TAuthor {
   ID: number
   categoryID: number
   description?: string
   amount: number
-  created_by?: string
-  created_on?: string
   status?: StatusType
 }
 
@@ -118,13 +121,11 @@ export interface MonthlyExpensesType {
   total: number
 }
 
-export interface WalletBudgeType {
+export interface WalletBudgeType extends TAuthor {
   ID: number
   title: string
   description: string
   amount: number
-  created_by?: string
-  created_on?: string
   status?: StatusType
 }
 
@@ -138,8 +139,9 @@ export interface AnalyticsPercentageType {
 }
 
 export interface AnalyticsDailyAverageType {
-  user: string
-  daily_average: number
+  numberOfDays: number
+  totalExpenses: number
+  dailyAverage: number
 }
 
 export interface AnalyticsMonthlyAverageType {
@@ -151,4 +153,8 @@ export interface DashboardSummaryType {
   totalExpenses: string | number
   totalBudget: string | number
   totalBalance: string | number
+}
+
+export interface DailyExpensesType extends TAuthor {
+  amount: number
 }

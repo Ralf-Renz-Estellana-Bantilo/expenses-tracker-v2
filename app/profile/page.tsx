@@ -22,6 +22,7 @@ import SuspenseContainer from "../components/SuspenseContainer"
 import { AppContext } from "../context/context"
 import Image from "next/image"
 import { CardList } from "../components/CardList"
+import { MonthlyExpensesType } from "../types/type"
 
 const CURRENT_YEAR = new Date().getFullYear()
 
@@ -36,9 +37,8 @@ const ProfilePage = () => {
     redirect("/")
   }
 
-  const monthlyExpenses = context.monthlyExpenses?.filter(
-    (expense) => expense.year === selectedYear
-  )
+  const monthlyExpenses: MonthlyExpensesType[] | undefined =
+    context.monthlyExpenses?.filter((expense) => expense.year === selectedYear)
 
   const totalExpenses: number = useMemo(() => {
     const result =
@@ -109,14 +109,17 @@ const ProfilePage = () => {
                 key={index}
                 iconName={month.monthCode}
                 title={month.month}
-                value={formatMoney(month.total)}
+                value={formatMoney(month.total, context.isMasked)}
               />
             ))}
           </SuspenseContainer>
         </WrapperContent>
         <WrapperFooter className="flex items-center justify-between">
           <h3 className="text-default-500">Total:</h3>
-          <p className="text-default-500"> {formatMoney(totalExpenses)}</p>
+          <p className="text-default-500">
+            {" "}
+            {formatMoney(totalExpenses, context.isMasked)}
+          </p>
         </WrapperFooter>
       </Wrapper>
     </div>

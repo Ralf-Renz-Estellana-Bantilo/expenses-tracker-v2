@@ -7,9 +7,10 @@ export const POST = async (req: Request, res: Response) => {
   const { user } = await req.json()
 
   const query = `SELECT 
-      created_by AS 'user',
-      ROUND(SUM(amount) / COUNT(ID), 2) AS daily_average 
-      FROM expenses_view 
+      ROUND(COUNT(amount), 2) AS numberOfDays,
+      ROUND(SUM(amount), 2) AS totalExpenses,
+      ROUND((SUM(amount) / COUNT(amount)), 2) AS dailyAverage 
+      FROM daily_expenses_view 
          WHERE YEAR(created_on) = YEAR(CURRENT_DATE())
          AND created_by = '${user}';`
   const result = await db.promise().query(query)
