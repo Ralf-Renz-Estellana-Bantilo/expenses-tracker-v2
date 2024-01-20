@@ -17,7 +17,7 @@ export type ContextType = {
   activeTab: TabType
   categories: CategoryType[] | null
   todayExpenses: TodaysExpensesType[] | null
-  previousExpenses: PreviousExpensesType[] | null
+  previousExpenses: FormattedPreviousExpensesType[] | null
   monthlyExpenses: MonthlyExpensesType[] | null
   walletBudget: WalletBudgeType[] | null
   isMasked: boolean
@@ -34,6 +34,7 @@ export type ContextType = {
     newBudget: WalletBudgeType,
     type: "add" | "edit"
   ) => void
+  getPreviousExpenses: (monthID: number) => void
 }
 
 export type StatusType = 0 | 1
@@ -64,11 +65,18 @@ export interface TodaysExpensesType extends ExpensesType {
   category: string | undefined
 }
 
-export interface PreviousExpensesType {
+export interface PreviousExpensesType extends TodaysExpensesType {
+  monthID: number
+  year: number
+}
+
+export interface FormattedPreviousExpensesType {
   ID?: number
   date: string
   total: number
   expensesList: ExpensesType[]
+  monthID: number
+  year: number
 }
 
 export type AlertType = {

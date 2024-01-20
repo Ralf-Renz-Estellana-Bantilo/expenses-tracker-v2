@@ -1,9 +1,13 @@
 "use client"
 
-import React, { useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { AppContext } from "../context/context"
 import {
   Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Modal,
   ModalBody,
   ModalContent,
@@ -19,24 +23,46 @@ import {
   WrapperHeader,
 } from "../components/Wrapper"
 import {
+  CURRENT_MONTHID,
+  CURRENT_YEAR,
   formatMoney,
   getCurrentMonth,
   getExpenseDescription,
   getIcons,
 } from "../utils/utils"
-import { PreviousExpensesType, TodaysExpensesType } from "../types/type"
+import {
+  MonthlyExpensesType,
+  FormattedPreviousExpensesType,
+  TodaysExpensesType,
+} from "../types/type"
 import moment from "moment"
 import SuspenseContainer from "../components/SuspenseContainer"
-import Image from "next/image"
 import { CardList } from "../components/CardList"
+import { redirect } from "next/navigation"
+
+interface TMonthList {
+  monthID: number
+  month: string
+}
+
+const CURRENT_MONTH: TMonthList = {
+  month: getCurrentMonth(),
+  monthID: CURRENT_MONTHID,
+}
 
 const PreviousExpenses = () => {
   const context = AppContext()
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
-  const [preview, setPreview] = useState<PreviousExpensesType | null>(null)
+  const [monthList, setMonthList] = useState<TMonthList[]>([CURRENT_MONTH])
+  const [selectedMonth, setSelectedMonth] = useState<TMonthList>(CURRENT_MONTH)
 
-  const previewExpense = (expense: PreviousExpensesType) => {
+  const [preview, setPreview] = useState<FormattedPreviousExpensesType | null>(
+    null
+  )
+
+  const previewExpense = (expense: FormattedPreviousExpensesType) => {
     setPreview(expense)
     onOpen()
   }
@@ -45,15 +71,50 @@ const PreviousExpenses = () => {
     return context?.categories?.find(({ ID }) => ID === categoryID)
   }
 
-  const totalPreviousExpenses: number = useMemo(() => {
-    const result =
-      context?.previousExpenses?.reduce(
-        (accumulator, item) => Number(accumulator) + Number(item.total),
-        0
-      ) ?? 0
+  const onSelectMonth = async (item: TMonthList) => {
+    if (context) {
+      const { getPreviousExpenses } = context
+      setSelectedMonth(item)
+      getPreviousExpenses(item.monthID)
+    }
+  }
 
-    return result
-  }, [context?.previousExpenses])
+  // const totalPreviousExpenses: number = useMemo(() => {
+  //   const result =
+  //     context?.previousExpenses?.reduce(
+  //       (accumulator, item) => Number(accumulator) + Number(item.total),
+  //       0
+  //     ) ?? 0
+
+  //   return result
+  // }, [selectedMonth.monthID])
+
+  const totalPreviousExpenses: number =
+    context?.previousExpenses?.reduce(
+      (accumulator, item) => Number(accumulator) + Number(item.total),
+      0
+    ) ?? 0
+
+  useEffect(() => {
+    if (context) {
+      const monthlyExpenses = context.monthlyExpenses?.filter(
+        (exp) => exp.year === CURRENT_YEAR
+      )
+
+      const monthList = [
+        ...new Set(monthlyExpenses?.map((expense) => expense.monthID)),
+      ].sort((a, b) => b - a)
+
+      const result: TMonthList[] = Array.from(monthList, (monthID) => {
+        return {
+          month: getCurrentMonth(monthID),
+          monthID,
+        }
+      })
+
+      setMonthList(result.length > 0 ? result : [CURRENT_MONTH])
+    }
+  }, [])
 
   const monthCode = getCurrentMonth().slice(0, 3).toUpperCase()
 
@@ -114,9 +175,31 @@ const PreviousExpenses = () => {
       <Wrapper>
         <WrapperHeader className="flex items-center justify-between">
           <h3 className="font-semibold text-accent-secondary">
-            Previous Expenses{" "}
-            <code className="font-normal">({getCurrentMonth()})</code>{" "}
+            Previous Expenses
           </h3>
+          <Dropdown>
+            <DropdownTrigger>
+              <Button variant="light">{selectedMonth?.month}</Button>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Dynamic Actions">
+              {monthList.map((item) => (
+                <DropdownItem
+                  key={item.monthID}
+                  color={
+                    item.monthID === selectedMonth.monthID
+                      ? "primary"
+                      : "default"
+                  }
+                  className={
+                    item.monthID === selectedMonth.monthID ? "bg-primary" : ""
+                  }
+                  onClick={() => onSelectMonth(item)}
+                >
+                  {item.month}
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
         </WrapperHeader>
         <WrapperContent className="flex flex-col" scrollable>
           <SuspenseContainer data={context?.previousExpenses}>

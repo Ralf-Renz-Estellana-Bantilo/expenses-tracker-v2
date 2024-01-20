@@ -1,5 +1,12 @@
 import moment from "moment"
-import { TodaysExpensesType } from "../types/type"
+import {
+  FormattedPreviousExpensesType,
+  PreviousExpensesType,
+  TodaysExpensesType,
+} from "../types/type"
+
+export const CURRENT_YEAR = new Date().getFullYear()
+export const CURRENT_MONTHID = new Date().getMonth() + 1
 
 export const formatMoney = (money: string | number, isSecret?: boolean) => {
   const amount = Number(money).toFixed(2)
@@ -15,8 +22,8 @@ export const formatDate = (date: string) => {
 }
 
 export const formatPreviousExpenses = (
-  previousExpenses: TodaysExpensesType[]
-) => {
+  previousExpenses: PreviousExpensesType[]
+): FormattedPreviousExpensesType[] => {
   previousExpenses.sort(function (a, b) {
     let dateA = `${new Date(a.created_on as string)}` as any
     let dateB = `${new Date(b.created_on as string)}` as any
@@ -30,7 +37,7 @@ export const formatPreviousExpenses = (
     ),
   ]
 
-  const result = Array.from(uniqueDate, (date) => {
+  const result = Array.from(uniqueDate, (date, index) => {
     const filterExpensesPerDate = previousExpenses.filter(
       (exp) => formatDate(exp.created_on as string) === formatDate(date)
     )
@@ -38,18 +45,23 @@ export const formatPreviousExpenses = (
     filterExpensesPerDate.forEach(({ amount }) => (total += Number(amount)))
 
     return {
+      ID: index,
       date,
       total,
       expensesList: filterExpensesPerDate,
+      monthID: filterExpensesPerDate[0]?.monthID ?? 0,
+      year: filterExpensesPerDate[0]?.year ?? 0,
     }
   })
 
-  return Array.from(result, (res, index) => {
-    return { ...res, ID: index }
-  })
+  return result
 }
 
-export const getCurrentMonth = () => {
+export const getCurrentMonth = (monthID?: number) => {
+  let monthIndex = CURRENT_MONTHID - 1
+  if (monthID) {
+    monthIndex = monthID - 1
+  }
   const monthNames = [
     "January",
     "February",
@@ -65,7 +77,6 @@ export const getCurrentMonth = () => {
     "December",
   ]
 
-  const monthIndex = new Date().getMonth()
   return monthNames[monthIndex]
 }
 

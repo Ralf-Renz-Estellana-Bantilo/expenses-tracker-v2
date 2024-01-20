@@ -17,14 +17,12 @@ import {
 } from "../components/Wrapper"
 import { useSession } from "next-auth/react"
 import { redirect } from "next/navigation"
-import { formatMoney } from "../utils/utils"
+import { CURRENT_YEAR, formatMoney } from "../utils/utils"
 import SuspenseContainer from "../components/SuspenseContainer"
 import { AppContext } from "../context/context"
 import Image from "next/image"
 import { CardList } from "../components/CardList"
 import { MonthlyExpensesType } from "../types/type"
-
-const CURRENT_YEAR = new Date().getFullYear()
 
 const ProfilePage = () => {
   const context = AppContext()
@@ -34,7 +32,7 @@ const ProfilePage = () => {
   const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR)
 
   if (!session || !context) {
-    redirect("/")
+    redirect("/login")
   }
 
   const monthlyExpenses: MonthlyExpensesType[] | undefined =
@@ -56,7 +54,8 @@ const ProfilePage = () => {
     const yearList = [
       ...new Set(context.monthlyExpenses?.map((expense) => expense.year)),
     ].sort((a, b) => b - a)
-    setYearList(yearList)
+
+    setYearList([...new Set([CURRENT_YEAR, ...yearList])])
   }, [])
 
   return (
@@ -103,7 +102,7 @@ const ProfilePage = () => {
           </Dropdown>
         </WrapperHeader>
         <WrapperContent className="flex flex-col" scrollable>
-          <SuspenseContainer data={context?.monthlyExpenses}>
+          <SuspenseContainer data={monthlyExpenses}>
             {monthlyExpenses?.map((month, index) => (
               <CardList
                 key={index}

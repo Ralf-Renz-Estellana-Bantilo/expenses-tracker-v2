@@ -14,12 +14,13 @@ import {
   ExpensesType,
   MasterSelectPayloadType,
   MonthlyExpensesType,
-  PreviousExpensesType,
+  FormattedPreviousExpensesType,
   SaveDataPayloadType,
   SaveDataResponseType,
   TabType,
   TodaysExpensesType,
   WalletBudgeType,
+  PreviousExpensesType,
 } from "../types/type"
 import { usePathname } from "next/navigation"
 import { useSession } from "next-auth/react"
@@ -28,11 +29,14 @@ import {
   fetchSaveData,
   fetchSummary,
 } from "../controller/controller"
-import { formatPreviousExpenses, getIcons } from "../utils/utils"
+import {
+  CURRENT_MONTHID,
+  CURRENT_YEAR,
+  formatPreviousExpenses,
+  getIcons,
+} from "../utils/utils"
 
 export const ComponentContext = createContext<ContextType | null>(null)
-
-type ExpensesDataType = ExpensesType & { category: string }
 
 export default function ComponentContextProvider({
   children,
@@ -69,11 +73,11 @@ export default function ComponentContextProvider({
   }
 
   const [activeTab, setActiveTab] = useState<TabType>(defaultTabInfo)
-  const [todayExpenses, setTodayExpenses] = useState<ExpensesDataType[] | null>(
-    null
-  )
+  const [todayExpenses, setTodayExpenses] = useState<
+    TodaysExpensesType[] | null
+  >(null)
   const [previousExpenses, setPreviousExpenses] = useState<
-    PreviousExpensesType[] | null
+    FormattedPreviousExpensesType[] | null
   >(null)
   const [monthlyExpenses, setMonthlyExpenses] = useState<
     MonthlyExpensesType[] | null
@@ -99,7 +103,9 @@ export default function ComponentContextProvider({
           ID: "DESC",
         },
       }
-      const response = (await fetchMasterSelect(payload)) as ExpensesDataType[]
+      const response = (await fetchMasterSelect(
+        payload
+      )) as TodaysExpensesType[]
       setTodayExpenses(response)
     } catch (error) {
       console.log(error)
@@ -107,16 +113,23 @@ export default function ComponentContextProvider({
     }
   }
 
-  const getPreviousExpenses = async () => {
+  const getPreviousExpenses = async (monthID = CURRENT_MONTHID) => {
     try {
       const payload: MasterSelectPayloadType = {
         table: "previous_expenses_view",
-        filter: { created_by: user },
+        filter: {
+          monthID,
+          year: CURRENT_YEAR,
+          created_by: user,
+        },
         sort: {
           ID: "DESC",
         },
       }
-      const response = (await fetchMasterSelect(payload)) as ExpensesDataType[]
+      const response = (await fetchMasterSelect(
+        payload
+      )) as PreviousExpensesType[]
+
       const result = formatPreviousExpenses(response)
       setPreviousExpenses(result)
     } catch (error) {
@@ -228,7 +241,7 @@ export default function ComponentContextProvider({
     try {
       isTodayExpensePending.current = type === "add"
 
-      let updatedExpenses: ExpensesDataType[] | null = null
+      let updatedExpenses: TodaysExpensesType[] | null = null
       let payload: SaveDataPayloadType = {
         table: "expenses",
         values: {
@@ -249,7 +262,7 @@ export default function ComponentContextProvider({
                 category: newExpense.category,
               }
             : expense
-        ) as ExpensesDataType[]
+        ) as TodaysExpensesType[]
 
         payload.key = {
           ID: newExpense.ID,
@@ -263,7 +276,7 @@ export default function ComponentContextProvider({
         updatedExpenses = [
           newExpense,
           ...todayExpensesCopy,
-        ] as ExpensesDataType[]
+        ] as TodaysExpensesType[]
       }
       setTodayExpenses(updatedExpenses!)
       await getMonthlyExpenses()
@@ -341,6 +354,7 @@ export default function ComponentContextProvider({
     setActiveTab,
     handleUpdateExpense,
     handleUpdateWalletBudget,
+    getPreviousExpenses,
   }
 
   return (
