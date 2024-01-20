@@ -76,20 +76,13 @@ const PreviousExpenses = () => {
                 <div className="flex items-center gap-3">
                   <div className="flex items-center border-1 border-blue-800 bg-blue-500 backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-lg p-2 justify-between text-default-500 flex-1 ">
                     <h3>Date: </h3>
-                    <span
-                      className="font-semibold
-                              "
-                    >
-                      {preview?.date}
+                    <span className="font-semibold">
+                      {moment(preview?.date).format("ll")}
                     </span>
                   </div>
                   <div className="flex items-center border-1 border-red-800 bg-red-500 backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-lg p-2 justify-between text-default-500 flex-1">
                     <h3>Total: </h3>
-                    <span
-                      className="font-semibold
-                              "
-                    >
-                      {" "}
+                    <span className="font-semibold">
                       {formatMoney(preview?.total ?? 0)}
                     </span>
                   </div>

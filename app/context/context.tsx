@@ -266,7 +266,7 @@ export default function ComponentContextProvider({
         ] as ExpensesDataType[]
       }
       setTodayExpenses(updatedExpenses!)
-      getMonthlyExpenses()
+      await getMonthlyExpenses()
       isTodayExpensePending.current = false
     } catch (error) {
       console.log(error)
