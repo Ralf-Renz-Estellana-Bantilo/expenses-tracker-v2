@@ -79,16 +79,6 @@ const PreviousExpenses = () => {
     }
   }
 
-  // const totalPreviousExpenses: number = useMemo(() => {
-  //   const result =
-  //     context?.previousExpenses?.reduce(
-  //       (accumulator, item) => Number(accumulator) + Number(item.total),
-  //       0
-  //     ) ?? 0
-
-  //   return result
-  // }, [selectedMonth.monthID])
-
   const totalPreviousExpenses: number =
     context?.previousExpenses?.reduce(
       (accumulator, item) => Number(accumulator) + Number(item.total),
@@ -121,7 +111,7 @@ const PreviousExpenses = () => {
   return (
     <>
       <Modal
-        className="border-1 border-border-color bg-container-primary"
+        className="border-1 border-border-color bg-container-secondary"
         backdrop="blur"
         isOpen={isOpen}
         onOpenChange={onOpenChange}

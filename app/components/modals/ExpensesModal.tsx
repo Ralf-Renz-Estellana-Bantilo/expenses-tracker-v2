@@ -138,7 +138,7 @@ const ExpensesModal = ({ isOpen, onOpenChange, data }: ExpensesModalType) => {
 
   return (
     <Modal
-      className="border-1 border-border-color bg-container-primary"
+      className="border-1 border-border-color bg-container-secondary"
       backdrop="blur"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
