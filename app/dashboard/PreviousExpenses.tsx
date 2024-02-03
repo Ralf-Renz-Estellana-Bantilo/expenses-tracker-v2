@@ -86,24 +86,16 @@ const PreviousExpenses = () => {
     ) ?? 0
 
   useEffect(() => {
-    if (context) {
-      const monthlyExpenses = context.monthlyExpenses?.filter(
-        (exp) => exp.year === CURRENT_YEAR
-      )
+    const result: TMonthList[] = []
 
-      const monthList = [
-        ...new Set(monthlyExpenses?.map((expense) => expense.monthID)),
-      ].sort((a, b) => b - a)
-
-      const result: TMonthList[] = Array.from(monthList, (monthID) => {
-        return {
-          month: getCurrentMonth(monthID),
-          monthID,
-        }
+    for (let index = 1; index <= CURRENT_MONTHID; index++) {
+      result.push({
+        month: getCurrentMonth(index),
+        monthID: index,
       })
-
-      setMonthList(result.length > 0 ? result : [CURRENT_MONTH])
     }
+
+    setMonthList(result.sort((a, b) => b.monthID - a.monthID))
   }, [])
 
   const monthCode = getCurrentMonth().slice(0, 3).toUpperCase()

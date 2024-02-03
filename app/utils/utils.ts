@@ -8,6 +8,21 @@ import {
 export const CURRENT_YEAR = new Date().getFullYear()
 export const CURRENT_MONTHID = new Date().getMonth() + 1
 
+export const MONTHLIST = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+]
+
 export const formatMoney = (money: string | number, isSecret?: boolean) => {
   const amount = Number(money).toFixed(2)
   const result = Number(amount).toLocaleString(undefined, {
@@ -57,27 +72,8 @@ export const formatPreviousExpenses = (
   return result
 }
 
-export const getCurrentMonth = (monthID?: number) => {
-  let monthIndex = CURRENT_MONTHID - 1
-  if (monthID) {
-    monthIndex = monthID - 1
-  }
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ]
-
-  return monthNames[monthIndex]
+export const getCurrentMonth = (monthID = CURRENT_MONTHID): string => {
+  return MONTHLIST[monthID - 1]
 }
 
 export const maskNumber = (money: string) => {
