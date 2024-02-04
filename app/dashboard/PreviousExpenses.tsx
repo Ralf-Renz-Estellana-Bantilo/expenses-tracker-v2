@@ -55,8 +55,8 @@ const PreviousExpenses = () => {
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
-  const [monthList, setMonthList] = useState<TMonthList[]>([CURRENT_MONTH])
-  const [selectedMonth, setSelectedMonth] = useState<TMonthList>(CURRENT_MONTH)
+  const [monthList, setMonthList] = useState<TMonthList[]>([])
+  const [selectedMonth, setSelectedMonth] = useState<TMonthList | null>(null)
 
   const [preview, setPreview] = useState<FormattedPreviousExpensesType | null>(
     null
@@ -96,6 +96,7 @@ const PreviousExpenses = () => {
     }
 
     setMonthList(result.sort((a, b) => b.monthID - a.monthID))
+    onSelectMonth(CURRENT_MONTH)
   }, [])
 
   const monthCode = getCurrentMonth().slice(0, 3).toUpperCase()
@@ -168,12 +169,12 @@ const PreviousExpenses = () => {
                 <DropdownItem
                   key={item.monthID}
                   color={
-                    item.monthID === selectedMonth.monthID
+                    item.monthID === selectedMonth?.monthID
                       ? "primary"
                       : "default"
                   }
                   className={
-                    item.monthID === selectedMonth.monthID ? "bg-primary" : ""
+                    item.monthID === selectedMonth?.monthID ? "bg-primary" : ""
                   }
                   onClick={() => onSelectMonth(item)}
                 >
