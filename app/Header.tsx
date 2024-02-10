@@ -12,13 +12,11 @@ import {
 import {
   AnalyticsIcon,
   BackIcon,
-  BellIcon,
-  EyeFilledIcon,
   EyeOutlineIcon,
-  EyeSlashFilledIcon,
   EyeSlashOutlineIcon,
   FilterIcon,
   LogoutIcon,
+  SearchIcon,
   SettingsIcon,
 } from "./icons/icons"
 import { AppContext } from "./context/context"
@@ -101,7 +99,7 @@ const Header = ({
                 variant="light"
                 aria-label="Take a photo"
               >
-                <BellIcon />
+                <SearchIcon />
               </Button>
             </>
           ))}
