@@ -5,8 +5,9 @@ import { fetchMonthlyPercentageBreakdown } from "../controller/controller"
 import { useSession } from "next-auth/react"
 import { AnalyticsPercentageType } from "../types/type"
 import { getCurrentMonth, setRandomColor } from "../utils/utils"
-import { Button, Skeleton } from "@nextui-org/react"
+import { Button } from "@nextui-org/react"
 import { EllipsisVertical } from "../icons/icons"
+import SuspenseContainer from "../components/SuspenseContainer"
 
 const CategoryPercentageAnalytics = () => {
   const { data: session } = useSession()
@@ -53,44 +54,34 @@ const CategoryPercentageAnalytics = () => {
         </Button>
       </div>
       <div className="flex flex-col gap-3">
-        {isPending.current ? (
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <Skeleton className="h-3 w-[120px] rounded-lg" />
-              <Skeleton className="h-3 w-[30px] rounded-lg" />
-            </div>
-            <Skeleton className="h-3 w-full rounded-lg" />
-          </div>
-        ) : (
-          <>
-            {percentageBreakdown.map((data) => (
-              <div className="flex flex-col" key={data.categoryID}>
-                <div className="flex justify-between">
-                  <h3 className="text-sm text-accent-secondary">{`${data.categoryID} => ${data.category}`}</h3>
-                  <span className="text-sm text-accent-secondary">
-                    {data.percentage}%
-                  </span>
-                </div>
-                <div className="flex rounded-md overflow-hidden">
-                  <div
-                    className={`h-2 bg-slate-500`}
-                    style={{
-                      width: `${data.percentage}%`,
-                      backgroundColor: `${setRandomColor(data.categoryID)}`,
-                    }}
-                  />
-                  <div
-                    style={{
-                      width: `${100 - +data.percentage}%`,
-                      backgroundColor: `${setRandomColor(data.categoryID)}`,
-                      opacity: 0.1,
-                    }}
-                  />
-                </div>
+        <SuspenseContainer data={percentageBreakdown}>
+          {percentageBreakdown.map((data) => (
+            <div className="flex flex-col" key={data.categoryID}>
+              <div className="flex justify-between">
+                <h3 className="text-sm text-accent-secondary">{`${data.categoryID} => ${data.category}`}</h3>
+                <span className="text-sm text-accent-secondary">
+                  {data.percentage}%
+                </span>
               </div>
-            ))}
-          </>
-        )}
+              <div className="flex rounded-md overflow-hidden">
+                <div
+                  className={`h-2 bg-slate-500`}
+                  style={{
+                    width: `${data.percentage}%`,
+                    backgroundColor: `${setRandomColor(data.categoryID)}`,
+                  }}
+                />
+                <div
+                  style={{
+                    width: `${100 - +data.percentage}%`,
+                    backgroundColor: `${setRandomColor(data.categoryID)}`,
+                    opacity: 0.1,
+                  }}
+                />
+              </div>
+            </div>
+          ))}
+        </SuspenseContainer>
       </div>
     </div>
   )

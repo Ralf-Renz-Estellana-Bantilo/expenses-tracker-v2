@@ -1,4 +1,4 @@
-import { Chip, Skeleton, Spinner } from "@nextui-org/react"
+import { Chip } from "@nextui-org/react"
 import React, { ReactNode } from "react"
 import { WarningIcon } from "../icons/icons"
 import { CardListSkeleton } from "./CardList"
@@ -13,12 +13,7 @@ export default function SuspenseContainer<T extends { length: number }>({
   noDataMsg?: string
 }) {
   if (data === null || data === undefined) {
-    return (
-      // <div className='text-center pt-2'>
-      //    <Spinner />
-      // </div>
-      <CardListSkeleton />
-    )
+    return <CardListSkeleton />
   } else {
     return data.length > 0 ? (
       <>{children}</>
