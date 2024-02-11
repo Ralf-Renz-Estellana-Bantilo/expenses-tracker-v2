@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { AppContext } from "../context/context"
 import {
   Button,
@@ -24,21 +24,15 @@ import {
 } from "../components/Wrapper"
 import {
   CURRENT_MONTHID,
-  CURRENT_YEAR,
   formatMoney,
   getCurrentMonth,
   getExpenseDescription,
   getIcons,
 } from "../utils/utils"
-import {
-  MonthlyExpensesType,
-  FormattedPreviousExpensesType,
-  TodaysExpensesType,
-} from "../types/type"
+import { FormattedPreviousExpensesType } from "../types/type"
 import moment from "moment"
 import SuspenseContainer from "../components/SuspenseContainer"
 import { CardList } from "../components/CardList"
-import { redirect } from "next/navigation"
 
 interface TMonthList {
   monthID: number
@@ -96,7 +90,16 @@ const PreviousExpenses = () => {
     }
 
     setMonthList(result.sort((a, b) => b.monthID - a.monthID))
-    onSelectMonth(CURRENT_MONTH)
+
+    const previousExpenses = context?.previousExpenses ?? []
+    const monthlyExpenseSummary: TMonthList =
+      previousExpenses.length > 0
+        ? {
+            month: getCurrentMonth(previousExpenses[0].monthID),
+            monthID: previousExpenses[0].monthID,
+          }
+        : CURRENT_MONTH
+    setSelectedMonth(monthlyExpenseSummary)
   }, [])
 
   const monthCode = getCurrentMonth().slice(0, 3).toUpperCase()
