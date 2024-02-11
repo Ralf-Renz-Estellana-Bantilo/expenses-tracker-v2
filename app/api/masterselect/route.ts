@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { createNewDbConnection } from "../../database/db"
-import { MasterSelectPayloadType } from "@/app/types/type"
+import { MasterSelectPayload } from "@/app/types/type"
 
 /* 
 const MASTERSELECT_PAYLOAD_SYNTAX = {
@@ -18,7 +18,7 @@ export const POST = async (req: Request, res: Response) => {
   const db = createNewDbConnection()
 
   try {
-    const { table, column, filter, sort }: MasterSelectPayloadType =
+    const { table, column, filter, sort }: MasterSelectPayload =
       await req.json()
 
     let filterData = "1"
@@ -42,7 +42,7 @@ export const POST = async (req: Request, res: Response) => {
 
     if (column) {
       if (Object.keys(column).length > 0) {
-        columnData = column
+        columnData = [...new Set(column)].join(",")
       }
     }
 

@@ -93,15 +93,24 @@ export type AlertType = {
   timeout?: number
 }
 
-export interface MasterSelectPayloadType {
+type SortDirection = "DESC" | "ASC"
+
+export interface MasterSelectPayloadType<T> {
   table: string
-  filter?: any
-  column?: string
-  sort?: any
+  filter?: Partial<T>
+  column?: Array<keyof T & string>
+  sort?: { [K in keyof T]?: SortDirection }
 }
 
-export interface MasterDataPayloadType {
-  tables: string
+export interface MasterSelectPayload {
+  table: string
+  filter?: unknown
+  column?: string[]
+  sort?: unknown
+}
+
+export interface MasterDataPayloadType<T> {
+  tables: Array<keyof T & string>
 }
 
 export interface SaveDataPayloadType {

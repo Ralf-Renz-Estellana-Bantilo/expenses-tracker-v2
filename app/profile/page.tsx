@@ -74,7 +74,7 @@ const ProfilePage = () => {
 
   const onSelectMonth = useCallback(
     async ({ monthID, year }: MonthlyExpensesType) => {
-      const payload: MasterSelectPayloadType = {
+      const payload: MasterSelectPayloadType<PreviousExpensesType> = {
         table: "previous_expenses_view",
         filter: {
           monthID,

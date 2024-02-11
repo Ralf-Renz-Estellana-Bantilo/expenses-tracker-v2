@@ -1,5 +1,5 @@
 import axios from "axios"
-import { MasterSelectPayloadType, SaveDataPayloadType } from "../types/type"
+import { MasterSelectPayload, SaveDataPayloadType } from "../types/type"
 
 const URL_SAVEDATA = "/api/savedata"
 const URL_MASTERSELECT = "/api/masterselect"
@@ -25,7 +25,7 @@ export const fetchSaveData = async <T>(
 }
 
 export const fetchMasterSelect = async <T>(
-  payload: MasterSelectPayloadType
+  payload: MasterSelectPayload
 ): Promise<T> => {
   return await fetchURL(URL_MASTERSELECT, payload)
 }

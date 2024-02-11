@@ -11,7 +11,6 @@ import {
   CategoryType,
   ContextType,
   DashboardSummaryType,
-  ExpensesType,
   MasterSelectPayloadType,
   MonthlyExpensesType,
   FormattedPreviousExpensesType,
@@ -96,7 +95,7 @@ export default function ComponentContextProvider({
 
   const getTodayExpenses = async () => {
     try {
-      const payload: MasterSelectPayloadType = {
+      const payload: MasterSelectPayloadType<TodaysExpensesType> = {
         table: "today_expenses_view",
         filter: { created_by: user },
         sort: {
@@ -115,7 +114,7 @@ export default function ComponentContextProvider({
 
   const getPreviousExpenses = async (monthID = CURRENT_MONTHID) => {
     try {
-      const payload: MasterSelectPayloadType = {
+      const payload: MasterSelectPayloadType<PreviousExpensesType> = {
         table: "previous_expenses_view",
         filter: {
           monthID,
@@ -140,7 +139,7 @@ export default function ComponentContextProvider({
 
   const getMonthlyExpenses = async () => {
     try {
-      const payload: MasterSelectPayloadType = {
+      const payload: MasterSelectPayloadType<MonthlyExpensesType> = {
         table: "monthly_expenses_view",
         filter: { user },
         sort: { monthID: "DESC" },
@@ -157,7 +156,7 @@ export default function ComponentContextProvider({
 
   const getBudgetWallet = async () => {
     try {
-      const payload: MasterSelectPayloadType = {
+      const payload: MasterSelectPayloadType<WalletBudgeType> = {
         table: "wallet_budget",
         filter: {
           created_by: user,
@@ -186,9 +185,9 @@ export default function ComponentContextProvider({
 
   const getCategories = async () => {
     try {
-      const payload: MasterSelectPayloadType = {
+      const payload: MasterSelectPayloadType<CategoryType> = {
         table: "categories",
-        column: "ID, description, status",
+        column: ["ID", "description", "status"],
       }
 
       const response = (await fetchMasterSelect(payload)) as CategoryType[]
