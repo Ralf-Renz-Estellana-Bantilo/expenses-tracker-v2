@@ -38,11 +38,13 @@ import { CardList } from "../components/CardList"
 import {
   FormattedPreviousExpensesType,
   MasterSelectPayloadType,
+  MonthlyExpensesBreakdownType,
   MonthlyExpensesType,
   PreviousExpensesType,
 } from "../types/type"
 import { fetchMasterSelect } from "../controller/controller"
 import moment from "moment"
+import MonthlyExpensesModal from "./components/MonthlyExpensesModal"
 
 const ProfilePage = () => {
   const context = AppContext()
@@ -59,6 +61,8 @@ const ProfilePage = () => {
     redirect("/login")
   }
 
+  const { monthlyExpensesBreakdown, setMonthlyExpensesBreakdown } = context
+
   const monthlyExpenses: MonthlyExpensesType[] | undefined =
     context.monthlyExpenses?.filter((expense) => expense.year === selectedYear)
 
@@ -74,25 +78,41 @@ const ProfilePage = () => {
 
   const onSelectMonth = useCallback(
     async ({ monthID, year }: MonthlyExpensesType) => {
-      const payload: MasterSelectPayloadType<PreviousExpensesType> = {
-        table: "previous_expenses_view",
-        filter: {
-          monthID,
-          year,
-          created_by: session.user?.email ?? "",
-        },
-        sort: {
-          ID: "ASC",
-        },
+      const cachedID = `${monthID}-${year}`
+      const hasCachedData = Object.hasOwn(monthlyExpensesBreakdown, cachedID)
+
+      let result = undefined
+      if (hasCachedData) {
+        result = monthlyExpensesBreakdown[cachedID]
+      } else {
+        const payload: MasterSelectPayloadType<PreviousExpensesType> = {
+          table: "previous_expenses_view",
+          filter: {
+            monthID,
+            year,
+            created_by: session.user?.email ?? "",
+          },
+          sort: {
+            ID: "ASC",
+          },
+        }
+        const response = (await fetchMasterSelect(
+          payload
+        )) as PreviousExpensesType[]
+        result = formatPreviousExpenses(response)
+
+        const cachedInfo: MonthlyExpensesBreakdownType = {}
+        cachedInfo[cachedID] = result
+        setMonthlyExpensesBreakdown((prev) => ({
+          ...prev,
+          ...cachedInfo,
+        }))
       }
-      const response = (await fetchMasterSelect(
-        payload
-      )) as PreviousExpensesType[]
-      const result = formatPreviousExpenses(response)
+
       setExpensesList(result)
       onOpen()
     },
-    [setExpensesList]
+    [setExpensesList, setMonthlyExpensesBreakdown, monthlyExpensesBreakdown]
   )
 
   useEffect(() => {
@@ -105,64 +125,13 @@ const ProfilePage = () => {
     setYearList([...new Set([CURRENT_YEAR, ...yearList])])
   }, [])
 
-  const totalPreviousExpenses: number = useMemo(() => {
-    return (
-      expensesList?.reduce(
-        (accumulator, item) => Number(accumulator) + Number(item.total),
-        0
-      ) ?? 0
-    )
-  }, [expensesList])
-
-  const MONTHID = expensesList ? expensesList[0].monthID : CURRENT_MONTHID
-  const monthCode = getCurrentMonth(MONTHID).slice(0, 3).toUpperCase()
-
   return (
     <>
-      <Modal
-        className="border-1 border-border-color bg-container-secondary"
-        backdrop="blur"
+      <MonthlyExpensesModal
+        expensesList={expensesList}
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        placement="center"
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1 font-bold">
-                Expenses List
-              </ModalHeader>
-              <ModalBody>
-                <ScrollShadow className="flex flex-col max-h-[48vh] overflow-auto">
-                  <SuspenseContainer data={expensesList}>
-                    {expensesList?.map((expense) => (
-                      <CardList
-                        key={expense.ID}
-                        iconName={monthCode}
-                        title={moment(expense.date).format("ll")}
-                        value={formatMoney(expense.total)}
-                      />
-                    ))}
-                  </SuspenseContainer>
-                </ScrollShadow>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center border-1 border-red-800 bg-red-500 backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-lg p-2 justify-between text-default-500 flex-1">
-                    <h3>Total: </h3>
-                    <span className="font-semibold text-accent-primary">
-                      {formatMoney(totalPreviousExpenses, context.isMasked)}
-                    </span>
-                  </div>
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <Button variant="light" color="danger" onPress={onClose}>
-                  Close
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      />
       <div className="flex flex-col gap-3">
         <div className="flex flex-col items-center justify-center gap-1">
           <Avatar

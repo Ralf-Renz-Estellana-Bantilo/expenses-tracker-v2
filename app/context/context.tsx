@@ -20,6 +20,7 @@ import {
   TodaysExpensesType,
   WalletBudgeType,
   PreviousExpensesType,
+  MonthlyExpensesBreakdownType,
 } from "../types/type"
 import { usePathname } from "next/navigation"
 import { useSession } from "next-auth/react"
@@ -85,6 +86,8 @@ export default function ComponentContextProvider({
     null
   )
   const [summary, setSummary] = useState<DashboardSummaryType | null>(null)
+  const [monthlyExpensesBreakdown, setMonthlyExpensesBreakdown] =
+    useState<MonthlyExpensesBreakdownType>({})
 
   const isTodayExpensePending = useRef(false)
   const isWalletBudgetPending = useRef(false)
@@ -349,11 +352,13 @@ export default function ComponentContextProvider({
     isTodayExpensePending,
     isWalletBudgetPending,
     summary,
+    monthlyExpensesBreakdown,
     setIsMasked,
     setActiveTab,
     handleUpdateExpense,
     handleUpdateWalletBudget,
     getPreviousExpenses,
+    setMonthlyExpensesBreakdown,
   }
 
   return (

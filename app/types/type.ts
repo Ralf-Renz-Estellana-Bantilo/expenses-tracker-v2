@@ -24,6 +24,10 @@ export type ContextType = {
   isTodayExpensePending: MutableRefObject<boolean>
   isWalletBudgetPending: MutableRefObject<boolean>
   summary: DashboardSummaryType | null
+  monthlyExpensesBreakdown: MonthlyExpensesBreakdownType
+  setMonthlyExpensesBreakdown: Dispatch<
+    SetStateAction<MonthlyExpensesBreakdownType>
+  >
   setIsMasked: Dispatch<SetStateAction<boolean>>
   setActiveTab: Dispatch<SetStateAction<TabType>>
   handleUpdateExpense: (
@@ -174,4 +178,8 @@ export interface DashboardSummaryType {
 
 export interface DailyExpensesType extends TAuthor {
   amount: number
+}
+
+export interface MonthlyExpensesBreakdownType {
+  [key: string]: FormattedPreviousExpensesType[]
 }
