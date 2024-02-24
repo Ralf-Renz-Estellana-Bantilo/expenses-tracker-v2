@@ -7,12 +7,6 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ScrollShadow,
   useDisclosure,
 } from "@nextui-org/react"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
@@ -25,15 +19,12 @@ import {
 import { useSession } from "next-auth/react"
 import { redirect } from "next/navigation"
 import {
-  CURRENT_MONTHID,
   CURRENT_YEAR,
   formatMoney,
   formatPreviousExpenses,
-  getCurrentMonth,
 } from "../utils/utils"
 import SuspenseContainer from "../components/SuspenseContainer"
 import { AppContext } from "../context/context"
-import Image from "next/image"
 import { CardList } from "../components/CardList"
 import {
   FormattedPreviousExpensesType,
