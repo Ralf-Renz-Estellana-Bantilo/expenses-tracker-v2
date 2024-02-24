@@ -1,8 +1,7 @@
-import { NextApiRequest, NextApiResponse } from "next"
 import { NextResponse } from "next/server"
 import { createNewDbConnection } from "../../database/db"
 
-export const GET = async (req: NextApiRequest, res: NextApiResponse) => {
+export const GET = async (req: Request, res: Response) => {
   const db = createNewDbConnection()
   try {
     const query = "SELECT * FROM months"
