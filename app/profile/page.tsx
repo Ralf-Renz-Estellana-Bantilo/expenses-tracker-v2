@@ -19,6 +19,7 @@ import {
 import { useSession } from "next-auth/react"
 import { redirect } from "next/navigation"
 import {
+  CURRENT_MONTHID,
   CURRENT_YEAR,
   formatMoney,
   formatPreviousExpenses,
@@ -52,7 +53,11 @@ const ProfilePage = () => {
     redirect("/login")
   }
 
-  const { monthlyExpensesBreakdown, setMonthlyExpensesBreakdown } = context
+  const {
+    monthlyExpensesBreakdown,
+    setMonthlyExpensesBreakdown,
+    todayExpenses,
+  } = context
 
   const monthlyExpenses: MonthlyExpensesType[] | undefined =
     context.monthlyExpenses?.filter((expense) => expense.year === selectedYear)
@@ -82,14 +87,33 @@ const ProfilePage = () => {
             monthID,
             year,
             created_by: session.user?.email ?? "",
+            status: 1,
           },
           sort: {
             ID: "ASC",
           },
         }
-        const response = (await fetchMasterSelect(
+        let response = (await fetchMasterSelect(
           payload
         )) as PreviousExpensesType[]
+
+        if (CURRENT_MONTHID === monthID) {
+          if (todayExpenses) {
+            const allTodayExpenses: PreviousExpensesType[] = Array.from(
+              todayExpenses,
+              (exp) => {
+                const result: PreviousExpensesType = {
+                  ...exp,
+                  year: CURRENT_YEAR,
+                  monthID: CURRENT_MONTHID,
+                }
+                return result
+              }
+            )
+            response = [...response, ...allTodayExpenses]
+          }
+        }
+
         result = formatPreviousExpenses(response)
 
         const cachedInfo: MonthlyExpensesBreakdownType = {}

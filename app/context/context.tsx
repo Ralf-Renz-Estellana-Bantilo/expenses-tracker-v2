@@ -100,7 +100,7 @@ export default function ComponentContextProvider({
     try {
       const payload: MasterSelectPayloadType<TodaysExpensesType> = {
         table: "today_expenses_view",
-        filter: { created_by: user },
+        filter: { created_by: user, status: 1 },
         sort: {
           ID: "DESC",
         },
@@ -123,9 +123,10 @@ export default function ComponentContextProvider({
           monthID,
           year: CURRENT_YEAR,
           created_by: user,
+          status: 1,
         },
         sort: {
-          ID: "DESC",
+          created_on: "DESC",
         },
       }
       const response = (await fetchMasterSelect(
@@ -163,6 +164,7 @@ export default function ComponentContextProvider({
         table: "wallet_budget",
         filter: {
           created_by: user,
+          status: 1,
         },
         sort: {
           ID: "DESC",
