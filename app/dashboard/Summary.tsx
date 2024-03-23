@@ -9,10 +9,6 @@ import useCredit from "../hook/useCredit"
 const Summary = () => {
   const context = AppContext()
 
-  // const totalBalance = context?.summary?.totalBalance ?? 0
-  // const totalBudget = context?.summary?.totalBudget ?? 0
-  // const totalExpenses = context?.summary?.totalExpenses ?? 0
-
   const { totalBalance, totalBudget, totalExpenses } = useCredit()
 
   return (

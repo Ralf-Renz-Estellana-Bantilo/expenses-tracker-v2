@@ -2,20 +2,18 @@
 
 import React, { useMemo, useState } from "react"
 import { AppContext } from "../context/context"
-import { Button, Skeleton, useDisclosure } from "@nextui-org/react"
+import { Button, useDisclosure } from "@nextui-org/react"
 import {
   Wrapper,
   WrapperContent,
   WrapperFooter,
   WrapperHeader,
 } from "../components/Wrapper"
-import { BillIcon, PlusIcon } from "../icons/icons"
+import { PlusIcon } from "../icons/icons"
 import { formatMoney, getExpenseDescription, getIcons } from "../utils/utils"
 import ExpensesFormModal from "../components/modals/ExpensesFormModal"
-import moment from "moment"
 import { TodaysExpensesType } from "../types/type"
 import SuspenseContainer from "../components/SuspenseContainer"
-import Image from "next/image"
 import { CardList, CardListSkeleton } from "../components/CardList"
 import useCredit from "../hook/useCredit"
 
