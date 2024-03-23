@@ -183,3 +183,20 @@ export interface DailyExpensesType extends TAuthor {
 export interface MonthlyExpensesBreakdownType {
   [key: string]: FormattedPreviousExpensesType[]
 }
+
+export type ExpenseFormType = {
+  ID: number
+  categoryID: string
+  description: string
+  amount: string
+  header: string
+}
+
+export type ExpensesModalType<T> = {
+  isOpen: boolean
+  onOpenChange: () => void
+  data: T | null
+  onClick?: () => void
+  onDblClick?: () => void
+  afterHandler?: (newData: ExpenseFormType) => void
+}

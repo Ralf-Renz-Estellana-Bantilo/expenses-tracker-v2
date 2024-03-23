@@ -8,6 +8,7 @@ const URL_MONTHLYPERCENTAGEBREAKDOWN = "/api/monthlypercentagebreakdown"
 const URL_DAILYEXPENSES = "/api/dailyexpenses"
 const URL_MONTHLYEXPENSES = "/api/monthlyexpenses"
 const URL_SUMMARY = "/api/summary"
+const URL_ACTIONFILTER = "/api/actionfilter"
 
 const fetchURL = async <T>(url: string, payload: unknown): Promise<T> => {
   try {
@@ -58,4 +59,15 @@ export const fetchSummary = async <T>(payload: {
   user: string
 }): Promise<T> => {
   return await fetchURL(URL_SUMMARY, payload)
+}
+
+export const fetchActionFilter = async <T>(payload: {
+  user: string
+  category: string
+  month: string
+  year: string
+  sort: string
+  order: string
+}): Promise<T> => {
+  return await fetchURL(URL_ACTIONFILTER, payload)
 }

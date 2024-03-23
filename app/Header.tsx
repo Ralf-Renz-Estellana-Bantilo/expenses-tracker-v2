@@ -18,6 +18,7 @@ import {
   LogoutIcon,
   SearchIcon,
   SettingsIcon,
+  StarIcon,
 } from "./icons/icons"
 import { AppContext } from "./context/context"
 import { redirect, useRouter } from "next/navigation"
@@ -152,6 +153,15 @@ const Header = ({
                   <EyeSlashOutlineIcon />
                 )}
                 {context?.isMasked ? "Disable Mask" : "Enable Mask"}
+              </span>
+            </DropdownItem>
+            <DropdownItem
+              key="actions"
+              onClick={() => handleChangeRoute("/actions")}
+            >
+              <span className="flex gap-2">
+                <StarIcon />
+                Action Center
               </span>
             </DropdownItem>
             <DropdownItem
