@@ -11,7 +11,7 @@ import {
 } from "../components/Wrapper"
 import { BillIcon, PlusIcon } from "../icons/icons"
 import { formatMoney, getExpenseDescription, getIcons } from "../utils/utils"
-import ExpensesModal from "../components/modals/ExpensesModal"
+import ExpensesFormModal from "../components/modals/ExpensesFormModal"
 import moment from "moment"
 import { TodaysExpensesType } from "../types/type"
 import SuspenseContainer from "../components/SuspenseContainer"
@@ -42,7 +42,7 @@ const TodaysExpenses = () => {
 
   return (
     <>
-      <ExpensesModal
+      <ExpensesFormModal
         isOpen={isOpen}
         data={preview}
         onOpenChange={onOpenChange}

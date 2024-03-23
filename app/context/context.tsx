@@ -210,6 +210,23 @@ export default function ComponentContextProvider({
     }
   }
 
+  const initialize = () => {
+    Promise.all([
+      getTodayExpenses(),
+      getPreviousExpenses(),
+      getCategories(),
+      getMonthlyExpenses(),
+      getBudgetWallet(),
+    ])
+      .then(() => {
+        console.log("Resources loaded!")
+      })
+      .catch((error) => {
+        console.error(error)
+        alert(error)
+      })
+  }
+
   useEffect(() => {
     if (session) {
       if (tabs.map(({ path }) => path).includes(pathname)) {
@@ -221,20 +238,7 @@ export default function ComponentContextProvider({
       let isMaskedValue = isMaskSessionValue === "true" ?? true
       localStorage.setItem("isMasked", `${isMaskedValue}`)
       setIsMasked(isMaskedValue)
-      Promise.all([
-        getTodayExpenses(),
-        getPreviousExpenses(),
-        getCategories(),
-        getMonthlyExpenses(),
-        getBudgetWallet(),
-      ])
-        .then(() => {
-          console.log("Resources loaded!")
-        })
-        .catch((error) => {
-          console.error(error)
-          alert(error)
-        })
+      initialize()
     }
   }, [])
 
@@ -283,7 +287,7 @@ export default function ComponentContextProvider({
         ] as TodaysExpensesType[]
       }
       setTodayExpenses(updatedExpenses!)
-      await getMonthlyExpenses()
+      initialize()
       isTodayExpensePending.current = false
     } catch (error) {
       console.log(error)

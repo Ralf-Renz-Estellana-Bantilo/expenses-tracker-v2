@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { AppContext } from "../context/context"
 import {
   Button,
@@ -8,12 +8,6 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ScrollShadow,
   useDisclosure,
 } from "@nextui-org/react"
 import {
@@ -22,17 +16,12 @@ import {
   WrapperFooter,
   WrapperHeader,
 } from "../components/Wrapper"
-import {
-  CURRENT_MONTHID,
-  formatMoney,
-  getCurrentMonth,
-  getExpenseDescription,
-  getIcons,
-} from "../utils/utils"
+import { CURRENT_MONTHID, formatMoney, getCurrentMonth } from "../utils/utils"
 import { FormattedPreviousExpensesType } from "../types/type"
 import moment from "moment"
 import SuspenseContainer from "../components/SuspenseContainer"
 import { CardList } from "../components/CardList"
+import ExpensesListModal from "../components/modals/ExpensesListModal"
 
 interface TMonthList {
   monthID: number
@@ -59,10 +48,6 @@ const PreviousExpenses = () => {
   const previewExpense = (expense: FormattedPreviousExpensesType) => {
     setPreview(expense)
     onOpen()
-  }
-
-  const findCategory = (categoryID: number) => {
-    return context?.categories?.find(({ ID }) => ID === categoryID)
   }
 
   const onSelectMonth = async (item: TMonthList) => {
@@ -106,58 +91,11 @@ const PreviousExpenses = () => {
 
   return (
     <>
-      <Modal
-        className="border-1 border-border-color bg-container-secondary"
-        backdrop="blur"
+      <ExpensesListModal
+        data={preview}
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        placement="center"
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1 font-bold">
-                Expenses List
-              </ModalHeader>
-              <ModalBody>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center border-1 border-blue-800 bg-blue-500 backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-lg p-2 justify-between text-default-500 flex-1 ">
-                    <h3>Date: </h3>
-                    <span className="font-semibold">
-                      {moment(preview?.date).format("ll")}
-                    </span>
-                  </div>
-                  <div className="flex items-center border-1 border-red-800 bg-red-500 backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-lg p-2 justify-between text-default-500 flex-1">
-                    <h3>Total: </h3>
-                    <span className="font-semibold">
-                      {formatMoney(preview?.total ?? 0)}
-                    </span>
-                  </div>
-                </div>
-                <ScrollShadow className="flex flex-col max-h-[48vh] overflow-auto">
-                  {preview?.expensesList.map((expense) => (
-                    <CardList
-                      key={expense.ID}
-                      iconName={getIcons(expense.categoryID) as string}
-                      title={findCategory(expense.categoryID)?.description}
-                      description={getExpenseDescription(
-                        expense.created_on,
-                        expense.description
-                      )}
-                      value={formatMoney(expense.amount)}
-                    />
-                  ))}
-                </ScrollShadow>
-              </ModalBody>
-              <ModalFooter>
-                <Button variant="light" color="danger" onPress={onClose}>
-                  Close
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      />
       <Wrapper>
         <WrapperHeader className="flex items-center justify-between">
           <h3 className="font-semibold text-accent-secondary">
