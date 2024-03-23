@@ -12,7 +12,7 @@ export default function SuspenseContainer<T extends { length: number }>({
   data: T | null | undefined
   noDataMsg?: string
 }) {
-  if (data === null || data === undefined) {
+  if (!data) {
     return <CardListSkeleton />
   } else {
     return data.length > 0 ? (
