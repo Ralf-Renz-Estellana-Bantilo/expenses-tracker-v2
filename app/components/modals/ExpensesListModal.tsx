@@ -63,8 +63,6 @@ const ExpensesListModal = ({
                 {data?.expensesList.map((expense) => (
                   <CardList
                     key={expense.ID}
-                    data={expense}
-                    canUpdate
                     iconName={getIcons(expense.categoryID) as string}
                     title={findCategory(expense.categoryID)?.description}
                     description={getExpenseDescription(
@@ -72,7 +70,6 @@ const ExpensesListModal = ({
                       expense.description
                     )}
                     value={formatMoney(expense.amount)}
-                    handleDblClick={() => console.log("")}
                   />
                 ))}
               </ScrollShadow>
