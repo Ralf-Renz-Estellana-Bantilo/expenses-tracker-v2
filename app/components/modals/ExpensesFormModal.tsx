@@ -1,7 +1,7 @@
 "use client"
 
 import { AppContext } from "@/app/context/context"
-import { TodaysExpensesType } from "@/app/types/type"
+import { ExpensesModalType, TodaysExpensesType } from "@/app/types/type"
 import {
   Button,
   Input,
@@ -18,13 +18,6 @@ import { useSession } from "next-auth/react"
 import Image from "next/image"
 import useAlert from "@/app/hook/useAlert"
 import useCredit from "@/app/hook/useCredit"
-import { formatMoney } from "@/app/utils/utils"
-
-type ExpensesModalType = {
-  isOpen: boolean
-  onOpenChange: () => void
-  data: TodaysExpensesType | null
-}
 
 const DEFAULT_FORM = {
   ID: 0,
@@ -34,7 +27,12 @@ const DEFAULT_FORM = {
   header: "Add New Expense",
 }
 
-const ExpensesModal = ({ isOpen, onOpenChange, data }: ExpensesModalType) => {
+const ExpensesFormModal = ({
+  isOpen,
+  onOpenChange,
+  data,
+  afterHandler,
+}: ExpensesModalType<TodaysExpensesType>) => {
   const { data: session } = useSession()
   const context = AppContext()
   const { totalBalance } = useCredit()
@@ -91,6 +89,10 @@ const ExpensesModal = ({ isOpen, onOpenChange, data }: ExpensesModalType) => {
       }
     } else {
       showAlert({ type: "warning", message: "Error! Form data is invalid!" })
+    }
+
+    if (afterHandler) {
+      afterHandler(formData)
     }
   }
 
@@ -227,4 +229,4 @@ const ExpensesModal = ({ isOpen, onOpenChange, data }: ExpensesModalType) => {
   )
 }
 
-export default memo(ExpensesModal)
+export default memo(ExpensesFormModal)
