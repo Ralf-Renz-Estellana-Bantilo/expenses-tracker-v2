@@ -24,7 +24,6 @@ const CategoryPercentageAnalytics = () => {
         const response = (await fetchMonthlyPercentageBreakdown({
           user,
         })) as AnalyticsPercentageType[]
-        console.log(response)
         response.sort((a, b) => Number(b.percentage) - Number(a.percentage))
         setPercentageBreakdown(response)
       } finally {
