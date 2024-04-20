@@ -105,6 +105,7 @@ export const getIcons = (ID?: number) => {
     "clothes",
     "shopping",
     "purchase",
+    "healthcare",
     "others",
   ]
 
@@ -126,25 +127,18 @@ export const getExpenseDescription = (
 
 export const setRandomColor = (ID: number | string) => {
   const COLORS = [
-    "#8884d8",
-    "#82ca9d",
-    "#994D1C",
-    "#B31312",
-    "#C5E898",
-    "#EBE3D5",
-    "#87C4FF",
-    "#00A9FF",
-    "#F875AA",
-    "#F9B572",
-    "#DADDB1",
-    "#F4CE14",
-    "#DAFFFB",
-    "#D988B9",
-    "#79AC78",
-    "#662549",
-    "#FF9B82",
-    "#A2C579",
-    "#9A3B3B",
+    "#00A9FF", // food
+    "#52D3D8", // transportation
+    "#994D1C", // communication
+    "#285430", // insurance
+    "#41B06E", // rent
+    "#153448", // bill
+    "#F38BA0", // family
+    "#0B60B0", // clothes
+    "#FFC94A", // shopping
+    "#F2613F", // purchase
+    "#FA7070", // healthcare
+    "#C5E898", // others
   ]
 
   return COLORS[(Number(ID) - 1) % COLORS.length]
