@@ -52,7 +52,7 @@ const ExpensesFormModal = ({
 
     if (
       categoryID !== "" &&
-      Number(amount) !== 0 &&
+      Number(amount) >= 0 &&
       amount !== "" &&
       !isInvalid.status
     ) {
@@ -111,7 +111,7 @@ const ExpensesFormModal = ({
 
     if (status) {
       message = `Error! Insufficient balance!`
-    } else if (Number(formData.amount) <= 0 && formData.amount !== "") {
+    } else if (Number(formData.amount) < 0 && formData.amount !== "") {
       message = "Error! Invalid amount!"
       status = true
     }

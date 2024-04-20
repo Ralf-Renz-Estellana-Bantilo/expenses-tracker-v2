@@ -131,16 +131,20 @@ const ActionCenterPage = () => {
       replace(newURL)
       setExpensesList(null)
 
-      const result = (await fetchActionFilter({
-        user,
-        category,
-        month,
-        year,
-        sort,
-        order,
-      })) as TodaysExpensesType[]
+      try {
+        const result = (await fetchActionFilter({
+          user,
+          category,
+          month,
+          year,
+          sort,
+          order,
+        })) as TodaysExpensesType[]
 
-      setExpensesList(result)
+        setExpensesList(result)
+      } catch (error) {
+        setExpensesList([])
+      }
     }
   }
 
@@ -315,7 +319,7 @@ const ActionCenterPage = () => {
               <RefreshIcon />
             </Button>
           </WrapperHeader>
-          <WrapperContent className="flex flex-col" scrollable>
+          <WrapperContent className="flex flex-col max-h-[70vh]">
             <SuspenseContainer data={expensesList}>
               {expensesList?.map((expense) => (
                 <CardList

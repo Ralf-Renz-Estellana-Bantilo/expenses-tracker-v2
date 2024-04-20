@@ -1,66 +1,56 @@
 "use client"
 
 import { ScrollShadow } from "@nextui-org/react"
-import React, { ReactNode } from "react"
+import React, { DetailedHTMLProps, HTMLAttributes } from "react"
 
-const Wrapper = ({
-  children,
-  className,
-}: {
-  children: ReactNode
-  className?: string
-}) => {
+const Wrapper = (
+  props?: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+) => {
   return (
     <div
-      className={`bg-slate-500 backdrop-filter backdrop-blur-sm bg-opacity-10 p-2 border-1 border-border-color rounded-lg ${className}`}
+      {...props}
+      className={`bg-slate-500 backdrop-filter backdrop-blur-sm bg-opacity-10 p-2 border-1 border-border-color rounded-lg ease-in-out duration-75 ${props?.className} hover:border-[#314153]`}
     >
-      {children}
+      {props?.children}
     </div>
   )
 }
 
-const WrapperHeader = ({
-  children,
-  className,
-}: {
-  children: ReactNode
-  className?: string
-}) => {
+const WrapperHeader = (
+  props?: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+) => {
   return (
-    <div className={`border-b-1 border-border-color pb-2 ${className}`}>
-      {children}
+    <div
+      {...props}
+      className={`border-b-1 border-border-color pb-2 ${props?.className}`}
+    >
+      {props?.children}
     </div>
   )
 }
 
-const WrapperContent = ({
-  children,
-  className,
-  scrollable,
-}: {
-  children: ReactNode
-  className?: string
-  scrollable?: boolean
-}) => {
+const WrapperContent = (
+  props?: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
+    scrollable?: boolean
+  }
+) => {
   return (
     <ScrollShadow
-      className={`py-2 ${className} ${scrollable && "max-h-[50vh]"}`}
+      className={`py-2 ${props?.className} ${
+        props?.scrollable && "max-h-[50vh]"
+      }`}
     >
-      {children}
+      {props?.children}
     </ScrollShadow>
   )
 }
 
-const WrapperFooter = ({
-  children,
-  className,
-}: {
-  children: ReactNode
-  className?: string
-}) => {
+const WrapperFooter = (
+  props?: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+) => {
   return (
-    <div className={`border-t-1 border-border-color pt-2 ${className}`}>
-      {children}
+    <div className={`border-t-1 border-border-color pt-2 ${props?.className}`}>
+      {props?.children}
     </div>
   )
 }
