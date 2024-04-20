@@ -200,3 +200,5 @@ export type ExpensesModalType<T> = {
   onDblClick?: () => void
   afterHandler?: (newData: ExpenseFormType) => void
 }
+
+export type SizeType = "xs" | "sm" | "md" | "lg" | "xl"

@@ -142,7 +142,7 @@ const PreviousExpenses = () => {
           <h3 className="text-default-500">Total:</h3>
           <p className="text-default-500">
             {" "}
-            {formatMoney(totalPreviousExpenses)}
+            {formatMoney(totalPreviousExpenses, context?.isMasked)}
           </p>
         </WrapperFooter>
       </Wrapper>
