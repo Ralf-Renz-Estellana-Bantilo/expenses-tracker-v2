@@ -39,6 +39,8 @@ export const fetchPastWeekExpense = async <T>(payload: {
 
 export const fetchMonthlyPercentageBreakdown = async <T>(payload: {
   user: string
+  monthID: number
+  year: number
 }): Promise<T> => {
   return await fetchURL(URL_MONTHLYPERCENTAGEBREAKDOWN, payload)
 }

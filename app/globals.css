@@ -49,3 +49,8 @@ body {
     var(--dark-blue) 48.73%
   );
 }
+
+/* overide */
+.text-foreground-500 {
+  color: #e7f1f3;
+}

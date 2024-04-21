@@ -1,7 +1,9 @@
 "use client"
 
+import { ResponseCacheContext } from "@/app/context/cacheContext"
 import { fetchPastWeekExpense } from "@/app/controller/controller"
 import { formatDate, setRandomColor } from "@/app/utils/utils"
+import moment from "moment"
 import { useSession } from "next-auth/react"
 import React, { useEffect, useState } from "react"
 import {
@@ -96,6 +98,7 @@ const CustomizedAxisTick = ({ x, y, stroke, payload }) => {
 
 const CustomizedLabelLineChart = () => {
   const { data: session } = useSession()
+  const cacheContext = ResponseCacheContext()
 
   const user = session.user.email
 
@@ -103,41 +106,70 @@ const CustomizedLabelLineChart = () => {
   const [categories, setCategories] = useState([])
 
   const getPastWeekExpenses = async () => {
-    const result = []
-    const categoryList = []
-    const response = await fetchPastWeekExpense({ user })
+    if (cacheContext) {
+      const { saveToCache, getCacheByID } = cacheContext
 
-    const uniqueDate = [...new Set(response.map(({ date }) => date))]
-    const uniqueCategory = [
-      ...new Set(response.map(({ categoryID }) => categoryID)),
-    ]
+      const pastExpCacheID = `${moment().format("l")}-${"pwe"}`
+      const categoryCacheID = `${moment().format("l")}-${"cat"}`
 
-    uniqueCategory.forEach((categoryID) => {
-      const category = response.find(({ categoryID }) => categoryID)?.category
-      categoryList.push({
-        categoryID,
-        category,
-      })
-    })
+      const pastExpCacheData = getCacheByID(pastExpCacheID)
+      const categoryCacheData = getCacheByID(categoryCacheID)
 
-    uniqueDate.forEach((date) => {
-      const obj = {}
-      obj.date = formatDate(date)
-      uniqueCategory.forEach((categoryID) => {
-        obj[`${categoryID}`] = 0
-      })
+      if (pastExpCacheData) {
+        setCategories(categoryCacheData)
+        setPastWeekExpenses(pastExpCacheData)
+      } else {
+        const result = []
+        const categoryList = []
+        const response = await fetchPastWeekExpense({ user })
 
-      const expensesPerDate = response.filter((res) => res.date == date)
-      expensesPerDate.forEach((expense) => {
-        obj[`${expense.categoryID}`] += Number(expense.amount)
-        obj[`${expense.category}`] = expense.category
-      })
+        const uniqueDate = [...new Set(response.map(({ date }) => date))]
+        const uniqueCategory = [
+          ...new Set(response.map(({ categoryID }) => categoryID)),
+        ]
 
-      result.push(obj)
-    })
+        uniqueCategory.forEach((categoryID) => {
+          const category = response.find(
+            ({ categoryID }) => categoryID
+          )?.category
+          categoryList.push({
+            categoryID,
+            category,
+          })
+        })
 
-    setCategories(categoryList.sort((a, b) => a.categoryID - b.categoryID))
-    setPastWeekExpenses(result)
+        uniqueDate.forEach((date) => {
+          const obj = {}
+          obj.date = formatDate(date)
+          uniqueCategory.forEach((categoryID) => {
+            obj[`${categoryID}`] = 0
+          })
+
+          const expensesPerDate = response.filter((res) => res.date == date)
+          expensesPerDate.forEach((expense) => {
+            obj[`${expense.categoryID}`] += Number(expense.amount)
+            obj[`${expense.category}`] = expense.category
+          })
+
+          result.push(obj)
+        })
+
+        const sortedList = categoryList.sort(
+          (a, b) => a.categoryID - b.categoryID
+        )
+        setCategories(sortedList)
+        setPastWeekExpenses(result)
+
+        saveToCache({
+          cacheID: pastExpCacheID,
+          data: result,
+        })
+        saveToCache({
+          cacheID: categoryCacheID,
+          data: sortedList,
+        })
+      }
+    }
   }
 
   useEffect(() => {

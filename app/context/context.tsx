@@ -91,6 +91,7 @@ export default function ComponentContextProvider({
 
   const isTodayExpensePending = useRef(false)
   const isWalletBudgetPending = useRef(false)
+  const isLoadingState = useRef(false)
 
   const [isMasked, setIsMasked] = useState(true)
 
@@ -357,6 +358,7 @@ export default function ComponentContextProvider({
     isMasked,
     isTodayExpensePending,
     isWalletBudgetPending,
+    isLoadingState,
     summary,
     monthlyExpensesBreakdown,
     setIsMasked,
