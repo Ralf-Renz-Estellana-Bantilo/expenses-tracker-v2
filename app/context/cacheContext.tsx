@@ -6,7 +6,9 @@ type CacheType = {
 
 type ResponseCacheType = {
   saveToCache: ({ cacheID, data }: { cacheID: string; data: any }) => void
-  getCacheByID: (cachedID: string) => CacheType | null
+  getCacheByID: <T>(cachedID: string) => T | null
+  removeCacheByID: (cachedID: string) => void
+  cacheList: CacheType
 }
 
 export const CacheContext = createContext<ResponseCacheType | null>(null)
@@ -31,14 +33,22 @@ export default function CacheContextProvider({
     }))
   }
 
-  const getCacheByID = (cachedID: string): CacheType | null => {
+  const getCacheByID = (cachedID: string) => {
     const hasCachedData = Object.hasOwn(cacheList, cachedID)
     return hasCachedData ? cacheList[cachedID] : null
+  }
+
+  const removeCacheByID = (cacheID: string) => {
+    const cache = cacheList
+    delete cache[cacheID]
+    setCache(cache)
   }
 
   const value: ResponseCacheType = {
     saveToCache,
     getCacheByID,
+    removeCacheByID,
+    cacheList,
   }
 
   return <CacheContext.Provider value={value}>{children}</CacheContext.Provider>

@@ -77,10 +77,10 @@ const CategoryPercentageAnalytics = () => {
       if (cacheContext) {
         const { saveToCache, getCacheByID } = cacheContext
         const cacheID = `${option.monthID}-${option.year}-${"mpb"}`
-        const cacheData = getCacheByID(cacheID)
+        const cacheData = getCacheByID<AnalyticsPercentageType[]>(cacheID)
 
         if (cacheData) {
-          setPercentageBreakdown(cacheData as AnalyticsPercentageType[])
+          setPercentageBreakdown(cacheData)
         } else {
           const response = (await fetchMonthlyPercentageBreakdown(
             option

@@ -18,6 +18,8 @@ import { useSession } from "next-auth/react"
 import Image from "next/image"
 import useAlert from "@/app/hook/useAlert"
 import useCredit from "@/app/hook/useCredit"
+import { ResponseCacheContext } from "@/app/context/cacheContext"
+import { CURRENT_MONTHID, CURRENT_YEAR } from "@/app/utils/utils"
 
 const DEFAULT_FORM = {
   ID: 0,
@@ -35,6 +37,7 @@ const ExpensesFormModal = ({
 }: ExpensesModalType<TodaysExpensesType>) => {
   const { data: session } = useSession()
   const context = AppContext()
+  const cacheContext = ResponseCacheContext()
   const { totalBalance } = useCredit()
   const [formData, setFormData] = useState(DEFAULT_FORM)
 
@@ -85,6 +88,13 @@ const ExpensesFormModal = ({
 
         setFormData(DEFAULT_FORM)
         showAlert({ type: "success", message: alertMessage })
+
+        if (cacheContext) {
+          const { removeCacheByID } = cacheContext
+          const cachedID = `${CURRENT_MONTHID}-${CURRENT_YEAR}-mel`
+          removeCacheByID(cachedID)
+        }
+
         onClose()
       }
     } else {

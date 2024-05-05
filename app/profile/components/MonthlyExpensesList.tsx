@@ -28,16 +28,17 @@ import { useSession } from "next-auth/react"
 import {
   FormattedPreviousExpensesType,
   MasterSelectPayloadType,
-  MonthlyExpensesBreakdownType,
   MonthlyExpensesType,
   PreviousExpensesType,
 } from "@/app/types/type"
 import { redirect } from "next/navigation"
 import { fetchMasterSelect } from "@/app/controller/controller"
 import { CardList } from "@/app/components/CardList"
+import { ResponseCacheContext } from "@/app/context/cacheContext"
 
 const MonthlyExpensesList = () => {
   const context = AppContext()
+  const cacheContext = ResponseCacheContext()
   const { data: session } = useSession()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
@@ -51,11 +52,7 @@ const MonthlyExpensesList = () => {
     redirect("/login")
   }
 
-  const {
-    monthlyExpensesBreakdown,
-    setMonthlyExpensesBreakdown,
-    todayExpenses,
-  } = context
+  const { todayExpenses } = context
 
   const monthlyExpenses: MonthlyExpensesType[] | undefined =
     context.monthlyExpenses?.filter((expense) => expense.year === selectedYear)
@@ -74,66 +71,66 @@ const MonthlyExpensesList = () => {
     async ({ monthID, year }: MonthlyExpensesType) => {
       const isMasked = context.isMasked ?? false
       if (!isMasked) {
-        const cachedID = `${monthID}-${year}`
-        const hasCachedData = Object.hasOwn(monthlyExpensesBreakdown, cachedID)
+        if (cacheContext) {
+          const { saveToCache, getCacheByID } = cacheContext
 
-        let result = undefined
-        if (hasCachedData) {
-          result = monthlyExpensesBreakdown[cachedID]
-        } else {
-          const payload: MasterSelectPayloadType<PreviousExpensesType> = {
-            table: "previous_expenses_view",
-            filter: {
-              monthID,
-              year,
-              created_by: session.user?.email ?? "",
-              status: 1,
-            },
-            sort: {
-              ID: "ASC",
-            },
-          }
-          let response = (await fetchMasterSelect(
-            payload
-          )) as PreviousExpensesType[]
+          const cachedID = `${monthID}-${year}-mel`
+          const monthlyExpensesBreakdownCachedData =
+            getCacheByID<FormattedPreviousExpensesType[]>(cachedID)
 
-          if (CURRENT_MONTHID === monthID) {
-            if (todayExpenses) {
-              const allTodayExpenses: PreviousExpensesType[] = Array.from(
-                todayExpenses,
-                (exp) => {
-                  const result: PreviousExpensesType = {
-                    ...exp,
-                    year: CURRENT_YEAR,
-                    monthID: CURRENT_MONTHID,
-                  }
-                  return result
-                }
-              )
-              response = [...response, ...allTodayExpenses]
+          console.log({ monthlyExpensesBreakdownCachedData })
+
+          let result = undefined
+          if (monthlyExpensesBreakdownCachedData) {
+            result = monthlyExpensesBreakdownCachedData
+          } else {
+            const payload: MasterSelectPayloadType<PreviousExpensesType> = {
+              table: "previous_expenses_view",
+              filter: {
+                monthID,
+                year,
+                created_by: session.user?.email ?? "",
+                status: 1,
+              },
+              sort: {
+                ID: "ASC",
+              },
             }
+            let response = (await fetchMasterSelect(
+              payload
+            )) as PreviousExpensesType[]
+
+            if (CURRENT_MONTHID === monthID) {
+              if (todayExpenses) {
+                const allTodayExpenses: PreviousExpensesType[] = Array.from(
+                  todayExpenses,
+                  (exp) => {
+                    const result: PreviousExpensesType = {
+                      ...exp,
+                      year: CURRENT_YEAR,
+                      monthID: CURRENT_MONTHID,
+                    }
+                    return result
+                  }
+                )
+                response = [...response, ...allTodayExpenses]
+              }
+            }
+
+            result = formatPreviousExpenses(response)
+
+            saveToCache({
+              cacheID: cachedID,
+              data: result,
+            })
           }
 
-          result = formatPreviousExpenses(response)
-
-          const cachedInfo: MonthlyExpensesBreakdownType = {}
-          cachedInfo[cachedID] = result
-          setMonthlyExpensesBreakdown((prev) => ({
-            ...prev,
-            ...cachedInfo,
-          }))
+          setExpensesList(result)
+          onOpen()
         }
-
-        setExpensesList(result)
-        onOpen()
       }
     },
-    [
-      setExpensesList,
-      setMonthlyExpensesBreakdown,
-      monthlyExpensesBreakdown,
-      context.isMasked,
-    ]
+    [setExpensesList, context.isMasked, cacheContext?.cacheList]
   )
 
   useEffect(() => {
