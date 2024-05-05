@@ -34,13 +34,13 @@ const AverageExpenses = () => {
       const dailyExpCacheID = `${moment().format("l")}-${"dex"}`
       const monthlyExpCacheID = `${moment().format("l")}-${"mex"}`
 
-      const dailyExpCacheData = getCacheByID(dailyExpCacheID)
-      const monthlyExpCacheData = getCacheByID(monthlyExpCacheID)
+      const dailyExpCacheData = getCacheByID<number>(dailyExpCacheID)
+      const monthlyExpCacheData = getCacheByID<number>(monthlyExpCacheID)
 
       if (dailyExpCacheData && monthlyExpCacheData) {
         setAverage({
-          daily: dailyExpCacheData as unknown as number,
-          monthly: monthlyExpCacheData as unknown as number,
+          daily: dailyExpCacheData,
+          monthly: monthlyExpCacheData,
         })
       } else {
         const getDailyExpenses: AnalyticsDailyAverageType[] =
