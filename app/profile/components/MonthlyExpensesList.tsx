@@ -78,8 +78,6 @@ const MonthlyExpensesList = () => {
           const monthlyExpensesBreakdownCachedData =
             getCacheByID<FormattedPreviousExpensesType[]>(cachedID)
 
-          console.log({ monthlyExpensesBreakdownCachedData })
-
           let result = undefined
           if (monthlyExpensesBreakdownCachedData) {
             result = monthlyExpensesBreakdownCachedData
