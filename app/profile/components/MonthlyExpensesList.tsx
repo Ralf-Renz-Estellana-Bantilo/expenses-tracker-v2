@@ -72,32 +72,28 @@ const MonthlyExpensesList = () => {
       const isMasked = context.isMasked ?? false
       if (!isMasked) {
         if (cacheContext) {
-          const { saveToCache, getCacheByID } = cacheContext
+          const { useResponse } = cacheContext
 
           const cachedID = `${monthID}-${year}-mel`
-          const monthlyExpensesBreakdownCachedData =
-            getCacheByID<FormattedPreviousExpensesType[]>(cachedID)
 
-          let result = undefined
-          if (monthlyExpensesBreakdownCachedData) {
-            result = monthlyExpensesBreakdownCachedData
-          } else {
-            const payload: MasterSelectPayloadType<PreviousExpensesType> = {
-              table: "previous_expenses_view",
-              filter: {
-                monthID,
-                year,
-                created_by: session.user?.email ?? "",
-                status: 1,
-              },
-              sort: {
-                ID: "ASC",
-              },
-            }
-            let response = (await fetchMasterSelect(
-              payload
-            )) as PreviousExpensesType[]
+          const payload: MasterSelectPayloadType<PreviousExpensesType> = {
+            table: "previous_expenses_view",
+            filter: {
+              monthID,
+              year,
+              created_by: session.user?.email ?? "",
+              status: 1,
+            },
+            sort: {
+              ID: "ASC",
+            },
+          }
+          let response = await useResponse<PreviousExpensesType[]>(
+            cachedID,
+            () => fetchMasterSelect(payload)
+          )
 
+          if (response) {
             if (CURRENT_MONTHID === monthID) {
               if (todayExpenses) {
                 const allTodayExpenses: PreviousExpensesType[] = Array.from(
@@ -114,14 +110,10 @@ const MonthlyExpensesList = () => {
                 response = [...response, ...allTodayExpenses]
               }
             }
-
-            result = formatPreviousExpenses(response)
-
-            saveToCache({
-              cacheID: cachedID,
-              data: result,
-            })
+          } else {
+            response = []
           }
+          const result = formatPreviousExpenses(response)
 
           setExpensesList(result)
           onOpen()
