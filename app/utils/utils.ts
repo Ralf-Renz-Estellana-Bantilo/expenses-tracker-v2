@@ -129,10 +129,10 @@ export const setRandomColor = (ID: number | string) => {
   const COLORS = [
     "#00A9FF", // food
     "#52D3D8", // transportation
-    "#994D1C", // communication
-    "#285430", // insurance
+    "#C0D6E8", // communication
+    "#C73659", // insurance
     "#41B06E", // rent
-    "#153448", // bill
+    "#AD88C6", // bill
     "#F38BA0", // family
     "#0B60B0", // clothes
     "#FFC94A", // shopping

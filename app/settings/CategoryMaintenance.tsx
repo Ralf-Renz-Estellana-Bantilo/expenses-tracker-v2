@@ -3,10 +3,7 @@
 import React from "react"
 import { AppContext } from "../context/context"
 import { Wrapper, WrapperContent, WrapperHeader } from "../components/Wrapper"
-import { Button } from "@nextui-org/react"
-import { BillIcon, DeleteIcon, EditIcon, PlusIcon } from "../icons/icons"
 import SuspenseContainer from "../components/SuspenseContainer"
-import Image from "next/image"
 import { CardList } from "../components/CardList"
 
 const CategoryMaintenance = () => {

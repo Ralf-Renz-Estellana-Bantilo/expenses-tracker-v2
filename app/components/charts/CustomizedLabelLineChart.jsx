@@ -195,9 +195,10 @@ const CustomizedLabelLineChart = () => {
         <Tooltip />
         <Legend />
         {/* <Line type="monotone" dataKey="pv" stroke="#8884d8" /> */}
-        {categories.map((category) => {
+        {categories.map((category, index) => {
           return (
             <Line
+              key={index}
               type="monotone"
               dataKey={category.categoryID}
               stroke={setRandomColor(category.categoryID)}

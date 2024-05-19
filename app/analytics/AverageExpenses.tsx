@@ -30,41 +30,32 @@ const AverageExpenses = () => {
 
   const getExpensesAverage = async () => {
     if (user && cacheContext) {
-      const { getCacheByID, saveToCache } = cacheContext
+      const { useResponse } = cacheContext
       const dailyExpCacheID = `${moment().format("l")}-${"dex"}`
       const monthlyExpCacheID = `${moment().format("l")}-${"mex"}`
 
-      const dailyExpCacheData = getCacheByID<number>(dailyExpCacheID)
-      const monthlyExpCacheData = getCacheByID<number>(monthlyExpCacheID)
+      const getDailyExpenses = await useResponse<AnalyticsDailyAverageType[]>(
+        dailyExpCacheID,
+        () => fetchDailyExpenses({ user })
+      )
 
-      if (dailyExpCacheData && monthlyExpCacheData) {
-        setAverage({
-          daily: dailyExpCacheData,
-          monthly: monthlyExpCacheData,
-        })
-      } else {
-        const getDailyExpenses: AnalyticsDailyAverageType[] =
-          await fetchDailyExpenses({ user })
-        const getMonthlyExpenses: AnalyticsMonthlyAverageType[] =
-          await fetchMonthlyExpenses({ user })
+      const getMonthlyExpenses = await useResponse<
+        AnalyticsMonthlyAverageType[]
+      >(monthlyExpCacheID, () => fetchMonthlyExpenses({ user }))
 
-        const dailyAverage = getDailyExpenses[0].dailyAverage
-        const monthlyAverage = getMonthlyExpenses[0].monthly_average
-
-        setAverage({
-          daily: dailyAverage,
-          monthly: monthlyAverage,
-        })
-
-        saveToCache({
-          cacheID: dailyExpCacheID,
-          data: dailyAverage,
-        })
-        saveToCache({
-          cacheID: monthlyExpCacheID,
-          data: monthlyAverage,
-        })
+      let dailyAverage = 0
+      if (getDailyExpenses) {
+        dailyAverage = getDailyExpenses[0]?.dailyAverage
       }
+
+      let monthlyAverage = 0
+      if (getMonthlyExpenses) {
+        monthlyAverage = getMonthlyExpenses[0]?.monthly_average
+      }
+      setAverage({
+        daily: dailyAverage,
+        monthly: monthlyAverage,
+      })
     }
   }
 

@@ -1,4 +1,5 @@
 import React, { ReactNode, createContext, useContext, useState } from "react"
+import useAlert from "../hook/useAlert"
 
 type CacheType = {
   [cacheID: string]: any
@@ -8,6 +9,10 @@ type ResponseCacheType = {
   saveToCache: ({ cacheID, data }: { cacheID: string; data: any }) => void
   getCacheByID: <T>(cachedID: string) => T | null
   removeCacheByID: (cachedID: string) => void
+  useResponse: <T>(
+    key: string,
+    callback: () => Promise<void> | void
+  ) => Promise<T> | null
   cacheList: CacheType
 }
 
@@ -18,6 +23,8 @@ export default function CacheContextProvider({
 }: {
   children: ReactNode
 }) {
+  const { showAlert } = useAlert()
+
   const [cacheList, setCache] = useState<CacheType>({})
 
   const saveToCache = ({
@@ -44,10 +51,41 @@ export default function CacheContextProvider({
     setCache(cache)
   }
 
+  const useResponse = async (
+    key: string,
+    callback: () => Promise<void> | void
+  ) => {
+    const fetchData = async () => {
+      return await callback()
+    }
+
+    const cacheData = getCacheByID(key)
+
+    if (cacheData) {
+      return cacheData
+    } else {
+      try {
+        const response = await fetchData()
+        saveToCache({
+          cacheID: key,
+          data: response,
+        })
+        return response
+      } catch (_) {
+        showAlert({
+          type: "error",
+          message: "Something went wrong with the response!",
+        })
+        throw new Error("Something went wrong with the response!")
+      }
+    }
+  }
+
   const value: ResponseCacheType = {
     saveToCache,
     getCacheByID,
     removeCacheByID,
+    useResponse,
     cacheList,
   }
 
