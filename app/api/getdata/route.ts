@@ -1,13 +1,21 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { createNewDbConnection } from "../../database/db"
+import { assertCheckSessionData } from "../helper"
 
-export const GET = async (req: Request, res: Response) => {
-  const db = createNewDbConnection()
-  try {
-    const query = "SELECT * FROM expenses"
-    const result = await db.promise().query(query)
-    return NextResponse.json(result[0], { status: 200 })
-  } catch (err) {
-    return NextResponse.json({ message: "Error!", data: err }, { status: 500 })
-  }
+export const GET = async (req: NextRequest, res: NextResponse) => {
+  return assertCheckSessionData(req, async () => {
+    const db = createNewDbConnection()
+    try {
+      const query = "SELECT * FROM expenses"
+      const result = await db.promise().query(query)
+      db.end()
+      return NextResponse.json(result[0], { status: 200 })
+    } catch (err) {
+      db.end()
+      return NextResponse.json(
+        { message: "Error!", data: err },
+        { status: 500 }
+      )
+    }
+  })
 }

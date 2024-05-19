@@ -19,8 +19,6 @@ import { WalletBudgeType } from "../types/type"
 import SuspenseContainer from "../components/SuspenseContainer"
 import { CardList, CardListSkeleton } from "../components/CardList"
 import useAlert from "../hook/useAlert"
-import { useSession } from "next-auth/react"
-import { redirect } from "next/navigation"
 
 const DEFAULT_FORM = {
   ID: 0,
@@ -31,12 +29,9 @@ const DEFAULT_FORM = {
 }
 
 const WalletMaintenance = () => {
-  const { data: session } = useSession()
   const context = AppContext()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [formData, setFormData] = useState(DEFAULT_FORM)
-
-  if (!session || !context) redirect("/login")
 
   const handleSave = (onClose: () => void) => {
     const { showAlert } = useAlert()

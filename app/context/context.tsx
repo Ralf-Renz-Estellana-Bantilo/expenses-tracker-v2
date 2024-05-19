@@ -36,7 +36,27 @@ import {
   getIcons,
 } from "../utils/utils"
 
-export const ComponentContext = createContext<ContextType | null>(null)
+export const ComponentContext = createContext<ContextType>({
+  tabs: null as any,
+  activeTab: null as any,
+  todayExpenses: null as any,
+  previousExpenses: null as any,
+  monthlyExpenses: null as any,
+  walletBudget: null as any,
+  categories: null as any,
+  isMasked: null as any,
+  isTodayExpensePending: null as any,
+  isWalletBudgetPending: null as any,
+  isLoadingState: null as any,
+  summary: null as any,
+  monthlyExpensesBreakdown: null as any,
+  setIsMasked: null as any,
+  setActiveTab: null as any,
+  handleUpdateExpense: null as any,
+  handleUpdateWalletBudget: null as any,
+  getPreviousExpenses: null as any,
+  setMonthlyExpensesBreakdown: null as any,
+})
 
 export default function ComponentContextProvider({
   children,

@@ -4,14 +4,9 @@ import React from "react"
 import { Spinner } from "@nextui-org/react"
 import { Wrapper } from "./Wrapper"
 import { AppContext } from "../context/context"
-import { redirect } from "next/navigation"
 
 const LoaderSpinner = () => {
-  const context = AppContext()
-
-  if (!context) redirect("/login")
-
-  const { isLoadingState } = context
+  const { isLoadingState } = AppContext()
 
   if (!isLoadingState.current) return null
 
