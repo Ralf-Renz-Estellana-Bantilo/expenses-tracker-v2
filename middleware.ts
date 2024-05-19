@@ -1,27 +1,33 @@
+import { getToken } from "next-auth/jwt"
 import { NextResponse } from "next/server"
 import { NextRequest } from "next/server"
 
-// This function can be marked `async` if using `await` inside
-export function middleware(request: NextRequest) {
-  const session = request.cookies.get("next-auth.session-token")
+export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
+
+  const session = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+  })
 
   if (!session && path !== "/login") {
     return NextResponse.redirect(new URL("/login", request.url))
+  } else if (session && path === "/login") {
+    return NextResponse.redirect(new URL("/", request.url))
   }
 
   return NextResponse.next()
 }
 
-export const ROUTE_LIST = [
-  "dashboard",
-  "profile",
-  "settings",
-  "analytics",
-  "configurations",
-  "actions",
-]
-
 export const config = {
-  matcher: [...ROUTE_LIST],
+  matcher: [
+    "/dashboard",
+    "/profile",
+    "/settings",
+    "/analytics",
+    "/configurations",
+    "/actions",
+    "/actions/:path*",
+    "/((?!api|_next|.*\\..*).*)",
+  ],
 }
