@@ -3,8 +3,6 @@ import { AppContext } from "../context/context"
 const useCategory = () => {
   const context = AppContext()
 
-  if (!context) return []
-
   const { categories } = context
 
   const categoriesList = Array.from(categories ?? [], (category) => {

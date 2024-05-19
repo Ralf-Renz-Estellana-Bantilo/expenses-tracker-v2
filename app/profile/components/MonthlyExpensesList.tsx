@@ -31,7 +31,6 @@ import {
   MonthlyExpensesType,
   PreviousExpensesType,
 } from "@/app/types/type"
-import { redirect } from "next/navigation"
 import { fetchMasterSelect } from "@/app/controller/controller"
 import { CardList } from "@/app/components/CardList"
 import { ResponseCacheContext } from "@/app/context/cacheContext"
@@ -47,10 +46,6 @@ const MonthlyExpensesList = () => {
   const [expensesList, setExpensesList] = useState<
     FormattedPreviousExpensesType[] | null
   >(null)
-
-  if (!session || !context) {
-    redirect("/login")
-  }
 
   const { todayExpenses } = context
 
@@ -81,7 +76,7 @@ const MonthlyExpensesList = () => {
             filter: {
               monthID,
               year,
-              created_by: session.user?.email ?? "",
+              created_by: session?.user?.email ?? "",
               status: 1,
             },
             sort: {

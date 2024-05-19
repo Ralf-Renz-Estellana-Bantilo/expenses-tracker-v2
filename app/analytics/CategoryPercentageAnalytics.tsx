@@ -43,8 +43,6 @@ const CategoryPercentageAnalytics = () => {
   const context = AppContext()
   const cacheContext = ResponseCacheContext()
 
-  if (!context) return null
-
   const { data: session } = useSession()
 
   const user = session?.user?.email ?? ""
