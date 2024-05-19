@@ -1,14 +1,15 @@
 import axios from "axios"
 import { MasterSelectPayload, SaveDataPayloadType } from "../types/type"
-
-const URL_SAVEDATA = "/api/savedata"
-const URL_MASTERSELECT = "/api/masterselect"
-const URL_PASTWEEKEXPENSES = "/api/pastweekexpenses"
-const URL_MONTHLYPERCENTAGEBREAKDOWN = "/api/monthlypercentagebreakdown"
-const URL_DAILYEXPENSES = "/api/dailyexpenses"
-const URL_MONTHLYEXPENSES = "/api/monthlyexpenses"
-const URL_SUMMARY = "/api/summary"
-const URL_ACTIONFILTER = "/api/actionfilter"
+import {
+  URL_ACTIONFILTER,
+  URL_DAILYEXPENSES,
+  URL_MASTERSELECT,
+  URL_MONTHLYEXPENSES,
+  URL_MONTHLYPERCENTAGEBREAKDOWN,
+  URL_PASTWEEKEXPENSES,
+  URL_SAVEDATA,
+  URL_SUMMARY,
+} from "../api/urls"
 
 const fetchURL = async <T>(url: string, payload: unknown): Promise<T> => {
   try {
