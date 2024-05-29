@@ -36,12 +36,12 @@ const AverageExpenses = () => {
 
       const getDailyExpenses = await useResponse<AnalyticsDailyAverageType[]>(
         dailyExpCacheID,
-        () => fetchDailyExpenses({ user })
+        () => fetchDailyExpenses()
       )
 
       const getMonthlyExpenses = await useResponse<
         AnalyticsMonthlyAverageType[]
-      >(monthlyExpCacheID, () => fetchMonthlyExpenses({ user }))
+      >(monthlyExpCacheID, () => fetchMonthlyExpenses())
 
       let dailyAverage = 0
       if (getDailyExpenses) {

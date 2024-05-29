@@ -1,39 +1,44 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { createNewDbConnection } from "../../database/db"
+import { assertCheckSessionData } from "../helper"
 
-export const POST = async (req: Request, res: Response) => {
-  const db = createNewDbConnection()
+export const POST = async (req: NextRequest, res: NextResponse) => {
+  return assertCheckSessionData(req, async (session) => {
+    const db = createNewDbConnection()
 
-  const { user, category, month, year, sort, order } = await req.json()
-  let sortBy = "ASC"
-  let orderBy = "exp.ID"
+    const user = session?.email
 
-  let constructedFilterArray = []
-  if (category) {
-    constructedFilterArray.push(`categoryID IN (${category})`)
-  }
-  if (month) {
-    constructedFilterArray.push(`MONTH(exp.created_on) IN (${month})`)
-  }
-  if (year) {
-    constructedFilterArray.push(`YEAR(exp.created_on) IN (${year})`)
-  }
-  if (sort) {
-    sortBy = sort
-  }
-  if (order) {
-    orderBy = order
-  }
+    const { category, month, year, sort, order } = await req.json()
+    let sortBy = "ASC"
+    let orderBy = "exp.ID"
 
-  constructedFilterArray.push(`status = 1`)
-  constructedFilterArray.push(`created_by = '${user}'`)
+    let constructedFilterArray = []
+    if (category) {
+      constructedFilterArray.push(`categoryID IN (${category})`)
+    }
+    if (month) {
+      constructedFilterArray.push(`MONTH(exp.created_on) IN (${month})`)
+    }
+    if (year) {
+      constructedFilterArray.push(`YEAR(exp.created_on) IN (${year})`)
+    }
+    if (sort) {
+      sortBy = sort
+    }
+    if (order) {
+      orderBy = order
+    }
 
-  const query = `SELECT * FROM expenses_view exp WHERE ${constructedFilterArray.join(
-    " AND "
-  )} ORDER BY ${orderBy} ${sortBy};`
+    constructedFilterArray.push(`status = 1`)
+    constructedFilterArray.push(`created_by = '${user}'`)
 
-  const result = await db.promise().query(query)
+    const query = `SELECT * FROM expenses_view exp WHERE ${constructedFilterArray.join(
+      " AND "
+    )} ORDER BY ${orderBy} ${sortBy};`
 
-  db.end()
-  return NextResponse.json(result[0], { status: 200 })
+    const result = await db.promise().query(query)
+
+    db.end()
+    return NextResponse.json(result[0], { status: 200 })
+  })
 }

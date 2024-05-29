@@ -133,7 +133,6 @@ const ActionCenterPage = () => {
 
       try {
         const result = (await fetchActionFilter({
-          user,
           category,
           month,
           year,

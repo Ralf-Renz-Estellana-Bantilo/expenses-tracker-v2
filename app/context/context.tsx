@@ -201,7 +201,7 @@ export default function ComponentContextProvider({
 
   const getSummary = async () => {
     try {
-      const response = (await fetchSummary({ user })) as DashboardSummaryType[]
+      const response = (await fetchSummary()) as DashboardSummaryType[]
       setSummary(response[0] ?? null)
     } catch (error) {
       console.log(error)
