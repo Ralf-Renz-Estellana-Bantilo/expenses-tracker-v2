@@ -1,10 +1,15 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { TodaysExpensesType, ExpenseFormType } from "../types/type"
 import { useSession } from "next-auth/react"
 import { fetchActionFilter } from "../controller/controller"
-import { Wrapper, WrapperContent, WrapperHeader } from "../components/Wrapper"
+import {
+  Wrapper,
+  WrapperContent,
+  WrapperFooter,
+  WrapperHeader,
+} from "../components/Wrapper"
 import { Button, Select, SelectItem, useDisclosure } from "@nextui-org/react"
 import useMonth from "../hook/useMonth"
 import useYear from "../hook/useYear"
@@ -158,6 +163,16 @@ const ActionCenterPage = () => {
   const selectedYearKeys = filters.year ? filters.year.split(",") : undefined
   const selectedSortKeys = filters.sort ? filters.sort.split(",") : undefined
   const selectedOrderKeys = filters.order ? filters.order.split(",") : undefined
+
+  const resultSum: number = useMemo(() => {
+    const result =
+      expensesList?.reduce(
+        (accumulator, item) => Number(accumulator) + Number(item.amount),
+        0
+      ) ?? 0
+
+    return result
+  }, [expensesList])
 
   return (
     <>
@@ -336,6 +351,12 @@ const ActionCenterPage = () => {
               ))}
             </SuspenseContainer>
           </WrapperContent>
+          <WrapperFooter className="flex items-center justify-between">
+            <h3 className="text-default-500">Total:</h3>
+            <p className="text-default-500">
+              {formatMoney(resultSum, context?.isMasked)}
+            </p>
+          </WrapperFooter>
         </Wrapper>
       </div>
     </>
