@@ -8,6 +8,7 @@ import {
   URL_MONTHLYPERCENTAGEBREAKDOWN,
   URL_PASTWEEKEXPENSES,
   URL_SAVEDATA,
+  URL_SEARCH,
   URL_SUMMARY,
 } from "../api/urls"
 
@@ -63,4 +64,10 @@ export const fetchActionFilter = async <T>(payload: {
   order: string
 }): Promise<T> => {
   return await fetchURL(URL_ACTIONFILTER, payload)
+}
+
+export const fetchSearch = async <T>(payload: {
+  searchText: string
+}): Promise<T> => {
+  return await fetchURL(URL_SEARCH, payload)
 }
