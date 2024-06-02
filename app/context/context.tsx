@@ -30,8 +30,10 @@ import {
   fetchSummary,
 } from "../controller/controller"
 import {
+  CURRENT_DAY,
   CURRENT_MONTHID,
   CURRENT_YEAR,
+  daysInMonth,
   formatPreviousExpenses,
   getIcons,
 } from "../utils/utils"
@@ -154,7 +156,7 @@ export default function ComponentContextProvider({
         payload
       )) as PreviousExpensesType[]
 
-      const result = formatPreviousExpenses(response)
+      const result = formatPreviousExpenses(response, monthID)
       setPreviousExpenses(result)
     } catch (error) {
       console.log(error)

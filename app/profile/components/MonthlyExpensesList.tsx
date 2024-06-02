@@ -108,7 +108,7 @@ const MonthlyExpensesList = () => {
           } else {
             response = []
           }
-          const result = formatPreviousExpenses(response)
+          const result = formatPreviousExpenses(response, monthID, true)
 
           setExpensesList(result)
           onOpen()

@@ -22,6 +22,7 @@ import moment from "moment"
 import SuspenseContainer from "../components/SuspenseContainer"
 import { CardList } from "../components/CardList"
 import ExpensesListModal from "../components/modals/ExpensesListModal"
+import useAlert from "../hook/useAlert"
 
 interface TMonthList {
   monthID: number
@@ -35,6 +36,7 @@ const CURRENT_MONTH: TMonthList = {
 
 const PreviousExpenses = () => {
   const context = AppContext()
+  const { showAlert } = useAlert()
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
@@ -46,8 +48,15 @@ const PreviousExpenses = () => {
   )
 
   const previewExpense = (expense: FormattedPreviousExpensesType) => {
-    setPreview(expense)
-    onOpen()
+    if (expense.expensesList.length === 0) {
+      showAlert({
+        message: "Preview unavailable",
+        type: "warning",
+      })
+    } else {
+      setPreview(expense)
+      onOpen()
+    }
   }
 
   const onSelectMonth = async (item: TMonthList) => {

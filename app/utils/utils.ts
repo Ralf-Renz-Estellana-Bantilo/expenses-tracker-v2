@@ -2,11 +2,11 @@ import moment from "moment"
 import {
   FormattedPreviousExpensesType,
   PreviousExpensesType,
-  TodaysExpensesType,
 } from "../types/type"
 
 export const CURRENT_YEAR = new Date().getFullYear()
 export const CURRENT_MONTHID = new Date().getMonth() + 1
+export const CURRENT_DAY = new Date().getDate()
 
 export const MONTHLIST = [
   "January",
@@ -37,7 +37,9 @@ export const formatDate = (date: string) => {
 }
 
 export const formatPreviousExpenses = (
-  previousExpenses: PreviousExpensesType[]
+  previousExpenses: PreviousExpensesType[],
+  monthID: number,
+  includesCurrentDay = false
 ): FormattedPreviousExpensesType[] => {
   previousExpenses.sort(function (a, b) {
     let dateA = `${new Date(a.created_on as string)}` as any
@@ -69,7 +71,39 @@ export const formatPreviousExpenses = (
     }
   })
 
-  return result
+  const numberOfDayInMonth = daysInMonth(CURRENT_YEAR, monthID)
+  const elapsedDaysInMonth = includesCurrentDay ? CURRENT_DAY : CURRENT_DAY - 1
+
+  const resultWithMissingDates = []
+
+  for (let a = 1; a <= numberOfDayInMonth; a++) {
+    const filteredDate = `${monthID}/${a}/${CURRENT_YEAR}`
+    const filterResult = result.find((res) => res.date === filteredDate)
+
+    const emptyResult = {
+      ID: 111,
+      date: filteredDate,
+      total: 0,
+      expensesList: [],
+      monthID,
+      year: CURRENT_YEAR,
+    }
+
+    if (CURRENT_MONTHID === monthID) {
+      if (a <= elapsedDaysInMonth) {
+        resultWithMissingDates.push(filterResult ?? emptyResult)
+      }
+    } else {
+      resultWithMissingDates.push(filterResult ?? emptyResult)
+    }
+  }
+
+  resultWithMissingDates.forEach((res, index) => (res.ID = index))
+  resultWithMissingDates.sort(function (a, b) {
+    return b.ID - a.ID
+  })
+
+  return resultWithMissingDates
 }
 
 export const getCurrentMonth = (monthID = CURRENT_MONTHID): string => {
@@ -142,4 +176,8 @@ export const setRandomColor = (ID: number | string) => {
   ]
 
   return COLORS[(Number(ID) - 1) % COLORS.length]
+}
+
+export const daysInMonth = (year: number, month: number) => {
+  return new Date(year, month, 0).getDate()
 }
