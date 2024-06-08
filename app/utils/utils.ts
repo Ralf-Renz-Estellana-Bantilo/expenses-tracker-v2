@@ -4,6 +4,13 @@ import {
   PreviousExpensesType,
 } from "../types/type"
 
+interface FormatExpensesProps {
+  previousExpenses: PreviousExpensesType[]
+  monthID: number
+  includesCurrentDay?: boolean
+  sortOrder?: "DESC" | "ASC"
+}
+
 export const CURRENT_YEAR = new Date().getFullYear()
 export const CURRENT_MONTHID = new Date().getMonth() + 1
 export const CURRENT_DAY = new Date().getDate()
@@ -36,11 +43,12 @@ export const formatDate = (date: string) => {
   return moment(date).format("l")
 }
 
-export const formatPreviousExpenses = (
-  previousExpenses: PreviousExpensesType[],
-  monthID: number,
-  includesCurrentDay = false
-): FormattedPreviousExpensesType[] => {
+export const formatPreviousExpenses = ({
+  previousExpenses,
+  monthID,
+  includesCurrentDay = false,
+  sortOrder = "ASC",
+}: FormatExpensesProps): FormattedPreviousExpensesType[] => {
   previousExpenses.sort(function (a, b) {
     let dateA = `${new Date(a.created_on as string)}` as any
     let dateB = `${new Date(b.created_on as string)}` as any
@@ -99,9 +107,12 @@ export const formatPreviousExpenses = (
   }
 
   resultWithMissingDates.forEach((res, index) => (res.ID = index))
-  resultWithMissingDates.sort(function (a, b) {
-    return b.ID - a.ID
-  })
+
+  if (sortOrder === "DESC") {
+    resultWithMissingDates.sort(function (a, b) {
+      return b.ID - a.ID
+    })
+  }
 
   return resultWithMissingDates
 }

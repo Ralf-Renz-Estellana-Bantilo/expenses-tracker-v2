@@ -156,7 +156,12 @@ export default function ComponentContextProvider({
         payload
       )) as PreviousExpensesType[]
 
-      const result = formatPreviousExpenses(response, monthID)
+      const result = formatPreviousExpenses({
+        previousExpenses: response,
+        monthID,
+        sortOrder: "DESC",
+      })
+
       setPreviousExpenses(result)
     } catch (error) {
       console.log(error)
