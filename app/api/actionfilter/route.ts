@@ -34,7 +34,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 
     const query = `SELECT * FROM expenses_view exp WHERE ${constructedFilterArray.join(
       " AND "
-    )} ORDER BY ${orderBy} ${sortBy};`
+    )} AND status = 1 ORDER BY ${orderBy} ${sortBy};`
 
     const result = await db.promise().query(query)
 

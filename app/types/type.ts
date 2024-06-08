@@ -191,6 +191,7 @@ export type ExpenseFormType = {
   description: string
   amount: string
   header: string
+  status: number
 }
 
 export type ExpensesModalType<T> = {

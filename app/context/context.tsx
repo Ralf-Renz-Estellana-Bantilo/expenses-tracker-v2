@@ -285,6 +285,7 @@ export default function ComponentContextProvider({
           description: newExpense.description,
           categoryID: newExpense.categoryID,
           created_by: session?.user?.email,
+          status: newExpense.status,
         },
       }
 

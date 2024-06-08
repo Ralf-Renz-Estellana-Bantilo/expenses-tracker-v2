@@ -112,7 +112,9 @@ const ActionCenterPage = () => {
         : exp
     ) as TodaysExpensesType[]
 
-    setExpensesList(updatedExpense)
+    const filterActiveExpenses = updatedExpense.filter((exp) => exp.status == 1)
+
+    setExpensesList(filterActiveExpenses)
   }
 
   const getExpenses = async () => {
