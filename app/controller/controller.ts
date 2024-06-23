@@ -1,5 +1,5 @@
 import axios from "axios"
-import { MasterSelectPayload, SaveDataPayloadType } from "../types/type"
+import { MasterSelectPayload, SaveDataPayloadType, TDate } from "../types/type"
 import {
   URL_ACTIONFILTER,
   URL_DAILYEXPENSES,
@@ -56,13 +56,18 @@ export const fetchSummary = async <T>(): Promise<T> => {
   return await fetchURL(URL_SUMMARY)
 }
 
-export const fetchActionFilter = async <T>(payload: {
+export type TActionFilterPayload = {
+  dateStart: string
+  dateEnd: string
   category: string
-  month: string
-  year: string
+  // month: string
+  // year: string
   sort: string
   order: string
-}): Promise<T> => {
+}
+export const fetchActionFilter = async <T>(
+  payload: TActionFilterPayload
+): Promise<T> => {
   return await fetchURL(URL_ACTIONFILTER, payload)
 }
 

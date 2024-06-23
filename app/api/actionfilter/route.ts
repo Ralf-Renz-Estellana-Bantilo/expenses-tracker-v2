@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createNewDbConnection } from "../../database/db"
 import { assertCheckSessionData } from "../helper"
+import { TActionFilterPayload } from "@/app/controller/controller"
 
 export const POST = async (req: NextRequest, res: NextResponse) => {
   return assertCheckSessionData(req, async (session) => {
@@ -8,7 +9,15 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 
     const user = session?.email
 
-    const { category, month, year, sort, order } = await req.json()
+    const {
+      category,
+      // month,
+      // year,
+      sort,
+      order,
+      dateStart,
+      dateEnd,
+    }: TActionFilterPayload = await req.json()
     let sortBy = "ASC"
     let orderBy = "exp.ID"
 
@@ -16,12 +25,12 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     if (category) {
       constructedFilterArray.push(`categoryID IN (${category})`)
     }
-    if (month) {
-      constructedFilterArray.push(`MONTH(exp.created_on) IN (${month})`)
-    }
-    if (year) {
-      constructedFilterArray.push(`YEAR(exp.created_on) IN (${year})`)
-    }
+    // if (month) {
+    //   constructedFilterArray.push(`MONTH(exp.created_on) IN (${month})`)
+    // }
+    // if (year) {
+    //   constructedFilterArray.push(`YEAR(exp.created_on) IN (${year})`)
+    // }
     if (sort) {
       sortBy = sort
     }
@@ -29,12 +38,18 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       orderBy = order
     }
 
+    if (dateStart && dateEnd) {
+      constructedFilterArray.push(
+        `DATE(exp.created_on) BETWEEN DATE('${dateStart}') AND DATE('${dateEnd}')`
+      )
+    }
+
     constructedFilterArray.push(`status = 1`)
     constructedFilterArray.push(`created_by = '${user}'`)
 
     const query = `SELECT * FROM expenses_view exp WHERE ${constructedFilterArray.join(
       " AND "
-    )} AND status = 1 ORDER BY ${orderBy} ${sortBy};`
+    )} ORDER BY ${orderBy} ${sortBy};`
 
     const result = await db.promise().query(query)
 

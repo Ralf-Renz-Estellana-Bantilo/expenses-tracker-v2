@@ -1,8 +1,7 @@
 "use client"
 
 import React, { useEffect, useMemo, useState } from "react"
-import { TodaysExpensesType, ExpenseFormType } from "../types/type"
-import { useSession } from "next-auth/react"
+import { TodaysExpensesType, ExpenseFormType, TDate } from "../types/type"
 import { fetchActionFilter } from "../controller/controller"
 import {
   Wrapper,
@@ -10,18 +9,29 @@ import {
   WrapperFooter,
   WrapperHeader,
 } from "../components/Wrapper"
-import { Button, Select, SelectItem, useDisclosure } from "@nextui-org/react"
-import useMonth from "../hook/useMonth"
-import useYear from "../hook/useYear"
+import {
+  Button,
+  DatePicker,
+  Select,
+  SelectItem,
+  Tooltip,
+  useDisclosure,
+} from "@nextui-org/react"
 import useCategory from "../hook/useCategory"
 import Image from "next/image"
 import SuspenseContainer from "../components/SuspenseContainer"
 import { CardList } from "../components/CardList"
 import { formatMoney, getExpenseDescription, getIcons } from "../utils/utils"
 import ExpensesFormModal from "../components/modals/ExpensesFormModal"
-import { ArrowDownIcon, ArrowUpIcon, RefreshIcon } from "../icons/icons"
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  MinusIcon,
+  RefreshIcon,
+} from "../icons/icons"
 import { AppContext } from "../context/context"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { getLocalTimeZone, parseDate, today } from "@internationalized/date"
 
 const EXPENSES_COLUMNS = {
   ID: "exp.ID",
@@ -34,19 +44,27 @@ const EXPENSES_COLUMNS = {
   // status: 'exp.status',
 }
 
+type TDateRange = {
+  dateStart: TDate
+  dateEnd: TDate
+}
+
+type TFilters = {
+  category: string
+  sort: string
+  order: string
+}
+
 const ActionCenterPage = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const context = AppContext()
-
-  const { data: session } = useSession()
-  const user = session?.user?.email ?? "unknown@user.com"
 
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const { replace } = useRouter()
 
-  const monthList = useMonth()
-  const yearList = useYear()
+  // const monthList = useMonth()
+  // const yearList = useYear()
   const categoryList = useCategory()
   const sortList = [
     {
@@ -77,9 +95,18 @@ const ActionCenterPage = () => {
     []
   )
 
-  const [filters, setFilters] = useState({
-    month: searchParams.get("month")?.toString() ?? "",
-    year: searchParams.get("year")?.toString() ?? "",
+  const [dateRange, setDateRange] = useState<TDateRange>({
+    dateStart: searchParams.get("dateStart")
+      ? parseDate(searchParams.get("dateStart")?.toString() ?? "")
+      : undefined,
+    dateEnd: searchParams.get("dateEnd")
+      ? parseDate(searchParams.get("dateEnd")?.toString() ?? "")
+      : undefined,
+  })
+
+  const [filters, setFilters] = useState<TFilters>({
+    // month: searchParams.get("month")?.toString() ?? "",
+    // year: searchParams.get("year")?.toString() ?? "",
     category: searchParams.get("category")?.toString() ?? "",
     sort: searchParams.get("sort")?.toString() ?? "",
     order: searchParams.get("order")?.toString() ?? "",
@@ -95,6 +122,13 @@ const ActionCenterPage = () => {
   ): void => {
     const { name, value } = e.target
     setFilters((prevState) => ({ ...prevState, [name]: value }))
+  }
+
+  const handleChangeDateRange = (
+    value: TDate,
+    state: "dateStart" | "dateEnd"
+  ) => {
+    setDateRange((prevState) => ({ ...prevState, [state]: value }))
   }
 
   const findCategory = (categoryID: number) => {
@@ -118,12 +152,22 @@ const ActionCenterPage = () => {
   }
 
   const getExpenses = async () => {
-    const { category, month, year, sort, order } = filters
+    const {
+      category,
+      // month,
+      // year,
+      sort,
+      order,
+    } = filters
+    const { dateStart, dateEnd } = dateRange
+
+    const allFilter = { ...filters, ...dateRange }
+
     const params = new URLSearchParams(searchParams)
 
     let hasSavedFilter = false
 
-    for (const [key, value] of Object.entries(filters)) {
+    for (const [key, value] of Object.entries(allFilter)) {
       if (value) {
         hasSavedFilter = true
         params.set(`${key}`, `${value}`)
@@ -140,9 +184,11 @@ const ActionCenterPage = () => {
 
       try {
         const result = (await fetchActionFilter({
+          dateStart: dateStart?.toString() ?? "",
+          dateEnd: dateEnd?.toString() ?? "",
           category,
-          month,
-          year,
+          // month,
+          // year,
           sort,
           order,
         })) as TodaysExpensesType[]
@@ -154,17 +200,34 @@ const ActionCenterPage = () => {
     }
   }
 
+  const clearFilter = () => {
+    setFilters({
+      category: "",
+      order: "",
+      sort: "",
+    })
+    setDateRange({
+      dateStart: null as any,
+      dateEnd: null as any,
+    })
+
+    replace(pathname)
+    setExpensesList([])
+  }
+
   useEffect(() => {
     getExpenses()
   }, [])
 
+  const isPending = expensesList === null
+
   const selectedCategoryKeys = filters.category
     ? filters.category.split(",")
-    : undefined
-  const selectedMonthKeys = filters.month ? filters.month.split(",") : undefined
-  const selectedYearKeys = filters.year ? filters.year.split(",") : undefined
-  const selectedSortKeys = filters.sort ? filters.sort.split(",") : undefined
-  const selectedOrderKeys = filters.order ? filters.order.split(",") : undefined
+    : []
+  // const selectedMonthKeys = filters.month ? filters.month.split(",") : []
+  // const selectedYearKeys = filters.year ? filters.year.split(",") : []
+  const selectedSortKeys = filters.sort ? filters.sort.split(",") : []
+  const selectedOrderKeys = filters.order ? filters.order.split(",") : []
 
   const resultSum: number = useMemo(() => {
     const result =
@@ -190,16 +253,38 @@ const ActionCenterPage = () => {
             <h3 className="font-semibold text-accent-secondary">
               Select Filter Options
             </h3>
-            <Button
-              isIconOnly
-              color="primary"
-              size="sm"
-              variant="light"
-              aria-label="Take a photo"
-              onClick={() => setIsExpanded((prev) => !prev)}
-            >
-              {isExpanded ? <ArrowDownIcon /> : <ArrowUpIcon />}
-            </Button>
+            <div className="flex gap-2">
+              <Tooltip color="warning" content="Clear Filters">
+                <Button
+                  isIconOnly
+                  color="warning"
+                  size="sm"
+                  variant="light"
+                  aria-label="Clear Filters"
+                  onClick={clearFilter}
+                  isDisabled={isPending}
+                >
+                  <MinusIcon />
+                </Button>
+              </Tooltip>
+
+              <Tooltip
+                color="primary"
+                content={isExpanded ? "Collapse" : "Expand"}
+              >
+                <Button
+                  isIconOnly
+                  color="primary"
+                  size="sm"
+                  variant="light"
+                  aria-label="Collapse"
+                  onClick={() => setIsExpanded((prev) => !prev)}
+                  isDisabled={isPending}
+                >
+                  {isExpanded ? <ArrowDownIcon /> : <ArrowUpIcon />}
+                </Button>
+              </Tooltip>
+            </div>
           </WrapperHeader>
           {isExpanded && (
             <WrapperContent>
@@ -213,6 +298,7 @@ const ActionCenterPage = () => {
                   selectedKeys={selectedCategoryKeys}
                   onChange={handleChangeInput}
                   className="flex-1"
+                  isDisabled={isPending}
                 >
                   {categoryList.map((category) => (
                     <SelectItem
@@ -233,7 +319,7 @@ const ActionCenterPage = () => {
                     </SelectItem>
                   ))}
                 </Select>
-                <Select
+                {/* <Select
                   label="Month"
                   variant="bordered"
                   placeholder="Select month/s"
@@ -277,7 +363,37 @@ const ActionCenterPage = () => {
                       {year.label}
                     </SelectItem>
                   ))}
-                </Select>
+                </Select> */}
+
+                <div className="flex gap-2">
+                  <DatePicker
+                    name="dateStart"
+                    value={dateRange.dateStart}
+                    onChange={(date) =>
+                      handleChangeDateRange(date, "dateStart")
+                    }
+                    maxValue={
+                      dateRange.dateEnd ??
+                      today(getLocalTimeZone()).subtract({ days: 1 })
+                    }
+                    label="Date start"
+                    variant="bordered"
+                    isRequired={dateRange.dateEnd ? true : false}
+                    isDisabled={isPending}
+                  />
+                  <DatePicker
+                    name="dateEnd"
+                    value={dateRange.dateEnd}
+                    onChange={(date) => handleChangeDateRange(date, "dateEnd")}
+                    minValue={dateRange.dateStart}
+                    maxValue={today(getLocalTimeZone())}
+                    label="Date end"
+                    variant="bordered"
+                    isRequired={dateRange.dateStart ? true : false}
+                    isDisabled={isPending}
+                  />
+                </div>
+
                 <div className="flex gap-2">
                   <Select
                     label="Sort Direction"
@@ -287,6 +403,7 @@ const ActionCenterPage = () => {
                     selectedKeys={selectedSortKeys}
                     onChange={handleChangeInput}
                     className="flex-1"
+                    isDisabled={isPending}
                   >
                     {sortList.map((sort) => (
                       <SelectItem key={sort.value} value={sort.value}>
@@ -303,6 +420,7 @@ const ActionCenterPage = () => {
                     selectedKeys={selectedOrderKeys}
                     onChange={handleChangeInput}
                     className="flex-1"
+                    isDisabled={isPending}
                   >
                     {orderList.map((column) => (
                       <SelectItem key={column.value} value={column.value}>
@@ -312,7 +430,11 @@ const ActionCenterPage = () => {
                   </Select>
                 </div>
 
-                <Button color="primary" onClick={getExpenses}>
+                <Button
+                  color="primary"
+                  onClick={getExpenses}
+                  isDisabled={isPending}
+                >
                   Generate
                 </Button>
               </div>
@@ -324,16 +446,20 @@ const ActionCenterPage = () => {
             <h3 className="font-semibold text-accent-secondary">
               Results {`[ ${expensesList?.length ?? 0} ]`}
             </h3>
-            <Button
-              isIconOnly
-              color="warning"
-              size="sm"
-              variant="light"
-              aria-label="Take a photo"
-              onClick={() => setExpensesList([])}
-            >
-              <RefreshIcon />
-            </Button>
+
+            <Tooltip color="success" content="Refresh">
+              <Button
+                isIconOnly
+                color="success"
+                size="sm"
+                variant="light"
+                aria-label="Take a photo"
+                onClick={() => setExpensesList([])}
+                isDisabled={isPending}
+              >
+                <RefreshIcon />
+              </Button>
+            </Tooltip>
           </WrapperHeader>
           <WrapperContent className="flex flex-col max-h-[70vh]">
             <SuspenseContainer data={expensesList}>
