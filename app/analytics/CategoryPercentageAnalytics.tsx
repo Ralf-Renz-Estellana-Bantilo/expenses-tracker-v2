@@ -29,7 +29,6 @@ type TMonthList = {
 }
 
 type TOptions = {
-  user: string
   monthID: number
   year: number
 }
@@ -57,7 +56,6 @@ const CategoryPercentageAnalytics = () => {
     if (context) {
       setSelectedMonth(item)
       getMonthlyPercentageBreakdown({
-        user,
         monthID: item.monthID,
         year: CURRENT_YEAR,
       })
@@ -66,7 +64,6 @@ const CategoryPercentageAnalytics = () => {
 
   const getMonthlyPercentageBreakdown = async (options?: TOptions) => {
     const DEFAULT_OPTION: TOptions = {
-      user,
       monthID: CURRENT_MONTHID,
       year: CURRENT_YEAR,
     }

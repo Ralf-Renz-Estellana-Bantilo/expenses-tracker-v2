@@ -1,7 +1,12 @@
 "use client"
 
 import { AppContext } from "@/app/context/context"
-import { ExpensesModalType, TodaysExpensesType } from "@/app/types/type"
+import {
+  ExpenseFormType,
+  ExpensesModalType,
+  StatusType,
+  TodaysExpensesType,
+} from "@/app/types/type"
 import {
   Button,
   Input,
@@ -21,12 +26,13 @@ import useCredit from "@/app/hook/useCredit"
 import { ResponseCacheContext } from "@/app/context/cacheContext"
 import { CURRENT_MONTHID, CURRENT_YEAR } from "@/app/utils/utils"
 
-const DEFAULT_FORM = {
+const DEFAULT_FORM: ExpenseFormType = {
   ID: 0,
   categoryID: "1",
   description: "",
   amount: "",
   header: "Add New Expense",
+  status: 1,
 }
 
 const ExpensesFormModal = ({
@@ -39,81 +45,88 @@ const ExpensesFormModal = ({
   const context = AppContext()
   const cacheContext = ResponseCacheContext()
   const { totalBalance } = useCredit()
-  const [formData, setFormData] = useState(DEFAULT_FORM)
+  const [formData, setFormData] = useState<ExpenseFormType>(DEFAULT_FORM)
+  const { showAlert } = useAlert()
 
   const handleChangeInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
       const { name, value } = e.target
-      setFormData({ ...formData, [name]: value })
+
+      if (name === "status") {
+        const statusValue = value ? +value : 1
+        setFormData({ ...formData, [name]: statusValue })
+      } else {
+        setFormData({ ...formData, [name]: value })
+      }
     },
-    [formData, isOpen, onOpenChange, data]
+    [data, setFormData, formData]
   )
 
-  const handleSave = (onClose: () => void): void => {
-    const { showAlert } = useAlert()
-    const { ID, amount, categoryID, description } = formData
+  const handleSave = useCallback(
+    (onClose: () => void): void => {
+      const { ID, amount, categoryID, description, status } = formData
 
-    if (
-      categoryID !== "" &&
-      Number(amount) >= 0 &&
-      amount !== "" &&
-      !isInvalid.status
-    ) {
-      if (context) {
-        const { handleUpdateExpense, categories } = context
+      if (categoryID !== "" && Number(amount) >= 0 && amount !== "") {
+        if (context) {
+          const { handleUpdateExpense, categories } = context
 
-        const ACTION_TYPE = ID === DEFAULT_FORM.ID ? "add" : "edit"
+          const ACTION_TYPE = ID === DEFAULT_FORM.ID ? "add" : "edit"
 
-        const categoryList = categories?.find(
-          (cat) => cat.ID === Number(formData.categoryID)
-        )
+          const categoryList = categories?.find(
+            (cat) => cat.ID === Number(formData.categoryID)
+          )
 
-        const newExpense: TodaysExpensesType = {
-          ID,
-          category: categoryList?.description,
-          categoryID: Number(categoryID),
-          description,
-          amount: Number(amount),
-          created_by: session?.user?.email || "",
-          created_on: `${new Date()}`,
-          status: 1,
+          const newExpense: TodaysExpensesType = {
+            ID,
+            category: categoryList?.description,
+            categoryID: Number(categoryID),
+            description,
+            amount: Number(amount),
+            created_by: session?.user?.email || "",
+            created_on: `${new Date()}`,
+            status: status as StatusType,
+          }
+
+          handleUpdateExpense(newExpense, ACTION_TYPE)
+
+          const alertMessage =
+            ACTION_TYPE === "add"
+              ? "New expense has been added!"
+              : "Expense has been updated!"
+
+          setFormData(DEFAULT_FORM)
+          showAlert({ type: "success", message: alertMessage })
+
+          if (cacheContext) {
+            const { removeCacheByID } = cacheContext
+            const cachedID = `${CURRENT_MONTHID}-${CURRENT_YEAR}-mel`
+            removeCacheByID(cachedID)
+          }
+
+          onClose()
         }
-
-        handleUpdateExpense(newExpense, ACTION_TYPE)
-
-        const alertMessage =
-          ACTION_TYPE === "add"
-            ? "New expense has been added!"
-            : "Expense has been updated!"
-
-        setFormData(DEFAULT_FORM)
-        showAlert({ type: "success", message: alertMessage })
-
-        if (cacheContext) {
-          const { removeCacheByID } = cacheContext
-          const cachedID = `${CURRENT_MONTHID}-${CURRENT_YEAR}-mel`
-          removeCacheByID(cachedID)
-        }
-
-        onClose()
+      } else {
+        showAlert({ type: "warning", message: "Error! Form data is invalid!" })
       }
-    } else {
-      showAlert({ type: "warning", message: "Error! Form data is invalid!" })
-    }
 
-    if (afterHandler) {
-      afterHandler(formData)
-    }
-  }
+      if (afterHandler) {
+        afterHandler(formData)
+      }
+    },
+    [formData, afterHandler, context, showAlert, session, cacheContext]
+  )
 
-  const handleKeyPress = (
-    { key }: React.KeyboardEvent<HTMLInputElement> | KeyboardEvent,
-    onClose: () => void
-  ): void => {
-    if (key === "Enter") {
-      handleSave(onClose)
-    }
-  }
+  const handleKeyPress = useCallback(
+    (
+      { key }: React.KeyboardEvent<HTMLInputElement> | KeyboardEvent,
+      onClose: () => void
+    ): void => {
+      if (key === "Enter") {
+        handleSave(onClose)
+      }
+    },
+    [handleSave]
+  )
 
   const isInvalid = useMemo((): { status: boolean; message: string } => {
     let status: boolean = Number(formData.amount) > totalBalance
@@ -127,17 +140,18 @@ const ExpensesFormModal = ({
     }
 
     return { status, message }
-  }, [formData.amount])
+  }, [formData.amount, totalBalance])
 
   useEffect(() => {
     if (data) {
-      const { ID, amount, categoryID, description } = data
+      const { ID, amount, categoryID, description, status } = data
       setFormData({
         ID,
         amount: amount.toString(),
         categoryID: categoryID.toString(),
         description: description ?? "",
         header: "Update Expense",
+        status: status ?? 1,
       })
     } else {
       setFormData(DEFAULT_FORM)
@@ -146,7 +160,7 @@ const ExpensesFormModal = ({
     return () => {
       setFormData(DEFAULT_FORM)
     }
-  }, [isOpen, onOpenChange, data])
+  }, [isOpen, data])
 
   return (
     <Modal
@@ -223,6 +237,23 @@ const ExpensesFormModal = ({
                   </div>
                 }
               />
+              {formData.header === "Update Expense" && (
+                <Select
+                  label="Select status"
+                  variant="bordered"
+                  isRequired
+                  color="primary"
+                  selectedKeys={[formData.status.toString()]}
+                  onChange={handleChangeInput}
+                  name="status"
+                >
+                  {[0, 1].map((status) => (
+                    <SelectItem color="primary" key={status} value={status}>
+                      {status.toString()}
+                    </SelectItem>
+                  ))}
+                </Select>
+              )}
             </ModalBody>
             <ModalFooter>
               <Button variant="light" color="danger" onPress={onClose}>

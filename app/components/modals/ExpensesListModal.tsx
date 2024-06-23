@@ -59,7 +59,7 @@ const ExpensesListModal = ({
                   </span>
                 </div>
               </div>
-              <ScrollShadow className="flex flex-col max-h-[48vh] overflow-auto">
+              <div className="flex flex-col max-h-[48vh] overflow-auto">
                 {data?.expensesList.map((expense) => (
                   <CardList
                     key={expense.ID}
@@ -72,7 +72,7 @@ const ExpensesListModal = ({
                     value={formatMoney(expense.amount)}
                   />
                 ))}
-              </ScrollShadow>
+              </div>
             </ModalBody>
             <ModalFooter>
               <Button variant="light" color="danger" onPress={onClose}>

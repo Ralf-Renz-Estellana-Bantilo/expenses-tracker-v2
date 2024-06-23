@@ -1,3 +1,4 @@
+import { DateValue } from "@nextui-org/react"
 import { Dispatch, SetStateAction, JSX, MutableRefObject } from "react"
 
 interface TAuthor {
@@ -191,6 +192,7 @@ export type ExpenseFormType = {
   description: string
   amount: string
   header: string
+  status: number
 }
 
 export type ExpensesModalType<T> = {
@@ -203,3 +205,5 @@ export type ExpensesModalType<T> = {
 }
 
 export type SizeType = "xs" | "sm" | "md" | "lg" | "xl"
+
+export type TDate = DateValue | undefined

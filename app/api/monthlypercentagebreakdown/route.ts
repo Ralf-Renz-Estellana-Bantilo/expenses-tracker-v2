@@ -3,10 +3,11 @@ import { createNewDbConnection } from "../../database/db"
 import { assertCheckSessionData } from "../helper"
 
 export const POST = async (req: NextRequest, res: NextResponse) => {
-  return assertCheckSessionData(req, async () => {
+  return assertCheckSessionData(req, async (session) => {
     const db = createNewDbConnection()
 
-    const { user, monthID, year } = await req.json()
+    const user = session?.email
+    const { monthID, year } = await req.json()
 
     const query = `SELECT 
         exp.categoryID, 

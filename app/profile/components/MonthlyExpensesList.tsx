@@ -108,7 +108,11 @@ const MonthlyExpensesList = () => {
           } else {
             response = []
           }
-          const result = formatPreviousExpenses(response)
+          const result = formatPreviousExpenses({
+            previousExpenses: response,
+            monthID,
+            includesCurrentDay: true,
+          })
 
           setExpensesList(result)
           onOpen()

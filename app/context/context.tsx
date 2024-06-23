@@ -30,8 +30,10 @@ import {
   fetchSummary,
 } from "../controller/controller"
 import {
+  CURRENT_DAY,
   CURRENT_MONTHID,
   CURRENT_YEAR,
+  daysInMonth,
   formatPreviousExpenses,
   getIcons,
 } from "../utils/utils"
@@ -154,7 +156,12 @@ export default function ComponentContextProvider({
         payload
       )) as PreviousExpensesType[]
 
-      const result = formatPreviousExpenses(response)
+      const result = formatPreviousExpenses({
+        previousExpenses: response,
+        monthID,
+        sortOrder: "DESC",
+      })
+
       setPreviousExpenses(result)
     } catch (error) {
       console.log(error)
@@ -201,7 +208,7 @@ export default function ComponentContextProvider({
 
   const getSummary = async () => {
     try {
-      const response = (await fetchSummary({ user })) as DashboardSummaryType[]
+      const response = (await fetchSummary()) as DashboardSummaryType[]
       setSummary(response[0] ?? null)
     } catch (error) {
       console.log(error)
@@ -278,6 +285,7 @@ export default function ComponentContextProvider({
           description: newExpense.description,
           categoryID: newExpense.categoryID,
           created_by: session?.user?.email,
+          status: newExpense.status,
         },
       }
 
