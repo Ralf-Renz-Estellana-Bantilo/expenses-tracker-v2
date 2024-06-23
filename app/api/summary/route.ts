@@ -3,10 +3,9 @@ import { createNewDbConnection } from "../../database/db"
 import { assertCheckSessionData } from "../helper"
 
 export const POST = async (req: NextRequest, res: NextResponse) => {
-  return assertCheckSessionData(req, async () => {
+  return assertCheckSessionData(req, async (session) => {
     const db = createNewDbConnection()
-
-    const { user } = await req.json()
+    const user = session?.email
 
     const query = `SELECT 
         ROUND(SUM(exp.amount), 2) AS totalExpenses,

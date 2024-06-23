@@ -1,5 +1,5 @@
 import axios from "axios"
-import { MasterSelectPayload, SaveDataPayloadType } from "../types/type"
+import { MasterSelectPayload, SaveDataPayloadType, TDate } from "../types/type"
 import {
   URL_ACTIONFILTER,
   URL_DAILYEXPENSES,
@@ -8,10 +8,11 @@ import {
   URL_MONTHLYPERCENTAGEBREAKDOWN,
   URL_PASTWEEKEXPENSES,
   URL_SAVEDATA,
+  URL_SEARCH,
   URL_SUMMARY,
 } from "../api/urls"
 
-const fetchURL = async <T>(url: string, payload: unknown): Promise<T> => {
+const fetchURL = async <T>(url: string, payload?: unknown): Promise<T> => {
   try {
     const result = await axios.post(url, payload)
     return result.data
@@ -32,45 +33,46 @@ export const fetchMasterSelect = async <T>(
   return await fetchURL(URL_MASTERSELECT, payload)
 }
 
-export const fetchPastWeekExpense = async <T>(payload: {
-  user: string
-}): Promise<T> => {
-  return await fetchURL(URL_PASTWEEKEXPENSES, payload)
+export const fetchPastWeekExpense = async <T>(): Promise<T> => {
+  return await fetchURL(URL_PASTWEEKEXPENSES)
 }
 
 export const fetchMonthlyPercentageBreakdown = async <T>(payload: {
-  user: string
   monthID: number
   year: number
 }): Promise<T> => {
   return await fetchURL(URL_MONTHLYPERCENTAGEBREAKDOWN, payload)
 }
 
-export const fetchDailyExpenses = async <T>(payload: {
-  user: string
-}): Promise<T> => {
-  return await fetchURL(URL_DAILYEXPENSES, payload)
+export const fetchDailyExpenses = async <T>(): Promise<T> => {
+  return await fetchURL(URL_DAILYEXPENSES)
 }
 
-export const fetchMonthlyExpenses = async <T>(payload: {
-  user: string
-}): Promise<T> => {
-  return await fetchURL(URL_MONTHLYEXPENSES, payload)
+export const fetchMonthlyExpenses = async <T>(): Promise<T> => {
+  return await fetchURL(URL_MONTHLYEXPENSES)
 }
 
-export const fetchSummary = async <T>(payload: {
-  user: string
-}): Promise<T> => {
-  return await fetchURL(URL_SUMMARY, payload)
+export const fetchSummary = async <T>(): Promise<T> => {
+  return await fetchURL(URL_SUMMARY)
 }
 
-export const fetchActionFilter = async <T>(payload: {
-  user: string
+export type TActionFilterPayload = {
+  dateStart: string
+  dateEnd: string
   category: string
-  month: string
-  year: string
+  // month: string
+  // year: string
   sort: string
   order: string
-}): Promise<T> => {
+}
+export const fetchActionFilter = async <T>(
+  payload: TActionFilterPayload
+): Promise<T> => {
   return await fetchURL(URL_ACTIONFILTER, payload)
+}
+
+export const fetchSearch = async <T>(payload: {
+  searchText: string
+}): Promise<T> => {
+  return await fetchURL(URL_SEARCH, payload)
 }

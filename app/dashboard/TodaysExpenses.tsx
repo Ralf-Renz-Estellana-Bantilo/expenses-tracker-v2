@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { AppContext } from "../context/context"
 import { Button, useDisclosure } from "@nextui-org/react"
 import {
@@ -23,10 +23,13 @@ const TodaysExpenses = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [preview, setPreview] = useState<TodaysExpensesType | null>(null)
 
-  const showExpenseDialog = (expense: TodaysExpensesType | null) => {
-    onOpen()
-    setPreview(expense)
-  }
+  const showExpenseDialog = useCallback(
+    (expense: TodaysExpensesType | null) => {
+      onOpen()
+      setPreview(expense)
+    },
+    [onOpen, context]
+  )
 
   const totalTodaysExpenses: number = useMemo(() => {
     const result =

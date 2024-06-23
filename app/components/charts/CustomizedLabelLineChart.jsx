@@ -121,7 +121,7 @@ const CustomizedLabelLineChart = () => {
       } else {
         const result = []
         const categoryList = []
-        const response = await fetchPastWeekExpense({ user })
+        const response = await fetchPastWeekExpense()
 
         const uniqueDate = [...new Set(response.map(({ date }) => date))]
         const uniqueCategory = [

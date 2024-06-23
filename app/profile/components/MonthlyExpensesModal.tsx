@@ -10,13 +10,11 @@ import {
   getCurrentMonth,
 } from "@/app/utils/utils"
 import {
-  Button,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-  ScrollShadow,
 } from "@nextui-org/react"
 import moment from "moment"
 import React, { useMemo } from "react"
@@ -52,42 +50,36 @@ const MonthlyExpensesModal = ({
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       placement="center"
+      scrollBehavior="inside"
     >
       <ModalContent>
-        {(onClose) => (
+        {() => (
           <>
             <ModalHeader className="flex flex-col gap-1 font-bold">
               Expenses List
             </ModalHeader>
-            <ModalBody>
-              <ScrollShadow className="flex flex-col max-h-[48vh] overflow-auto">
-                <SuspenseContainer data={expensesList}>
-                  {expensesList?.map((expense) => (
-                    <CardList
-                      key={expense.ID}
-                      iconName={monthCode}
-                      title={moment(expense.date).format("ll")}
-                      value={formatMoney(expense.total)}
-                    />
-                  ))}
-                </SuspenseContainer>
-              </ScrollShadow>
-              <div className="flex items-center gap-3">
-                <div className="flex items-center border-1 border-red-800 bg-red-500 backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-lg p-2 justify-between text-default-500 flex-1">
-                  <h3>Total: </h3>
-                  <span className="font-semibold text-accent-primary">
-                    {formatMoney(
-                      totalPreviousExpenses,
-                      context?.isMasked ?? false
-                    )}
-                  </span>
-                </div>
-              </div>
+            <ModalBody className="flex flex-col gap-0">
+              <SuspenseContainer data={expensesList}>
+                {expensesList?.map((expense) => (
+                  <CardList
+                    key={expense.ID}
+                    iconName={monthCode}
+                    title={moment(expense.date).format("ll")}
+                    value={formatMoney(expense.total)}
+                  />
+                ))}
+              </SuspenseContainer>
             </ModalBody>
-            <ModalFooter>
-              <Button variant="light" color="danger" onPress={onClose}>
-                Close
-              </Button>
+            <ModalFooter className="w-full">
+              <div className="flex items-center border-1 border-red-800 bg-red-500 backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-lg p-2 justify-between text-default-500 flex-1">
+                <h3>Total: </h3>
+                <span className="font-semibold text-accent-primary">
+                  {formatMoney(
+                    totalPreviousExpenses,
+                    context?.isMasked ?? false
+                  )}
+                </span>
+              </div>
             </ModalFooter>
           </>
         )}
