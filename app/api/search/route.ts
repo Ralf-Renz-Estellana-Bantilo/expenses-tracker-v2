@@ -11,7 +11,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     const user = session?.email
 
     try {
-      const query = `SELECT * FROM expenses_view WHERE (description LIKE '%${searchText}%' OR category LIKE '%${searchText}%') AND created_by = '${user}';`
+      const query = `SELECT * FROM expenses_view WHERE (description LIKE '%${searchText}%' OR category LIKE '%${searchText}%') AND status=1 AND created_by = '${user}';`
       const result = await db.promise().query(query)
       return NextResponse.json(result[0], { status: 200 })
     } catch (err) {
