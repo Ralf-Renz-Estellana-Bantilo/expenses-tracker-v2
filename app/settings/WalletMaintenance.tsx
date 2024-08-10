@@ -1,9 +1,18 @@
 "use client"
 
-import React, { useCallback, useState } from "react"
-import { Wrapper, WrapperContent, WrapperHeader } from "../components/Wrapper"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
+import {
+  Wrapper,
+  WrapperContent,
+  WrapperFooter,
+  WrapperHeader,
+} from "../components/Wrapper"
 import {
   Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
   Input,
   Modal,
   ModalBody,
@@ -13,7 +22,11 @@ import {
   useDisclosure,
 } from "@nextui-org/react"
 import { PlusIcon } from "../icons/icons"
-import { formatMoney, getExpenseDescription } from "../utils/utils"
+import {
+  CURRENT_YEAR,
+  formatMoney,
+  getExpenseDescription,
+} from "../utils/utils"
 import { AppContext } from "../context/context"
 import { WalletBudgeType } from "../types/type"
 import SuspenseContainer from "../components/SuspenseContainer"
@@ -30,8 +43,14 @@ const DEFAULT_FORM = {
 
 const WalletMaintenance = () => {
   const context = AppContext()
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [formData, setFormData] = useState(DEFAULT_FORM)
+  const [yearList, setYearList] = useState<number[]>([CURRENT_YEAR])
+  const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR)
+  const [walletBudgetList, setWalletBudgetList] = useState<WalletBudgeType[]>(
+    []
+  )
 
   const handleSave = (onClose: () => void) => {
     const { showAlert } = useAlert()
@@ -107,6 +126,49 @@ const WalletMaintenance = () => {
     [context.isMasked, onOpen, setFormData]
   )
 
+  const extractYear = (created_on: string | undefined) => {
+    return created_on ? Number(created_on.slice(0, 4)) : 2000
+  }
+
+  const handleChangeYear = async (year: number) => {
+    if (context) {
+      const budgetList =
+        context.walletBudget?.filter(
+          (budget) => extractYear(budget.created_on) == year
+        ) ?? []
+
+      setWalletBudgetList(budgetList)
+      setSelectedYear(year)
+    }
+  }
+
+  useEffect(() => {
+    if (!context) return
+
+    const budgetList =
+      context.walletBudget?.filter(
+        (budget) => extractYear(budget.created_on) == CURRENT_YEAR
+      ) ?? []
+
+    setWalletBudgetList(budgetList)
+
+    const yearList = [
+      ...new Set(context.monthlyExpenses?.map((expense) => expense.year)),
+    ].sort((a, b) => b - a)
+
+    setYearList([...new Set([CURRENT_YEAR, ...yearList])])
+  }, [])
+
+  const totalExpenses: number = useMemo(() => {
+    const result =
+      walletBudgetList.reduce(
+        (sum, item) => Number(sum) + Number(item.amount),
+        0
+      ) ?? 0
+
+    return result
+  }, [walletBudgetList])
+
   return (
     <>
       <Modal
@@ -180,21 +242,40 @@ const WalletMaintenance = () => {
           <h3 className="font-semibold text-accent-secondary">
             Wallet Budget Maintenance
           </h3>
-          <Button
-            isIconOnly
-            color="primary"
-            variant="light"
-            aria-label="Take a photo"
-            size="sm"
-            onClick={() => showWalletBudgetDialog(null)}
-          >
-            <PlusIcon />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Dropdown>
+              <DropdownTrigger>
+                <Button variant="light">{selectedYear}</Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Dynamic Actions">
+                {yearList.map((year) => (
+                  <DropdownItem
+                    key={year}
+                    color={year === selectedYear ? "primary" : "default"}
+                    className={year === selectedYear ? "bg-primary" : ""}
+                    onClick={() => handleChangeYear(year)}
+                  >
+                    {year}
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </Dropdown>
+            <Button
+              isIconOnly
+              color="primary"
+              variant="light"
+              aria-label="Take a photo"
+              size="sm"
+              onClick={() => showWalletBudgetDialog(null)}
+            >
+              <PlusIcon />
+            </Button>
+          </div>
         </WrapperHeader>
         <WrapperContent className="flex flex-col" scrollable>
           <SuspenseContainer data={context?.walletBudget}>
             {context?.isWalletBudgetPending.current && <CardListSkeleton />}
-            {context?.walletBudget?.map((budget) => (
+            {walletBudgetList.map((budget) => (
               <CardList
                 key={budget.ID}
                 iconName="peso"
@@ -210,6 +291,13 @@ const WalletMaintenance = () => {
             ))}
           </SuspenseContainer>
         </WrapperContent>
+        <WrapperFooter className="flex items-center justify-between">
+          <h3 className="text-default-500">Total:</h3>
+          <p className="text-default-500">
+            {" "}
+            {formatMoney(totalExpenses, context.isMasked)}
+          </p>
+        </WrapperFooter>
       </Wrapper>
     </>
   )
