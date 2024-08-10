@@ -30,10 +30,8 @@ import {
   fetchSummary,
 } from "../controller/controller"
 import {
-  CURRENT_DAY,
   CURRENT_MONTHID,
   CURRENT_YEAR,
-  daysInMonth,
   formatPreviousExpenses,
   getIcons,
 } from "../utils/utils"
