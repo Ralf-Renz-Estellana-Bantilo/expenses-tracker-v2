@@ -43,14 +43,12 @@ const DEFAULT_FORM = {
 
 const WalletMaintenance = () => {
   const context = AppContext()
+  if (!context) return
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [formData, setFormData] = useState(DEFAULT_FORM)
   const [yearList, setYearList] = useState<number[]>([CURRENT_YEAR])
   const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR)
-  const [walletBudgetList, setWalletBudgetList] = useState<WalletBudgeType[]>(
-    []
-  )
 
   const handleSave = (onClose: () => void) => {
     const { showAlert } = useAlert()
@@ -60,10 +58,12 @@ const WalletMaintenance = () => {
       title !== "" &&
       description !== "" &&
       amount !== "" &&
-      Number(amount) !== 0 &&
-      context
+      Number(amount) !== 0
     ) {
       const ACTION_TYPE = ID === DEFAULT_FORM.ID ? "add" : "edit"
+
+      const dateObj = new Date()
+      const isoDate = dateObj.toISOString()
 
       const { handleUpdateWalletBudget } = context
       const newBudget: WalletBudgeType = {
@@ -71,7 +71,7 @@ const WalletMaintenance = () => {
         title,
         description,
         amount: Number(amount),
-        created_on: `${new Date()}`,
+        created_on: `${isoDate}`,
       }
 
       handleUpdateWalletBudget(newBudget, ACTION_TYPE)
@@ -107,7 +107,7 @@ const WalletMaintenance = () => {
 
   const showWalletBudgetDialog = useCallback(
     (walletBudget: WalletBudgeType | null) => {
-      const isMasked = context?.isMasked ?? false
+      const isMasked = context.isMasked ?? false
       if (!isMasked) {
         const walletBudgetForm = walletBudget
           ? {
@@ -130,28 +130,7 @@ const WalletMaintenance = () => {
     return created_on ? Number(created_on.slice(0, 4)) : 2000
   }
 
-  const handleChangeYear = async (year: number) => {
-    if (context) {
-      const budgetList =
-        context.walletBudget?.filter(
-          (budget) => extractYear(budget.created_on) == year
-        ) ?? []
-
-      setWalletBudgetList(budgetList)
-      setSelectedYear(year)
-    }
-  }
-
   useEffect(() => {
-    if (!context) return
-
-    const budgetList =
-      context.walletBudget?.filter(
-        (budget) => extractYear(budget.created_on) == CURRENT_YEAR
-      ) ?? []
-
-    setWalletBudgetList(budgetList)
-
     const yearList = [
       ...new Set(context.monthlyExpenses?.map((expense) => expense.year)),
     ].sort((a, b) => b - a)
@@ -159,9 +138,17 @@ const WalletMaintenance = () => {
     setYearList([...new Set([CURRENT_YEAR, ...yearList])])
   }, [])
 
+  const walletBudgetList = useMemo(
+    () =>
+      context.walletBudget?.filter(
+        (budget) => extractYear(budget.created_on) == selectedYear
+      ) ?? [],
+    [context.walletBudget, selectedYear]
+  )
+
   const totalExpenses: number = useMemo(() => {
     const result =
-      walletBudgetList.reduce(
+      walletBudgetList?.reduce(
         (sum, item) => Number(sum) + Number(item.amount),
         0
       ) ?? 0
@@ -253,7 +240,7 @@ const WalletMaintenance = () => {
                     key={year}
                     color={year === selectedYear ? "primary" : "default"}
                     className={year === selectedYear ? "bg-primary" : ""}
-                    onClick={() => handleChangeYear(year)}
+                    onClick={() => setSelectedYear(year)}
                   >
                     {year}
                   </DropdownItem>
