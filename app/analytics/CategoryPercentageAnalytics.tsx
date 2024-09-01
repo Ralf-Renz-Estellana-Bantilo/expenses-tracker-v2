@@ -7,6 +7,7 @@ import { AnalyticsPercentageType } from "../types/type"
 import {
   CURRENT_MONTHID,
   CURRENT_YEAR,
+  formatMoney,
   getCurrentMonth,
   setRandomColor,
 } from "../utils/utils"
@@ -151,7 +152,7 @@ const CategoryPercentageAnalytics = () => {
               <div className="flex justify-between">
                 <h3 className="text-sm text-accent-secondary">{`${data.categoryID} => ${data.category}`}</h3>
                 <span className="text-sm text-accent-secondary">
-                  {data.percentage}%
+                  {`${formatMoney(data.total)} => ${data.percentage}`}%
                 </span>
               </div>
               <div className="flex rounded-md overflow-hidden">
