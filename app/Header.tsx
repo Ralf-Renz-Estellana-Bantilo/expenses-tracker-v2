@@ -24,7 +24,6 @@ import {
 import { AppContext } from "./context/context"
 import { redirect, useRouter } from "next/navigation"
 import { signOut, useSession } from "next-auth/react"
-import SearchModal from "./components/modals/SearchModal"
 
 const Header = ({
   title,
@@ -37,7 +36,7 @@ const Header = ({
   const { data: session } = useSession()
   const router = useRouter()
 
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  if (!context) return null
 
   const handleSignOut = () => {
     signOut()
@@ -49,21 +48,17 @@ const Header = ({
   }
 
   const toggleMask = () => {
-    if (context) {
-      const { setIsMasked, isMasked } = context
-      const newValue = !isMasked
-      localStorage.setItem("isMasked", `${newValue}`)
-      setIsMasked(newValue)
-    }
+    const { setIsMasked, isMasked } = context
+    const newValue = !isMasked
+    localStorage.setItem("isMasked", `${newValue}`)
+    setIsMasked(newValue)
   }
 
   const backToDashboard = () => {
-    if (context) {
-      const { setActiveTab } = context
+    const { setActiveTab } = context
 
-      handleChangeRoute("/dashboard")
-      setActiveTab(context?.tabs[0])
-    }
+    handleChangeRoute("/dashboard")
+    setActiveTab(context?.tabs[0])
   }
 
   return (
@@ -75,7 +70,7 @@ const Header = ({
               isIconOnly
               color="default"
               variant="light"
-              aria-label="Take a photo"
+              aria-label="Back Icon"
               onClick={backToDashboard}
             >
               <BackIcon />
@@ -95,7 +90,8 @@ const Header = ({
                   isIconOnly
                   color="default"
                   variant="light"
-                  aria-label="Take a photo"
+                  aria-label="Configuration Icon"
+                  onClick={() => handleChangeRoute("/configurations")}
                 >
                   <FilterIcon />
                 </Button>
@@ -103,8 +99,8 @@ const Header = ({
                   isIconOnly
                   color="default"
                   variant="light"
-                  aria-label="Take a photo"
-                  onPress={onOpen}
+                  aria-label="Search Icon"
+                  onClick={() => handleChangeRoute("/search")}
                 >
                   <SearchIcon />
                 </Button>
@@ -189,7 +185,6 @@ const Header = ({
           </Dropdown>
         </div>
       </div>
-      <SearchModal isOpen={isOpen} onOpenChange={onOpenChange} />
     </>
   )
 }
