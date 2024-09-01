@@ -32,13 +32,13 @@ const WrapperHeader = (
 const WrapperContent = (
   props?: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
     scrollable?: boolean
+    maxScrollableHeight?: string
   }
 ) => {
+  const maxHeight = `max-h-[${props?.maxScrollableHeight}]` ?? "max-h-[50vh]"
   return (
     <ScrollShadow
-      className={`py-2 ${props?.className} ${
-        props?.scrollable && "max-h-[50vh]"
-      }`}
+      className={`py-2 ${props?.className} ${props?.scrollable && maxHeight}`}
     >
       {props?.children}
     </ScrollShadow>
