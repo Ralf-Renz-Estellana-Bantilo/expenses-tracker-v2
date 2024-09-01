@@ -58,7 +58,7 @@ const SearchModal = (props: TModal) => {
               />
             </ModalHeader>
             <ModalBody className="min-h-80">
-              <SearchResults query={deferredQuery} />
+              {/* <SearchResults query={deferredQuery} /> */}
             </ModalBody>
             <ModalFooter>
               <Button color="danger" variant="light" onPress={onClose}>
