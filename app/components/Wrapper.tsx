@@ -35,7 +35,9 @@ const WrapperContent = (
     maxScrollableHeight?: string
   }
 ) => {
-  const maxHeight = `max-h-[${props?.maxScrollableHeight}]` ?? "max-h-[50vh]"
+  const maxHeight = props?.maxScrollableHeight
+    ? `max-h-[${props?.maxScrollableHeight}]`
+    : "max-h-[50vh]"
   return (
     <ScrollShadow
       className={`py-2 ${props?.className} ${props?.scrollable && maxHeight}`}
