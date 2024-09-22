@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { createNewDbConnection } from "../../database/db"
 import { assertCheckSessionData } from "../helper"
 
-export const GET = async (req: NextRequest, res: NextResponse) => {
+export const GET = async (req: NextRequest) => {
   return assertCheckSessionData(req, async () => {
     const db = createNewDbConnection()
     try {

@@ -8,7 +8,7 @@ const MASTERDATA_PAYLOAD_SYNTAX = {
 } 
 */
 
-export const POST = async (req: NextRequest, res: NextResponse) => {
+export const POST = async (req: NextRequest) => {
   return assertCheckSessionData(req, async () => {
     const db = createNewDbConnection()
 
@@ -19,7 +19,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 
       for (let a = 0; a < tables.length; a++) {
         const table = tables[a]
-        db.query(`SELECT * FROM ${table}`, function (err, rows, fields) {
+        db.query(`SELECT * FROM ${table}`, function (err, rows) {
           if (isRejected) {
             return NextResponse.json({
               message: "Error on line 33!",

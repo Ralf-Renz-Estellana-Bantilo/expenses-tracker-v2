@@ -8,7 +8,6 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  ScrollShadow,
 } from "@nextui-org/react"
 import moment from "moment"
 import React, { memo } from "react"

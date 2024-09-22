@@ -10,7 +10,6 @@ import { DashboardIcon, ProfileIcon, SettingsIcon } from "../icons/icons"
 import {
   CategoryType,
   ContextType,
-  DashboardSummaryType,
   MasterSelectPayloadType,
   MonthlyExpensesType,
   FormattedPreviousExpensesType,
@@ -24,11 +23,7 @@ import {
 } from "../types/type"
 import { usePathname } from "next/navigation"
 import { useSession } from "next-auth/react"
-import {
-  fetchMasterSelect,
-  fetchSaveData,
-  fetchSummary,
-} from "../controller/controller"
+import { fetchMasterSelect, fetchSaveData } from "../controller/controller"
 import {
   CURRENT_MONTHID,
   CURRENT_YEAR,
@@ -48,7 +43,6 @@ export const ComponentContext = createContext<ContextType>({
   isTodayExpensePending: null as any,
   isWalletBudgetPending: null as any,
   isLoadingState: null as any,
-  summary: null as any,
   monthlyExpensesBreakdown: null as any,
   setIsMasked: null as any,
   setActiveTab: null as any,
@@ -107,7 +101,6 @@ export default function ComponentContextProvider({
   const [walletBudget, setWalletBudget] = useState<WalletBudgeType[] | null>(
     null
   )
-  const [summary, setSummary] = useState<DashboardSummaryType | null>(null)
   const [monthlyExpensesBreakdown, setMonthlyExpensesBreakdown] =
     useState<MonthlyExpensesBreakdownType>({})
 
@@ -200,16 +193,6 @@ export default function ComponentContextProvider({
       }
       const response = (await fetchMasterSelect(payload)) as WalletBudgeType[]
       setWalletBudget(response)
-    } catch (error) {
-      logger.error(error)
-      alert(error)
-    }
-  }
-
-  const getSummary = async () => {
-    try {
-      const response = (await fetchSummary()) as DashboardSummaryType[]
-      setSummary(response[0] ?? null)
     } catch (error) {
       logger.error(error)
       alert(error)
@@ -381,7 +364,6 @@ export default function ComponentContextProvider({
     isTodayExpensePending,
     isWalletBudgetPending,
     isLoadingState,
-    summary,
     monthlyExpensesBreakdown,
     setIsMasked,
     setActiveTab,

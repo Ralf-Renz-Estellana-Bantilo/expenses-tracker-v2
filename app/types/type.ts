@@ -25,7 +25,6 @@ export type ContextType = {
   isTodayExpensePending: MutableRefObject<boolean>
   isWalletBudgetPending: MutableRefObject<boolean>
   isLoadingState: MutableRefObject<boolean>
-  summary: DashboardSummaryType | null
   monthlyExpensesBreakdown: MonthlyExpensesBreakdownType
   setMonthlyExpensesBreakdown: Dispatch<
     SetStateAction<MonthlyExpensesBreakdownType>
