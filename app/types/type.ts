@@ -25,7 +25,6 @@ export type ContextType = {
   isTodayExpensePending: MutableRefObject<boolean>
   isWalletBudgetPending: MutableRefObject<boolean>
   isLoadingState: MutableRefObject<boolean>
-  summary: DashboardSummaryType | null
   monthlyExpensesBreakdown: MonthlyExpensesBreakdownType
   setMonthlyExpensesBreakdown: Dispatch<
     SetStateAction<MonthlyExpensesBreakdownType>
@@ -47,6 +46,7 @@ export type StatusType = 0 | 1
 
 export interface CategoryType {
   ID: number
+  sequence: number
   description: string
   imgPath?: string
   status: StatusType
@@ -62,6 +62,7 @@ export interface MonthType {
 export interface ExpensesType extends TAuthor {
   ID: number
   categoryID: number
+  imgPath?: string
   description?: string
   amount: number
   status?: StatusType

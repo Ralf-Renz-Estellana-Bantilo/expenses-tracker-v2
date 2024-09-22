@@ -24,7 +24,7 @@ import Image from "next/image"
 import useAlert from "@/app/hook/useAlert"
 import useCredit from "@/app/hook/useCredit"
 import { ResponseCacheContext } from "@/app/context/cacheContext"
-import { CURRENT_MONTHID, CURRENT_YEAR } from "@/app/utils/utils"
+import { CURRENT_MONTHID, CURRENT_YEAR, formatMoney } from "@/app/utils/utils"
 
 const DEFAULT_FORM: ExpenseFormType = {
   ID: 0,
@@ -47,6 +47,7 @@ const ExpensesFormModal = ({
   const { totalBalance } = useCredit()
   const [formData, setFormData] = useState<ExpenseFormType>(DEFAULT_FORM)
   const { showAlert } = useAlert()
+  const [availableCredit, setAvailableCredit] = useState(0)
 
   const handleChangeInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
@@ -129,12 +130,15 @@ const ExpensesFormModal = ({
   )
 
   const isInvalid = useMemo((): { status: boolean; message: string } => {
-    let status: boolean = Number(formData.amount) > totalBalance
+    const currentAmount = Number(formData.amount)
+    let status: boolean = currentAmount > availableCredit
     let message: string = ""
 
     if (status) {
-      message = `Error! Insufficient balance!`
-    } else if (Number(formData.amount) < 0 && formData.amount !== "") {
+      message = `Error! Insufficient balance! ${formatMoney(
+        availableCredit - currentAmount
+      )}`
+    } else if (currentAmount < 0 && formData.amount !== "") {
       message = "Error! Invalid amount!"
       status = true
     }
@@ -153,12 +157,15 @@ const ExpensesFormModal = ({
         header: "Update Expense",
         status: status ?? 1,
       })
+
+      setAvailableCredit(Number(data.amount) + totalBalance)
     } else {
       setFormData(DEFAULT_FORM)
     }
 
     return () => {
       setFormData(DEFAULT_FORM)
+      setAvailableCredit(0)
     }
   }, [isOpen, data])
 
@@ -224,7 +231,7 @@ const ExpensesFormModal = ({
                 onKeyDown={(event) => handleKeyPress(event, onClose)}
                 name="amount"
                 isInvalid={isInvalid.status}
-                color={isInvalid.status ? "danger" : "primary"}
+                color={isInvalid.status ? "warning" : "primary"}
                 errorMessage={isInvalid.status && isInvalid.message}
                 isRequired
                 label="Amount"

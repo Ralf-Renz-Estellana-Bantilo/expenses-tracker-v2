@@ -138,25 +138,6 @@ export const maskNumber = (money: string) => {
   }
 }
 
-export const getIcons = (ID?: number) => {
-  let icons = [
-    "food",
-    "transportation",
-    "communication",
-    "insurance",
-    "rent",
-    "bill",
-    "family",
-    "clothes",
-    "shopping",
-    "purchase",
-    "healthcare",
-    "others",
-  ]
-
-  return ID ? icons[(ID - 1) % icons.length] : icons
-}
-
 export const getExpenseDescription = (
   created_on: string | undefined,
   description?: string | undefined,
@@ -170,6 +151,7 @@ export const getExpenseDescription = (
   return [timeStamp, shortDescription].join(" ")
 }
 
+//random color base on category ID
 export const setRandomColor = (ID: number | string) => {
   const COLORS = [
     "#00A9FF", // food
@@ -184,6 +166,7 @@ export const setRandomColor = (ID: number | string) => {
     "#F2613F", // purchase
     "#FA7070", // healthcare
     "#C5E898", // others
+    "#FFDC7F", // gadgets
   ]
 
   return COLORS[(Number(ID) - 1) % COLORS.length]

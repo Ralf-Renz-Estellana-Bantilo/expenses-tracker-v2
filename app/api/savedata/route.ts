@@ -14,7 +14,7 @@ const SAVEDATA_PAYLOAD_SYNTAX = {
    }
 } 
 */
-export const POST = async (req: NextRequest, res: NextResponse) => {
+export const POST = async (req: NextRequest) => {
   return assertCheckSessionData(req, async () => {
     const db = createNewDbConnection()
 

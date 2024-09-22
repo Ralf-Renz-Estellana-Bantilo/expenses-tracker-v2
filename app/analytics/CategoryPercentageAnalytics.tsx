@@ -1,8 +1,7 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { fetchMonthlyPercentageBreakdown } from "../controller/controller"
-import { useSession } from "next-auth/react"
 import { AnalyticsPercentageType } from "../types/type"
 import {
   CURRENT_MONTHID,
@@ -18,7 +17,6 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from "@nextui-org/react"
-import { EllipsisVertical } from "../icons/icons"
 import SuspenseContainer from "../components/SuspenseContainer"
 import { Wrapper } from "../components/Wrapper"
 import { AppContext } from "../context/context"
@@ -42,10 +40,6 @@ const CURRENT_MONTH: TMonthList = {
 const CategoryPercentageAnalytics = () => {
   const context = AppContext()
   const cacheContext = ResponseCacheContext()
-
-  const { data: session } = useSession()
-
-  const user = session?.user?.email ?? ""
 
   const [percentageBreakdown, setPercentageBreakdown] = useState<
     AnalyticsPercentageType[]

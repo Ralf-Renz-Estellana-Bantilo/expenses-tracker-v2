@@ -1,7 +1,7 @@
 "use client"
 
 import React, { PureComponent } from "react"
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts"
+import { PieChart, Pie, ResponsiveContainer } from "recharts"
 
 const data01 = [
   { name: "Group A", value: 400 },
