@@ -1,5 +1,5 @@
 import axios from "axios"
-import { MasterSelectPayload, SaveDataPayloadType, TDate } from "../types/type"
+import { MasterSelectPayload, SaveDataPayloadType } from "../types/type"
 import {
   URL_ACTIONFILTER,
   URL_DAILYEXPENSES,

@@ -3,21 +3,14 @@ import { createNewDbConnection } from "../../database/db"
 import { assertCheckSessionData } from "../helper"
 import { TActionFilterPayload } from "@/app/controller/controller"
 
-export const POST = async (req: NextRequest, res: NextResponse) => {
+export const POST = async (req: NextRequest) => {
   return assertCheckSessionData(req, async (session) => {
     const db = createNewDbConnection()
 
     const user = session?.email
 
-    const {
-      category,
-      // month,
-      // year,
-      sort,
-      order,
-      dateStart,
-      dateEnd,
-    }: TActionFilterPayload = await req.json()
+    const { category, sort, order, dateStart, dateEnd }: TActionFilterPayload =
+      await req.json()
     let sortBy = "ASC"
     let orderBy = "exp.ID"
 
@@ -25,12 +18,6 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     if (category) {
       constructedFilterArray.push(`categoryID IN (${category})`)
     }
-    // if (month) {
-    //   constructedFilterArray.push(`MONTH(exp.created_on) IN (${month})`)
-    // }
-    // if (year) {
-    //   constructedFilterArray.push(`YEAR(exp.created_on) IN (${year})`)
-    // }
     if (sort) {
       sortBy = sort
     }

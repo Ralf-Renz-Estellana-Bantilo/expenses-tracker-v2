@@ -1,4 +1,5 @@
 import { createConnection } from "mysql2"
+import { CustomLogger, LogLevel } from "../utils/logger"
 
 const db_config_dev = {
   host: process.env.NEXT_HOST,
@@ -9,13 +10,15 @@ const db_config_dev = {
 
 function createNewDbConnection() {
   const newDbConnection = createConnection(db_config_dev)
+  const errorLogger = new CustomLogger(LogLevel.ERROR)
+  const infoLogger = new CustomLogger(LogLevel.INFO)
 
   newDbConnection.connect((err) => {
     if (err) {
-      console.error("Error connecting to the database: ", err)
+      errorLogger.error("Error connecting to the database: ", err)
       return
     }
-    console.log("Connected to MySQL database")
+    infoLogger.info("Connected to MySQL database")
   })
 
   return newDbConnection

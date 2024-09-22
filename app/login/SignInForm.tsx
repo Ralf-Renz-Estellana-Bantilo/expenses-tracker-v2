@@ -3,8 +3,6 @@
 import { Button, Divider, Input } from "@nextui-org/react"
 import React, { useMemo, useState } from "react"
 import { signIn } from "next-auth/react"
-import Image from "next/image"
-import LoginLogo from "../../public/assets/illustrations/illustration.png"
 import {
   EmailIcon,
   EyeFilledIcon,

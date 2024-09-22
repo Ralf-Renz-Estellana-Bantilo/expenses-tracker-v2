@@ -5,7 +5,7 @@ import useAlert from "@/app/hook/useAlert"
 import { ExpensesType } from "@/app/types/type"
 import React, { Dispatch, useEffect, useRef, useState } from "react"
 import { CardList } from "../CardList"
-import { formatMoney, getExpenseDescription, getIcons } from "@/app/utils/utils"
+import { formatMoney, getExpenseDescription } from "@/app/utils/utils"
 import { AppContext } from "@/app/context/context"
 
 const SearchResults = ({
@@ -62,7 +62,7 @@ const SearchResults = ({
       {data.map((expense) => (
         <CardList
           key={expense.ID}
-          iconName={getIcons(expense.categoryID) as string}
+          iconName={expense.imgPath}
           title={findCategory(expense.categoryID)?.description}
           description={getExpenseDescription(
             expense.created_on,
