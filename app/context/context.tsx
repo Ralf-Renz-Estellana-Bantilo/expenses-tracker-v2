@@ -33,8 +33,8 @@ import {
   CURRENT_MONTHID,
   CURRENT_YEAR,
   formatPreviousExpenses,
-  getIcons,
 } from "../utils/utils"
+import { CustomLogger, LogLevel } from "../utils/logger"
 
 export const ComponentContext = createContext<ContextType>({
   tabs: null as any,
@@ -63,6 +63,8 @@ export default function ComponentContextProvider({
 }: {
   children: ReactNode
 }) {
+  const logger = new CustomLogger(LogLevel.ERROR)
+
   const { data: session } = useSession()
   const user = session?.user?.email ?? "unknown@user.com"
 
@@ -131,7 +133,7 @@ export default function ComponentContextProvider({
       )) as TodaysExpensesType[]
       setTodayExpenses(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       alert(error)
     }
   }
@@ -162,7 +164,7 @@ export default function ComponentContextProvider({
 
       setPreviousExpenses(result)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       alert(error)
     }
   }
@@ -179,7 +181,7 @@ export default function ComponentContextProvider({
       )) as MonthlyExpensesType[]
       setMonthlyExpenses(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       alert(error)
     }
   }
@@ -199,7 +201,7 @@ export default function ComponentContextProvider({
       const response = (await fetchMasterSelect(payload)) as WalletBudgeType[]
       setWalletBudget(response)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       alert(error)
     }
   }
@@ -209,7 +211,7 @@ export default function ComponentContextProvider({
       const response = (await fetchSummary()) as DashboardSummaryType[]
       setSummary(response[0] ?? null)
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       alert(error)
     }
   }
@@ -218,21 +220,15 @@ export default function ComponentContextProvider({
     try {
       const payload: MasterSelectPayloadType<CategoryType> = {
         table: "categories",
-        column: ["ID", "description", "status"],
+        column: ["ID", "description", "sequence", "imgPath", "status"],
       }
 
       const response = (await fetchMasterSelect(payload)) as CategoryType[]
-
-      const categorylist = Array.from(response, (category) => {
-        return {
-          ...category,
-          imgPath: getIcons(category.ID) as string,
-        }
-      })
-      setCategories(categorylist)
+      response.sort((a, b) => a.sequence - b.sequence)
+      setCategories(response)
     } catch (error) {
       alert(error)
-      console.log(error)
+      logger.error(error)
     }
   }
 
@@ -245,10 +241,10 @@ export default function ComponentContextProvider({
       getBudgetWallet(),
     ])
       .then(() => {
-        console.log("Resources loaded!")
+        logger.error("Resources loaded!")
       })
       .catch((error) => {
-        console.error(error)
+        logger.error(error)
         alert(error)
       })
   }
@@ -317,7 +313,7 @@ export default function ComponentContextProvider({
       initialize()
       isTodayExpensePending.current = false
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       alert(error)
     }
   }
@@ -368,7 +364,7 @@ export default function ComponentContextProvider({
       setWalletBudget(updatedWalletBudget!)
       isWalletBudgetPending.current = false
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       alert(error)
     }
   }

@@ -21,7 +21,7 @@ import useCategory from "../hook/useCategory"
 import Image from "next/image"
 import SuspenseContainer from "../components/SuspenseContainer"
 import { CardList } from "../components/CardList"
-import { formatMoney, getExpenseDescription, getIcons } from "../utils/utils"
+import { formatMoney, getExpenseDescription } from "../utils/utils"
 import ExpensesFormModal from "../components/modals/ExpensesFormModal"
 import {
   ArrowDownIcon,
@@ -472,7 +472,7 @@ const ActionCenterPage = () => {
                     expense.description,
                     "ll"
                   )}
-                  iconName={getIcons(expense.categoryID) as string}
+                  iconName={expense.imgPath}
                   value={formatMoney(expense.amount)}
                   handleDblClick={() => showExpenseDialog(expense)}
                 />

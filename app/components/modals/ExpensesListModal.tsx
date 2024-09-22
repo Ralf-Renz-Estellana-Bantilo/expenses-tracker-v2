@@ -1,6 +1,6 @@
 "use client"
 
-import { formatMoney, getExpenseDescription, getIcons } from "@/app/utils/utils"
+import { formatMoney, getExpenseDescription } from "@/app/utils/utils"
 import {
   Button,
   Modal,
@@ -63,7 +63,7 @@ const ExpensesListModal = ({
                 {data?.expensesList.map((expense) => (
                   <CardList
                     key={expense.ID}
-                    iconName={getIcons(expense.categoryID) as string}
+                    iconName={expense.imgPath}
                     title={findCategory(expense.categoryID)?.description}
                     description={getExpenseDescription(
                       expense.created_on,
