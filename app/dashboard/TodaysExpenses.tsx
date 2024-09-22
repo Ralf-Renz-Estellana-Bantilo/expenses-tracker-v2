@@ -10,7 +10,7 @@ import {
   WrapperHeader,
 } from "../components/Wrapper"
 import { PlusIcon } from "../icons/icons"
-import { formatMoney, getExpenseDescription, getIcons } from "../utils/utils"
+import { formatMoney, getExpenseDescription } from "../utils/utils"
 import ExpensesFormModal from "../components/modals/ExpensesFormModal"
 import { TodaysExpensesType } from "../types/type"
 import SuspenseContainer from "../components/SuspenseContainer"
@@ -78,7 +78,7 @@ const TodaysExpenses = () => {
                   expense.created_on ?? "",
                   expense.description
                 )}
-                iconName={getIcons(expense.categoryID) as string}
+                iconName={expense.imgPath}
                 value={formatMoney(expense.amount)}
                 handleDblClick={() => showExpenseDialog(expense)}
               />

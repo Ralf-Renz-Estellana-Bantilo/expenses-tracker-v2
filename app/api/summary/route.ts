@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { createNewDbConnection } from "../../database/db"
 import { assertCheckSessionData } from "../helper"
 
-export const POST = async (req: NextRequest, res: NextResponse) => {
+export const POST = async (req: NextRequest) => {
   return assertCheckSessionData(req, async (session) => {
     const db = createNewDbConnection()
     const user = session?.email

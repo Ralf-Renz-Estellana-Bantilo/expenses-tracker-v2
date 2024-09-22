@@ -8,7 +8,6 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
-  useDisclosure,
 } from "@nextui-org/react"
 import {
   AnalyticsIcon,

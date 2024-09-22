@@ -2,8 +2,7 @@
 
 import React, { ChangeEvent, useCallback, useMemo, useState } from "react"
 import { SearchIcon } from "../icons/icons"
-import { Checkbox, Input } from "@nextui-org/react"
-import { CardList } from "../components/CardList"
+import { Input } from "@nextui-org/react"
 import { formatMoney } from "../utils/utils"
 import {
   Wrapper,
