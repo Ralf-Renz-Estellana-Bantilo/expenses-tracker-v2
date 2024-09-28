@@ -147,6 +147,7 @@ const ExpensesFormModal = ({
   }, [formData.amount, totalBalance])
 
   useEffect(() => {
+    let totalAmount = 0
     if (data) {
       const { ID, amount, categoryID, description, status } = data
       setFormData({
@@ -158,10 +159,11 @@ const ExpensesFormModal = ({
         status: status ?? 1,
       })
 
-      setAvailableCredit(Number(data.amount) + totalBalance)
+      totalAmount = amount
     } else {
       setFormData(DEFAULT_FORM)
     }
+    setAvailableCredit(Number(totalAmount) + totalBalance)
 
     return () => {
       setFormData(DEFAULT_FORM)
