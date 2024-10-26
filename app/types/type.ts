@@ -208,3 +208,10 @@ export type ExpensesModalType<T> = {
 export type SizeType = "xs" | "sm" | "md" | "lg" | "xl"
 
 export type TDate = DateValue | undefined
+
+export type TUsers = {
+  ID: number
+  email: string
+  status: number
+  created_on?: string
+}
