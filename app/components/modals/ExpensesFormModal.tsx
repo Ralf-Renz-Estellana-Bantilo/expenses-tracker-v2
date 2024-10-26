@@ -25,6 +25,7 @@ import useAlert from "@/app/hook/useAlert"
 import useCredit from "@/app/hook/useCredit"
 import { ResponseCacheContext } from "@/app/context/cacheContext"
 import { CURRENT_MONTHID, CURRENT_YEAR, formatMoney } from "@/app/utils/utils"
+import { CustomLogger, LogLevel } from "@/app/utils/logger"
 
 const DEFAULT_FORM: ExpenseFormType = {
   ID: 0,
@@ -69,7 +70,10 @@ const ExpensesFormModal = ({
 
       if (categoryID !== "" && Number(amount) >= 0 && amount !== "") {
         if (context) {
-          const { handleUpdateExpense, categories } = context
+          const { handleUpdateExpense, categories, isTodayExpensePending } =
+            context
+
+          isTodayExpensePending.current = true
 
           const ACTION_TYPE = ID === DEFAULT_FORM.ID ? "add" : "edit"
 
@@ -89,22 +93,31 @@ const ExpensesFormModal = ({
           }
 
           handleUpdateExpense(newExpense, ACTION_TYPE)
+            .then(() => {
+              const alertMessage =
+                ACTION_TYPE === "add"
+                  ? "New expense has been added!"
+                  : "Expense has been updated!"
 
-          const alertMessage =
-            ACTION_TYPE === "add"
-              ? "New expense has been added!"
-              : "Expense has been updated!"
+              setFormData(DEFAULT_FORM)
+              showAlert({ type: "success", message: alertMessage })
 
-          setFormData(DEFAULT_FORM)
-          showAlert({ type: "success", message: alertMessage })
+              if (cacheContext) {
+                const { removeCacheByID } = cacheContext
+                const cachedID = `${CURRENT_MONTHID}-${CURRENT_YEAR}-mel`
+                removeCacheByID(cachedID)
+              }
 
-          if (cacheContext) {
-            const { removeCacheByID } = cacheContext
-            const cachedID = `${CURRENT_MONTHID}-${CURRENT_YEAR}-mel`
-            removeCacheByID(cachedID)
-          }
-
-          onClose()
+              onClose()
+            })
+            .catch((error) => {
+              showAlert({ type: "error", message: "Something went wrong!" })
+              const logger = new CustomLogger(LogLevel.ERROR)
+              logger.error(error)
+            })
+            .finally(() => {
+              isTodayExpensePending.current = false
+            })
         }
       } else {
         showAlert({ type: "warning", message: "Error! Form data is invalid!" })

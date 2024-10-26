@@ -2,11 +2,13 @@
 
 import { fetchSearch } from "@/app/controller/controller"
 import useAlert from "@/app/hook/useAlert"
-import { ExpensesType } from "@/app/types/type"
-import React, { Dispatch, useEffect, useRef, useState } from "react"
+import { ExpensesType, TodaysExpensesType } from "@/app/types/type"
+import React, { Dispatch, useCallback, useEffect, useState } from "react"
 import { CardList } from "../CardList"
 import { formatMoney, getExpenseDescription } from "@/app/utils/utils"
 import { AppContext } from "@/app/context/context"
+import ExpensesFormModal from "./ExpensesFormModal"
+import { useDisclosure } from "@nextui-org/react"
 
 const SearchResults = ({
   query,
@@ -19,30 +21,36 @@ const SearchResults = ({
   const [data, setData] = useState<ExpensesType[]>([])
   const { showAlert } = useAlert()
 
-  const loadingRef = useRef(false)
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const [preview, setPreview] = useState<TodaysExpensesType | null>(null)
 
   const fetchData = async () => {
     if (query.length !== 0) {
-      loadingRef.current = true
       try {
         const result = await fetchSearch<ExpensesType[]>({ searchText: query })
 
         setData(result)
         setResult(result)
-        loadingRef.current = false
       } catch (error) {
         showAlert({
           message: "Error fetching data...",
           type: "error",
         })
         setData([])
-        loadingRef.current = false
       }
     } else {
       setData([])
       setResult([])
     }
   }
+
+  const showExpenseDialog = useCallback(
+    (expense: TodaysExpensesType | null) => {
+      onOpen()
+      setPreview(expense)
+    },
+    [onOpen, context]
+  )
 
   const findCategory = (categoryID: number) => {
     return context?.categories?.find(({ ID }) => ID === categoryID)
@@ -57,22 +65,36 @@ const SearchResults = ({
   }
 
   return (
-    <div className="flex flex-col">
-      {loadingRef.current && <p>Loading...</p>}
-      {data.map((expense) => (
-        <CardList
-          key={expense.ID}
-          iconName={expense.imgPath}
-          title={findCategory(expense.categoryID)?.description}
-          description={getExpenseDescription(
-            expense.created_on,
-            expense.description,
-            "ll"
-          )}
-          value={formatMoney(expense.amount)}
-        />
-      ))}
-    </div>
+    <>
+      <ExpensesFormModal
+        isOpen={isOpen}
+        data={preview}
+        onOpenChange={onOpenChange}
+        afterHandler={fetchData}
+      />
+      <div className="flex flex-col">
+        {data.map((expense) => (
+          <CardList
+            key={expense.ID}
+            iconName={expense.imgPath}
+            title={findCategory(expense.categoryID)?.description}
+            description={getExpenseDescription(
+              expense.created_on,
+              expense.description,
+              "ll"
+            )}
+            value={formatMoney(expense.amount)}
+            handleDblClick={() => {
+              const newExpense: TodaysExpensesType = {
+                ...expense,
+                category: findCategory(expense.categoryID)?.description,
+              }
+              showExpenseDialog(newExpense)
+            }}
+          />
+        ))}
+      </div>
+    </>
   )
 }
 

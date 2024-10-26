@@ -21,15 +21,20 @@ import {
   PreviousExpensesType,
   MonthlyExpensesBreakdownType,
 } from "../types/type"
-import { usePathname } from "next/navigation"
-import { useSession } from "next-auth/react"
-import { fetchMasterSelect, fetchSaveData } from "../controller/controller"
+import { redirect, usePathname } from "next/navigation"
+import { signOut, useSession } from "next-auth/react"
+import {
+  fetchMasterSelect,
+  fetchSaveData,
+  fetchUser,
+} from "../controller/controller"
 import {
   CURRENT_MONTHID,
   CURRENT_YEAR,
   formatPreviousExpenses,
 } from "../utils/utils"
 import { CustomLogger, LogLevel } from "../utils/logger"
+import useAlert from "../hook/useAlert"
 
 export const ComponentContext = createContext<ContextType>({
   tabs: null as any,
@@ -58,6 +63,7 @@ export default function ComponentContextProvider({
   children: ReactNode
 }) {
   const logger = new CustomLogger(LogLevel.ERROR)
+  const { showAlert } = useAlert()
 
   const { data: session } = useSession()
   const user = session?.user?.email ?? "unknown@user.com"
@@ -131,7 +137,9 @@ export default function ComponentContextProvider({
     }
   }
 
-  const getPreviousExpenses = async (monthID = CURRENT_MONTHID) => {
+  const getPreviousExpenses = async (
+    monthID = CURRENT_MONTHID
+  ): Promise<void> => {
     try {
       const payload: MasterSelectPayloadType<PreviousExpensesType> = {
         table: "previous_expenses_view",
@@ -224,7 +232,7 @@ export default function ComponentContextProvider({
       getBudgetWallet(),
     ])
       .then(() => {
-        logger.error("Resources loaded!")
+        logger.info("Resources loaded!")
       })
       .catch((error) => {
         logger.error(error)
@@ -232,19 +240,32 @@ export default function ComponentContextProvider({
       })
   }
 
+  const getUser = async () => {
+    const users = await fetchUser()
+    return users
+  }
   useEffect(() => {
-    if (session) {
-      if (tabs.map(({ path }) => path).includes(pathname)) {
-        const activeRoute = tabs.find((tab) => tab.path === pathname)
-        setActiveTab(activeRoute || defaultTabInfo)
-      }
+    if (!session) return undefined
 
-      const isMaskSessionValue = localStorage.getItem("isMasked")
-      let isMaskedValue = isMaskSessionValue === "true" ?? true
-      localStorage.setItem("isMasked", `${isMaskedValue}`)
-      setIsMasked(isMaskedValue)
-      initialize()
-    }
+    getUser().then((res) => {
+      if (res.length > 0) {
+        if (tabs.map(({ path }) => path).includes(pathname)) {
+          const activeRoute = tabs.find((tab) => tab.path === pathname)
+          setActiveTab(activeRoute || defaultTabInfo)
+        }
+
+        const isMaskSessionValue = localStorage.getItem("isMasked")
+        let isMaskedValue =
+          JSON.parse(isMaskSessionValue ?? "undefined") ?? true
+        localStorage.setItem("isMasked", `${isMaskedValue}`)
+        setIsMasked(isMaskedValue)
+        initialize()
+      } else {
+        showAlert({ type: "error", message: "Unauthorized user!" })
+        signOut()
+        redirect("/login")
+      }
+    })
   }, [])
 
   const handleUpdateExpense = async (

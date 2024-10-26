@@ -1,5 +1,5 @@
 import axios from "axios"
-import { MasterSelectPayload, SaveDataPayloadType } from "../types/type"
+import { MasterSelectPayload, SaveDataPayloadType, TUsers } from "../types/type"
 import {
   URL_ACTIONFILTER,
   URL_DAILYEXPENSES,
@@ -10,6 +10,7 @@ import {
   URL_SAVEDATA,
   URL_SEARCH,
   URL_SUMMARY,
+  URL_USER,
 } from "../api/urls"
 
 const fetchURL = async <T>(url: string, payload?: unknown): Promise<T> => {
@@ -75,4 +76,8 @@ export const fetchSearch = async <T>(payload: {
   searchText: string
 }): Promise<T> => {
   return await fetchURL(URL_SEARCH, payload)
+}
+
+export const fetchUser = async (): Promise<TUsers[]> => {
+  return await fetchURL(URL_USER)
 }

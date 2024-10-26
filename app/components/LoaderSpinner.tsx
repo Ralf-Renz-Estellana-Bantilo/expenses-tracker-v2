@@ -3,22 +3,17 @@
 import React from "react"
 import { Spinner } from "@nextui-org/react"
 import { Wrapper } from "./Wrapper"
-import { AppContext } from "../context/context"
+import { useLoaderContext } from "../context/loaderContext"
 
 const LoaderSpinner = () => {
-  const { isLoadingState } = AppContext()
+  const { isLoading } = useLoaderContext()
 
-  if (!isLoadingState.current) return null
+  if (!isLoading) return null
 
   return (
-    <div className="fixed h-dvh w-dvw z-50 flex justify-center items-center bg-slate-500 backdrop-filter backdrop-blur-sm bg-opacity-10">
+    <div className="fixed h-dvh w-dvw z-50 flex justify-center items-center select-none">
       <Wrapper className="absolute top=[50%]">
-        <Spinner
-          label="Loading..."
-          color="primary"
-          size="lg"
-          labelColor="foreground"
-        />
+        <Spinner color="primary" size="lg" />
       </Wrapper>
     </div>
   )
