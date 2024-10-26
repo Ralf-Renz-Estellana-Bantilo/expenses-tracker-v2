@@ -131,7 +131,9 @@ export default function ComponentContextProvider({
     }
   }
 
-  const getPreviousExpenses = async (monthID = CURRENT_MONTHID) => {
+  const getPreviousExpenses = async (
+    monthID = CURRENT_MONTHID
+  ): Promise<void> => {
     try {
       const payload: MasterSelectPayloadType<PreviousExpensesType> = {
         table: "previous_expenses_view",
@@ -224,7 +226,7 @@ export default function ComponentContextProvider({
       getBudgetWallet(),
     ])
       .then(() => {
-        logger.error("Resources loaded!")
+        logger.info("Resources loaded!")
       })
       .catch((error) => {
         logger.error(error)
@@ -240,7 +242,7 @@ export default function ComponentContextProvider({
       }
 
       const isMaskSessionValue = localStorage.getItem("isMasked")
-      let isMaskedValue = isMaskSessionValue === "true" ?? true
+      let isMaskedValue = JSON.parse(isMaskSessionValue ?? "undefined") ?? true
       localStorage.setItem("isMasked", `${isMaskedValue}`)
       setIsMasked(isMaskedValue)
       initialize()
