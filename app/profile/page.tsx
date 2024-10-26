@@ -7,9 +7,7 @@ const ProfilePage = () => {
   return (
     <div className="flex flex-col gap-3">
       <ProfileImage />
-
       <ProfileSections />
-
       <MonthlyExpensesList />
     </div>
   )

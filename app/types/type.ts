@@ -34,12 +34,12 @@ export type ContextType = {
   handleUpdateExpense: (
     newExpense: ExpensesType & { category: string | undefined },
     type: "add" | "edit"
-  ) => void
+  ) => Promise<void>
   handleUpdateWalletBudget: (
     newBudget: WalletBudgeType,
     type: "add" | "edit"
-  ) => void
-  getPreviousExpenses: (monthID: number) => void
+  ) => Promise<void>
+  getPreviousExpenses: (monthID: number) => Promise<void>
 }
 
 export type StatusType = 0 | 1
@@ -208,3 +208,10 @@ export type ExpensesModalType<T> = {
 export type SizeType = "xs" | "sm" | "md" | "lg" | "xl"
 
 export type TDate = DateValue | undefined
+
+export type TUsers = {
+  ID: number
+  email: string
+  status: number
+  created_on?: string
+}

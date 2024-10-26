@@ -63,7 +63,7 @@ const PreviousExpenses = () => {
     if (context) {
       const { getPreviousExpenses } = context
       setSelectedMonth(item)
-      getPreviousExpenses(item.monthID)
+      await getPreviousExpenses(item.monthID)
     }
   }
 
