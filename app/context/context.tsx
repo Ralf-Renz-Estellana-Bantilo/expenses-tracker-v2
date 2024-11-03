@@ -29,6 +29,7 @@ import {
   CURRENT_MONTHID,
   CURRENT_YEAR,
   formatPreviousExpenses,
+  MONTHLIST,
 } from "../utils/utils"
 import { CustomLogger, LogLevel } from "../utils/logger"
 import useAlert from "../hook/useAlert"
@@ -173,12 +174,49 @@ export default function ComponentContextProvider({
       const payload: MasterSelectPayloadType<MonthlyExpensesType> = {
         table: "monthly_expenses_view",
         filter: { user },
-        sort: { monthID: "DESC" },
+        sort: { monthID: "ASC" },
       }
       const response = (await fetchMasterSelect(
         payload
       )) as MonthlyExpensesType[]
-      setMonthlyExpenses(response)
+
+      const yearList = [...new Set(response.map((res) => res.year))]
+
+      const resultList: MonthlyExpensesType[] = []
+
+      for (let a = 0; a < yearList.length; a++) {
+        const year = yearList[a]
+
+        for (let b = 0; b < MONTHLIST.length; b++) {
+          const month = MONTHLIST[b]
+          const monthCode = month.slice(0, 3).toUpperCase()
+          const monthID = b + 1
+          const result = {
+            month,
+            monthCode,
+            monthID,
+            total: 0,
+            user,
+            year,
+          }
+
+          const res = response.find(
+            (res) => res.monthID === monthID && res.year === year
+          )
+
+          if (monthID > CURRENT_MONTHID && year == CURRENT_YEAR) {
+            continue
+          }
+
+          if (res) {
+            result.total = res.total
+          }
+
+          resultList.push(result)
+        }
+      }
+
+      setMonthlyExpenses(resultList)
     } catch (error) {
       logger.error(error)
       alert(error)
