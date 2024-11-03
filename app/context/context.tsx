@@ -20,21 +20,20 @@ import {
   WalletBudgeType,
   PreviousExpensesType,
   MonthlyExpensesBreakdownType,
+  TUsers,
 } from "../types/type"
 import { redirect, usePathname } from "next/navigation"
 import { signOut, useSession } from "next-auth/react"
-import {
-  fetchMasterSelect,
-  fetchSaveData,
-  fetchUser,
-} from "../controller/controller"
+import { fetchMasterSelect, fetchSaveData } from "../controller/controller"
 import {
   CURRENT_MONTHID,
   CURRENT_YEAR,
   formatPreviousExpenses,
+  MONTHLIST,
 } from "../utils/utils"
 import { CustomLogger, LogLevel } from "../utils/logger"
 import useAlert from "../hook/useAlert"
+import { USERS } from "../api/users/users_db"
 
 export const ComponentContext = createContext<ContextType>({
   tabs: null as any,
@@ -175,12 +174,49 @@ export default function ComponentContextProvider({
       const payload: MasterSelectPayloadType<MonthlyExpensesType> = {
         table: "monthly_expenses_view",
         filter: { user },
-        sort: { monthID: "DESC" },
+        sort: { monthID: "ASC" },
       }
       const response = (await fetchMasterSelect(
         payload
       )) as MonthlyExpensesType[]
-      setMonthlyExpenses(response)
+
+      const yearList = [...new Set(response.map((res) => res.year))]
+
+      const resultList: MonthlyExpensesType[] = []
+
+      for (let a = 0; a < yearList.length; a++) {
+        const year = yearList[a]
+
+        for (let b = 0; b < MONTHLIST.length; b++) {
+          const month = MONTHLIST[b]
+          const monthCode = month.slice(0, 3).toUpperCase()
+          const monthID = b + 1
+          const result = {
+            month,
+            monthCode,
+            monthID,
+            total: 0,
+            user,
+            year,
+          }
+
+          const res = response.find(
+            (res) => res.monthID === monthID && res.year === year
+          )
+
+          if (monthID > CURRENT_MONTHID && year == CURRENT_YEAR) {
+            continue
+          }
+
+          if (res) {
+            result.total = res.total
+          }
+
+          resultList.push(result)
+        }
+      }
+
+      setMonthlyExpenses(resultList)
     } catch (error) {
       logger.error(error)
       alert(error)
@@ -240,32 +276,28 @@ export default function ComponentContextProvider({
       })
   }
 
-  const getUser = async () => {
-    const users = await fetchUser()
-    return users
-  }
   useEffect(() => {
     if (!session) return undefined
+    const response: TUsers | undefined = USERS.find(
+      (u) => atob(u.email) === user && u.status === 1
+    )
 
-    getUser().then((res) => {
-      if (res.length > 0) {
-        if (tabs.map(({ path }) => path).includes(pathname)) {
-          const activeRoute = tabs.find((tab) => tab.path === pathname)
-          setActiveTab(activeRoute || defaultTabInfo)
-        }
-
-        const isMaskSessionValue = localStorage.getItem("isMasked")
-        let isMaskedValue =
-          JSON.parse(isMaskSessionValue ?? "undefined") ?? true
-        localStorage.setItem("isMasked", `${isMaskedValue}`)
-        setIsMasked(isMaskedValue)
-        initialize()
-      } else {
-        showAlert({ type: "error", message: "Unauthorized user!" })
-        signOut()
-        redirect("/login")
+    if (response) {
+      if (tabs.map(({ path }) => path).includes(pathname)) {
+        const activeRoute = tabs.find((tab) => tab.path === pathname)
+        setActiveTab(activeRoute || defaultTabInfo)
       }
-    })
+
+      const isMaskSessionValue = localStorage.getItem("isMasked")
+      let isMaskedValue = JSON.parse(isMaskSessionValue ?? "undefined") ?? true
+      localStorage.setItem("isMasked", `${isMaskedValue}`)
+      setIsMasked(isMaskedValue)
+      initialize()
+    } else {
+      showAlert({ type: "error", message: "Unauthorized user!" })
+      signOut()
+      redirect("/login")
+    }
   }, [])
 
   const handleUpdateExpense = async (

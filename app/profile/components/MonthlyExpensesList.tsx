@@ -89,7 +89,7 @@ const MonthlyExpensesList = () => {
           )
 
           if (response) {
-            if (CURRENT_MONTHID === monthID) {
+            if (CURRENT_MONTHID === monthID && year === CURRENT_YEAR) {
               if (todayExpenses) {
                 const allTodayExpenses: PreviousExpensesType[] = Array.from(
                   todayExpenses,
@@ -112,6 +112,7 @@ const MonthlyExpensesList = () => {
             previousExpenses: response,
             monthID,
             includesCurrentDay: true,
+            year,
           })
 
           setExpensesList(result)
