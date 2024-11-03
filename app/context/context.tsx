@@ -20,14 +20,11 @@ import {
   WalletBudgeType,
   PreviousExpensesType,
   MonthlyExpensesBreakdownType,
+  TUsers,
 } from "../types/type"
 import { redirect, usePathname } from "next/navigation"
 import { signOut, useSession } from "next-auth/react"
-import {
-  fetchMasterSelect,
-  fetchSaveData,
-  fetchUser,
-} from "../controller/controller"
+import { fetchMasterSelect, fetchSaveData } from "../controller/controller"
 import {
   CURRENT_MONTHID,
   CURRENT_YEAR,
@@ -35,6 +32,7 @@ import {
 } from "../utils/utils"
 import { CustomLogger, LogLevel } from "../utils/logger"
 import useAlert from "../hook/useAlert"
+import { USERS } from "../api/users/users_db"
 
 export const ComponentContext = createContext<ContextType>({
   tabs: null as any,
@@ -240,32 +238,28 @@ export default function ComponentContextProvider({
       })
   }
 
-  const getUser = async () => {
-    const users = await fetchUser()
-    return users
-  }
   useEffect(() => {
     if (!session) return undefined
+    const response: TUsers | undefined = USERS.find(
+      (u) => atob(u.email) === user && u.status === 1
+    )
 
-    getUser().then((res) => {
-      if (res.length > 0) {
-        if (tabs.map(({ path }) => path).includes(pathname)) {
-          const activeRoute = tabs.find((tab) => tab.path === pathname)
-          setActiveTab(activeRoute || defaultTabInfo)
-        }
-
-        const isMaskSessionValue = localStorage.getItem("isMasked")
-        let isMaskedValue =
-          JSON.parse(isMaskSessionValue ?? "undefined") ?? true
-        localStorage.setItem("isMasked", `${isMaskedValue}`)
-        setIsMasked(isMaskedValue)
-        initialize()
-      } else {
-        showAlert({ type: "error", message: "Unauthorized user!" })
-        signOut()
-        redirect("/login")
+    if (response) {
+      if (tabs.map(({ path }) => path).includes(pathname)) {
+        const activeRoute = tabs.find((tab) => tab.path === pathname)
+        setActiveTab(activeRoute || defaultTabInfo)
       }
-    })
+
+      const isMaskSessionValue = localStorage.getItem("isMasked")
+      let isMaskedValue = JSON.parse(isMaskSessionValue ?? "undefined") ?? true
+      localStorage.setItem("isMasked", `${isMaskedValue}`)
+      setIsMasked(isMaskedValue)
+      initialize()
+    } else {
+      showAlert({ type: "error", message: "Unauthorized user!" })
+      signOut()
+      redirect("/login")
+    }
   }, [])
 
   const handleUpdateExpense = async (
