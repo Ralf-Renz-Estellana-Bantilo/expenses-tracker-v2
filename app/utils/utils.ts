@@ -9,6 +9,7 @@ interface FormatExpensesProps {
   monthID: number
   includesCurrentDay?: boolean
   sortOrder?: "DESC" | "ASC"
+  year?: number
 }
 
 export const CURRENT_YEAR = new Date().getFullYear()
@@ -48,6 +49,7 @@ export const formatPreviousExpenses = ({
   monthID,
   includesCurrentDay = false,
   sortOrder = "ASC",
+  year = CURRENT_YEAR,
 }: FormatExpensesProps): FormattedPreviousExpensesType[] => {
   previousExpenses.sort(function (a, b) {
     let dateA = `${new Date(a.created_on as string)}` as any
@@ -79,13 +81,13 @@ export const formatPreviousExpenses = ({
     }
   })
 
-  const numberOfDayInMonth = daysInMonth(CURRENT_YEAR, monthID)
+  const numberOfDayInMonth = daysInMonth(year, monthID)
   const elapsedDaysInMonth = includesCurrentDay ? CURRENT_DAY : CURRENT_DAY - 1
 
   const resultWithMissingDates = []
 
   for (let a = 1; a <= numberOfDayInMonth; a++) {
-    const filteredDate = `${monthID}/${a}/${CURRENT_YEAR}`
+    const filteredDate = `${monthID}/${a}/${year}`
     const filterResult = result.find((res) => res.date === filteredDate)
 
     const emptyResult = {
@@ -94,10 +96,10 @@ export const formatPreviousExpenses = ({
       total: 0,
       expensesList: [],
       monthID,
-      year: CURRENT_YEAR,
+      year,
     }
 
-    if (CURRENT_MONTHID === monthID) {
+    if (CURRENT_MONTHID === monthID && CURRENT_YEAR === year) {
       if (a <= elapsedDaysInMonth) {
         resultWithMissingDates.push(filterResult ?? emptyResult)
       }
