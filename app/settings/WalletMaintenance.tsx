@@ -270,7 +270,7 @@ const WalletMaintenance = () => {
                 description={getExpenseDescription(
                   budget.created_on,
                   budget.description,
-                  "ll"
+                  "l"
                 )}
                 value={formatMoney(budget.amount, context.isMasked)}
                 handleDblClick={() => showWalletBudgetDialog(budget)}

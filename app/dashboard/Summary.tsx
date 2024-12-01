@@ -25,13 +25,13 @@ const Summary = () => {
       <div className="flex gap-2">
         <div className="flex items-center justify-between border-1 border-green-800 bg-green-500 backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-lg p-2 flex-1 max-[420px]:flex-col">
           <p className="text-accent-secondary text-sm">Total Budget</p>
-          <span className="text-accent-secondary font-bold">
+          <span className="text-accent-secondary font-bold whitespace-nowrap">
             {formatMoney(totalBudget, context?.isMasked)}
           </span>
         </div>
         <div className="flex items-center justify-between border-1 border-red-800 bg-red-500 backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-lg p-2 flex-1 max-[420px]:flex-col">
           <p className="text-accent-secondary text-sm">Total Expenses</p>
-          <span className="text-accent-secondary font-bold">
+          <span className="text-accent-secondary font-bold whitespace-nowrap">
             {formatMoney(totalExpenses)}
           </span>
         </div>
