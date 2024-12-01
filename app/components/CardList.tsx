@@ -50,12 +50,14 @@ const CardList = ({
 
         <div className="flex flex-col">
           <span>{title}</span>
-          <small className="text-default-500 whitespace-nowrap overflow-clip text-ellipsis max-w-xs">
+          <small className="text-default-500 whitespace-nowrap overflow-clip text-ellipsis max-w-[12rem] sm:max-w-[20rem]">
             {description}
           </small>
         </div>
       </div>
-      <span className="text-accent-secondary font-semibold"> {value}</span>
+      <span className="text-accent-secondary font-semibold whitespace-nowrap">
+        {value}
+      </span>
     </div>
   )
 }
