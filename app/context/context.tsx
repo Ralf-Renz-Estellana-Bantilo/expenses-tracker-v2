@@ -1,39 +1,41 @@
-import React, {
+import { signOut, useSession } from "next-auth/react"
+import { redirect, usePathname } from "next/navigation"
+import {
   createContext,
-  useState,
   ReactNode,
-  useEffect,
   useContext,
+  useEffect,
   useRef,
+  useState,
 } from "react"
+import { USERS } from "../api/users/users_db"
+import { fetchMasterSelect, fetchSaveData } from "../controller/controller"
+import { getColorThemeById } from "../database/colorThemeTable"
+import useAlert from "../hook/useAlert"
 import { DashboardIcon, ProfileIcon, SettingsIcon } from "../icons/icons"
 import {
   CategoryType,
   ContextType,
-  MasterSelectPayloadType,
-  MonthlyExpensesType,
   FormattedPreviousExpensesType,
+  MasterSelectPayloadType,
+  MonthlyExpensesBreakdownType,
+  MonthlyExpensesType,
+  PreviousExpensesType,
   SaveDataPayloadType,
   SaveDataResponseType,
   TabType,
   TodaysExpensesType,
-  WalletBudgeType,
-  PreviousExpensesType,
-  MonthlyExpensesBreakdownType,
   TUsers,
+  WalletBudgeType,
 } from "../types/type"
-import { redirect, usePathname } from "next/navigation"
-import { signOut, useSession } from "next-auth/react"
-import { fetchMasterSelect, fetchSaveData } from "../controller/controller"
+import { getCookie } from "../utils/helper"
+import { CustomLogger, LogLevel } from "../utils/logger"
 import {
   CURRENT_MONTHID,
   CURRENT_YEAR,
   formatPreviousExpenses,
   MONTHLIST,
 } from "../utils/utils"
-import { CustomLogger, LogLevel } from "../utils/logger"
-import useAlert from "../hook/useAlert"
-import { USERS } from "../api/users/users_db"
 
 export const ComponentContext = createContext<ContextType>({
   tabs: null as any,
@@ -54,6 +56,8 @@ export const ComponentContext = createContext<ContextType>({
   handleUpdateWalletBudget: null as any,
   getPreviousExpenses: null as any,
   setMonthlyExpensesBreakdown: null as any,
+  selectedColor: null as any,
+  setSelectedColor: null as any,
 })
 
 export default function ComponentContextProvider({
@@ -68,6 +72,9 @@ export default function ComponentContextProvider({
   const user = session?.user?.email ?? "unknown@user.com"
 
   const pathname = usePathname()
+
+  const [selectedColor, setSelectedColor] = useState(getColorThemeById(1))
+
   const [tabs] = useState<TabType[]>([
     {
       ID: 1,
@@ -278,6 +285,10 @@ export default function ComponentContextProvider({
 
   useEffect(() => {
     if (!session) return undefined
+
+    const colorThemeID = getCookie<number>("colorThemeID", 1)
+    setSelectedColor(getColorThemeById(colorThemeID))
+
     const response: TUsers | undefined = USERS.find(
       (u) => atob(u.email) === user && u.status === 1
     )
@@ -289,7 +300,9 @@ export default function ComponentContextProvider({
       }
 
       const isMaskSessionValue = localStorage.getItem("isMasked")
-      let isMaskedValue = JSON.parse(isMaskSessionValue ?? "undefined") ?? true
+      let isMaskedValue = isMaskSessionValue
+        ? JSON.parse(isMaskSessionValue)
+        : false
       localStorage.setItem("isMasked", `${isMaskedValue}`)
       setIsMasked(isMaskedValue)
       initialize()
@@ -346,8 +359,15 @@ export default function ComponentContextProvider({
         ] as TodaysExpensesType[]
       }
       setTodayExpenses(updatedExpenses!)
-      initialize()
-      isTodayExpensePending.current = false
+
+      Promise.all([getTodayExpenses(), getMonthlyExpenses()])
+        .then(() => {
+          isTodayExpensePending.current = false
+        })
+        .catch((error) => {
+          logger.error(error)
+          alert(error)
+        })
     } catch (error) {
       logger.error(error)
       alert(error)
@@ -418,12 +438,14 @@ export default function ComponentContextProvider({
     isWalletBudgetPending,
     isLoadingState,
     monthlyExpensesBreakdown,
+    selectedColor,
     setIsMasked,
     setActiveTab,
     handleUpdateExpense,
     handleUpdateWalletBudget,
     getPreviousExpenses,
     setMonthlyExpensesBreakdown,
+    setSelectedColor,
   }
 
   return (

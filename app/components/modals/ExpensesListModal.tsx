@@ -25,13 +25,19 @@ const ExpensesListModal = ({
 }: ExpensesModalType<FormattedPreviousExpensesType>) => {
   const context = AppContext()
 
+  if (!context) return null
+  const { categories, selectedColor } = context
+
   const findCategory = (categoryID: number) => {
-    return context?.categories?.find(({ ID }) => ID === categoryID)
+    return categories?.find(({ ID }) => ID === categoryID)
   }
 
   return (
     <Modal
-      className="border-1 border-border-color bg-container-secondary"
+      style={{
+        backgroundColor: selectedColor.properties.secondaryAccent,
+        border: `1px solid ${selectedColor.properties.borderColor}`,
+      }}
       backdrop="blur"
       isOpen={isOpen}
       onOpenChange={onOpenChange}

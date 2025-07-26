@@ -3,6 +3,9 @@
 import React from "react"
 import Image from "next/image"
 import { Skeleton } from "@nextui-org/react"
+import { AppContext } from "../context/context"
+import { iconFilterModerator } from "../utils/utils"
+import "./CardList.css"
 
 type CardListType = {
   title: string | undefined
@@ -21,6 +24,10 @@ const CardList = ({
   handleClick,
   handleDblClick,
 }: CardListType) => {
+  const context = AppContext()
+  if (!context) return null
+  const { selectedColor } = context
+
   const singleClick = () => {
     if (handleClick) {
       handleClick()
@@ -35,7 +42,8 @@ const CardList = ({
 
   return (
     <div
-      className="flex p-2 justify-between items-center border-1 cursor-pointer border-transparent hover:border-slate-700 rounded-lg hover:bg-slate-500 hover:backdrop-filter hover:backdrop-blur-sm hover:bg-opacity-10"
+      className={`${selectedColor.background} p-2 rounded-lg`}
+      id={selectedColor.background}
       onClick={singleClick}
       onDoubleClick={doubleClick}
     >
@@ -45,6 +53,9 @@ const CardList = ({
             src={require(`@/public/assets/icons/${iconName}.png`).default}
             alt="icon"
             height={27}
+            style={{
+              filter: iconFilterModerator(selectedColor.background),
+            }}
           />
         )}
 

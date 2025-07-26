@@ -24,7 +24,12 @@ import Image from "next/image"
 import useAlert from "@/app/hook/useAlert"
 import useCredit from "@/app/hook/useCredit"
 import { ResponseCacheContext } from "@/app/context/cacheContext"
-import { CURRENT_MONTHID, CURRENT_YEAR, formatMoney } from "@/app/utils/utils"
+import {
+  CURRENT_MONTHID,
+  CURRENT_YEAR,
+  formatMoney,
+  iconFilterModerator,
+} from "@/app/utils/utils"
 import { CustomLogger, LogLevel } from "@/app/utils/logger"
 
 const DEFAULT_FORM: ExpenseFormType = {
@@ -44,6 +49,15 @@ const ExpensesFormModal = ({
 }: ExpensesModalType<TodaysExpensesType>) => {
   const { data: session } = useSession()
   const context = AppContext()
+
+  if (!context) return null
+  const {
+    handleUpdateExpense,
+    isTodayExpensePending,
+    categories,
+    selectedColor,
+  } = context
+
   const cacheContext = ResponseCacheContext()
   const { totalBalance } = useCredit()
   const [formData, setFormData] = useState<ExpenseFormType>(DEFAULT_FORM)
@@ -69,56 +83,51 @@ const ExpensesFormModal = ({
       const { ID, amount, categoryID, description, status } = formData
 
       if (categoryID !== "" && Number(amount) >= 0 && amount !== "") {
-        if (context) {
-          const { handleUpdateExpense, categories, isTodayExpensePending } =
-            context
+        isTodayExpensePending.current = true
 
-          isTodayExpensePending.current = true
+        const ACTION_TYPE = ID === DEFAULT_FORM.ID ? "add" : "edit"
 
-          const ACTION_TYPE = ID === DEFAULT_FORM.ID ? "add" : "edit"
+        const categoryList = categories?.find(
+          (cat) => cat.ID === Number(formData.categoryID)
+        )
 
-          const categoryList = categories?.find(
-            (cat) => cat.ID === Number(formData.categoryID)
-          )
-
-          const newExpense: TodaysExpensesType = {
-            ID,
-            category: categoryList?.description,
-            categoryID: Number(categoryID),
-            description,
-            amount: Number(amount),
-            created_by: session?.user?.email || "",
-            created_on: `${new Date()}`,
-            status: status as StatusType,
-          }
-
-          handleUpdateExpense(newExpense, ACTION_TYPE)
-            .then(() => {
-              const alertMessage =
-                ACTION_TYPE === "add"
-                  ? "New expense has been added!"
-                  : "Expense has been updated!"
-
-              setFormData(DEFAULT_FORM)
-              showAlert({ type: "success", message: alertMessage })
-
-              if (cacheContext) {
-                const { removeCacheByID } = cacheContext
-                const cachedID = `${CURRENT_MONTHID}-${CURRENT_YEAR}-mel`
-                removeCacheByID(cachedID)
-              }
-
-              onClose()
-            })
-            .catch((error) => {
-              showAlert({ type: "error", message: "Something went wrong!" })
-              const logger = new CustomLogger(LogLevel.ERROR)
-              logger.error(error)
-            })
-            .finally(() => {
-              isTodayExpensePending.current = false
-            })
+        const newExpense: TodaysExpensesType = {
+          ID,
+          category: categoryList?.description,
+          categoryID: Number(categoryID),
+          description,
+          amount: Number(amount),
+          created_by: session?.user?.email || "",
+          created_on: `${new Date()}`,
+          status: status as StatusType,
         }
+
+        handleUpdateExpense(newExpense, ACTION_TYPE)
+          .then(() => {
+            const alertMessage =
+              ACTION_TYPE === "add"
+                ? "New expense has been added!"
+                : "Expense has been updated!"
+
+            setFormData(DEFAULT_FORM)
+            showAlert({ type: "success", message: alertMessage })
+
+            if (cacheContext) {
+              const { removeCacheByID } = cacheContext
+              const cachedID = `${CURRENT_MONTHID}-${CURRENT_YEAR}-mel`
+              removeCacheByID(cachedID)
+            }
+
+            onClose()
+          })
+          .catch((error) => {
+            showAlert({ type: "error", message: "Something went wrong!" })
+            const logger = new CustomLogger(LogLevel.ERROR)
+            logger.error(error)
+          })
+          .finally(() => {
+            isTodayExpensePending.current = false
+          })
       } else {
         showAlert({ type: "warning", message: "Error! Form data is invalid!" })
       }
@@ -127,7 +136,7 @@ const ExpensesFormModal = ({
         afterHandler(formData)
       }
     },
-    [formData, afterHandler, context, showAlert, session, cacheContext]
+    [formData, afterHandler, showAlert, session, cacheContext]
   )
 
   const handleKeyPress = useCallback(
@@ -157,7 +166,7 @@ const ExpensesFormModal = ({
     }
 
     return { status, message }
-  }, [formData.amount, totalBalance])
+  }, [formData.amount])
 
   useEffect(() => {
     let totalAmount = 0
@@ -186,7 +195,10 @@ const ExpensesFormModal = ({
 
   return (
     <Modal
-      className="border-1 border-border-color bg-container-secondary"
+      style={{
+        backgroundColor: selectedColor.properties.secondaryAccent,
+        border: `1px solid ${selectedColor.properties.borderColor}`,
+      }}
       backdrop="blur"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
@@ -199,19 +211,19 @@ const ExpensesFormModal = ({
               {formData.header}
             </ModalHeader>
             <ModalBody>
-              {context?.categories && (
+              {categories && (
                 <Select
                   label="Select category"
                   variant="bordered"
-                  color="primary"
+                  color={selectedColor.background}
                   isRequired
                   selectedKeys={[formData.categoryID]}
                   onChange={handleChangeInput}
                   name="categoryID"
                 >
-                  {context?.categories.map((category) => (
+                  {categories.map((category) => (
                     <SelectItem
-                      color="primary"
+                      color={selectedColor.background}
                       startContent={
                         <Image
                           src={
@@ -220,6 +232,11 @@ const ExpensesFormModal = ({
                           }
                           alt="icon"
                           height={27}
+                          style={{
+                            filter: iconFilterModerator(
+                              selectedColor.background
+                            ),
+                          }}
                         />
                       }
                       key={category.ID}
@@ -238,7 +255,7 @@ const ExpensesFormModal = ({
                 label="Short description"
                 placeholder="Enter short description"
                 variant="bordered"
-                color="primary"
+                color={selectedColor.background}
               />
               <Input
                 value={formData.amount}
@@ -246,7 +263,7 @@ const ExpensesFormModal = ({
                 onKeyDown={(event) => handleKeyPress(event, onClose)}
                 name="amount"
                 isInvalid={isInvalid.status}
-                color={isInvalid.status ? "warning" : "primary"}
+                color={isInvalid.status ? "warning" : selectedColor.background}
                 errorMessage={isInvalid.status && isInvalid.message}
                 isRequired
                 label="Amount"
@@ -264,13 +281,17 @@ const ExpensesFormModal = ({
                   label="Select status"
                   variant="bordered"
                   isRequired
-                  color="primary"
+                  color={selectedColor.background}
                   selectedKeys={[formData.status.toString()]}
                   onChange={handleChangeInput}
                   name="status"
                 >
                   {[0, 1].map((status) => (
-                    <SelectItem color="primary" key={status} value={status}>
+                    <SelectItem
+                      color={selectedColor.background}
+                      key={status}
+                      value={status}
+                    >
                       {status.toString()}
                     </SelectItem>
                   ))}
@@ -281,7 +302,10 @@ const ExpensesFormModal = ({
               <Button variant="light" color="danger" onPress={onClose}>
                 Close
               </Button>
-              <Button color="primary" onPress={() => handleSave(onClose)}>
+              <Button
+                color={selectedColor.background}
+                onPress={() => handleSave(onClose)}
+              >
                 Save
               </Button>
             </ModalFooter>

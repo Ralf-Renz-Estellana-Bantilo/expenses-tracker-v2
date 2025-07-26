@@ -16,6 +16,44 @@
   --dark-blue: #101214;
   --foreground-color: #cbdde0;
   --border-color: #25313f;
+
+  --light-theme-default: #141414;
+  --light-theme-primary: #17212c;
+  --light-theme-secondary: #161016;
+  --light-theme-success: #0b160d;
+  --light-theme-warning: #181202;
+  --light-theme-danger: #181212;
+
+  --dark-theme-default: #161616;
+  --dark-theme-primary: #101214;
+  --dark-theme-secondary: #1a121a;
+  --dark-theme-success: #11140f;
+  --dark-theme-warning: #10100f;
+  --dark-theme-danger: #1e1414;
+
+  --container-default-main: #1b1b1b;
+  --container-default-secondary: #282a2c;
+  --default-border-color: #333435;
+
+  --container-primary-main: #181d22;
+  --container-primary-secondary: #1e242b;
+  --primary-border-color: #25313f;
+
+  --container-secondary-main: #1e171f;
+  --container-secondary-secondary: #251921;
+  --secondary-border-color: #3f2539;
+
+  --container-success-main: #09120b;
+  --container-success-secondary: #1e2b28;
+  --success-border-color: #253f2e;
+
+  --container-warning-main: #181202;
+  --container-warning-secondary: #2b251e;
+  --warning-border-color: #3f3425;
+
+  --container-danger-main: #181212;
+  --container-danger-secondary: #2b1e1f;
+  --danger-border-color: #3f252b;
 }
 
 /* Custom CSS */
@@ -47,6 +85,54 @@ body {
     164.75% 100%,
     var(--light-blue) 0%,
     var(--dark-blue) 48.73%
+  );
+}
+
+.gradient-background-default {
+  background-image: radial-gradient(
+    164.75% 100%,
+    var(--light-theme-default) 0%,
+    var(--dark-theme-default) 48.73%
+  );
+}
+
+.gradient-background-primary {
+  background-image: radial-gradient(
+    164.75% 100%,
+    var(--light-theme-primary) 0%,
+    var(--dark-theme-primary) 48.73%
+  );
+}
+
+.gradient-background-secondary {
+  background-image: radial-gradient(
+    164.75% 100%,
+    var(--light-theme-secondary) 0%,
+    var(--dark-theme-secondary) 48.73%
+  );
+}
+
+.gradient-background-success {
+  background-image: radial-gradient(
+    164.75% 100%,
+    var(--light-theme-success) 0%,
+    var(--dark-theme-success) 48.73%
+  );
+}
+
+.gradient-background-warning {
+  background-image: radial-gradient(
+    164.75% 100%,
+    var(--light-theme-warning) 0%,
+    var(--dark-theme-warning) 48.73%
+  );
+}
+
+.gradient-background-danger {
+  background-image: radial-gradient(
+    164.75% 100%,
+    var(--light-theme-danger) 0%,
+    var(--dark-theme-danger) 48.73%
   );
 }
 

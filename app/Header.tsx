@@ -1,14 +1,16 @@
 "use client"
 
-import React from "react"
 import {
-  Button,
   Avatar,
+  Button,
   Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
   DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
 } from "@nextui-org/react"
+import { signOut, useSession } from "next-auth/react"
+import { redirect, useRouter } from "next/navigation"
+import { AppContext } from "./context/context"
 import {
   AnalyticsIcon,
   BackIcon,
@@ -20,9 +22,6 @@ import {
   SettingsIcon,
   StarIcon,
 } from "./icons/icons"
-import { AppContext } from "./context/context"
-import { redirect, useRouter } from "next/navigation"
-import { signOut, useSession } from "next-auth/react"
 
 const Header = ({
   title,
@@ -32,6 +31,9 @@ const Header = ({
   showActions?: boolean
 }) => {
   const context = AppContext()
+  if (!context) return null
+  const { setIsMasked, isMasked, selectedColor, setActiveTab, tabs } = context
+
   const { data: session } = useSession()
   const router = useRouter()
 
@@ -47,22 +49,25 @@ const Header = ({
   }
 
   const toggleMask = () => {
-    const { setIsMasked, isMasked } = context
     const newValue = !isMasked
     localStorage.setItem("isMasked", `${newValue}`)
     setIsMasked(newValue)
   }
 
   const backToDashboard = () => {
-    const { setActiveTab } = context
-
     handleChangeRoute("/dashboard")
-    setActiveTab(context?.tabs[0])
+    setActiveTab(tabs[0])
   }
 
   return (
     <>
-      <div className="z-20 flex items-center justify-between p-2 sticky top-0 border-b-1 border-border-color bg-container-primary">
+      <div
+        className="z-20 flex items-center justify-between p-2 sticky top-0"
+        style={{
+          backgroundColor: selectedColor.properties.mainAccent,
+          borderBottom: `1px solid ${selectedColor.properties.borderColor}`,
+        }}
+      >
         <div className="flex items-center gap-2">
           {title && (
             <Button
@@ -105,7 +110,7 @@ const Header = ({
                 </Button>
               </>
             ))}
-          <Dropdown className="dark bg-container-primary border-1 border-border-color">
+          <Dropdown className="dark">
             <DropdownTrigger>
               <Avatar
                 isBordered
