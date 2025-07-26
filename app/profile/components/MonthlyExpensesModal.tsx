@@ -31,6 +31,9 @@ const MonthlyExpensesModal = ({
   onOpenChange,
 }: ModalProps) => {
   const context = AppContext()
+  if (!context) return null
+  const { selectedColor, isMasked } = context
+
   const totalPreviousExpenses: number = useMemo(() => {
     return (
       expensesList?.reduce(
@@ -45,7 +48,11 @@ const MonthlyExpensesModal = ({
 
   return (
     <Modal
-      className="border-1 border-border-color bg-container-secondary"
+      // className={`border-1 border-${selectedColor.background}-border-color bg-container-${selectedColor.background}-secondary`}
+      style={{
+        backgroundColor: selectedColor.properties.secondaryAccent,
+        border: `1px solid ${selectedColor.properties.borderColor}`,
+      }}
       backdrop="blur"
       isOpen={isOpen}
       onOpenChange={onOpenChange}
@@ -74,10 +81,7 @@ const MonthlyExpensesModal = ({
               <div className="flex items-center border-1 border-red-800 bg-red-500 backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-lg p-2 justify-between text-default-500 flex-1">
                 <h3>Total: </h3>
                 <span className="font-semibold text-accent-primary">
-                  {formatMoney(
-                    totalPreviousExpenses,
-                    context?.isMasked ?? false
-                  )}
+                  {formatMoney(totalPreviousExpenses, isMasked ?? false)}
                 </span>
               </div>
             </ModalFooter>

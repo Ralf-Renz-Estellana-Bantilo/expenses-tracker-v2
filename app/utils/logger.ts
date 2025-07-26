@@ -52,6 +52,8 @@ export class CustomLogger {
   }
 }
 
+export const errorLogger = new CustomLogger(LogLevel.ERROR)
+export const infoLogger = new CustomLogger(LogLevel.INFO)
 // Usage
 // const logger = new Logger(LogLevel.DEBUG)
 

@@ -45,6 +45,15 @@ const WalletMaintenance = () => {
   const context = AppContext()
   if (!context) return
 
+  const {
+    handleUpdateWalletBudget,
+    isMasked,
+    monthlyExpenses,
+    walletBudget,
+    selectedColor,
+    isWalletBudgetPending,
+  } = context
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [formData, setFormData] = useState(DEFAULT_FORM)
   const [yearList, setYearList] = useState<number[]>([CURRENT_YEAR])
@@ -65,7 +74,6 @@ const WalletMaintenance = () => {
       const dateObj = new Date()
       const isoDate = dateObj.toISOString()
 
-      const { handleUpdateWalletBudget } = context
       const newBudget: WalletBudgeType = {
         ID,
         title,
@@ -107,8 +115,7 @@ const WalletMaintenance = () => {
 
   const showWalletBudgetDialog = useCallback(
     (walletBudget: WalletBudgeType | null) => {
-      const isMasked = context.isMasked ?? false
-      if (!isMasked) {
+      if (isMasked === false) {
         const walletBudgetForm = walletBudget
           ? {
               header: "Update Wallet Budget",
@@ -123,7 +130,7 @@ const WalletMaintenance = () => {
         setFormData(walletBudgetForm)
       }
     },
-    [context.isMasked, onOpen, setFormData]
+    [isMasked, onOpen, setFormData]
   )
 
   const extractYear = (created_on: string | undefined) => {
@@ -132,7 +139,7 @@ const WalletMaintenance = () => {
 
   useEffect(() => {
     const yearList = [
-      ...new Set(context.monthlyExpenses?.map((expense) => expense.year)),
+      ...new Set(monthlyExpenses?.map((expense) => expense.year)),
     ].sort((a, b) => b - a)
 
     setYearList([...new Set([CURRENT_YEAR, ...yearList])])
@@ -140,10 +147,10 @@ const WalletMaintenance = () => {
 
   const walletBudgetList = useMemo(
     () =>
-      context.walletBudget?.filter(
+      walletBudget?.filter(
         (budget) => extractYear(budget.created_on) == selectedYear
       ) ?? [],
-    [context.walletBudget, selectedYear]
+    [walletBudget, selectedYear]
   )
 
   const totalExpenses: number = useMemo(() => {
@@ -159,7 +166,10 @@ const WalletMaintenance = () => {
   return (
     <>
       <Modal
-        className="border-1 border-border-color bg-container-secondary"
+        style={{
+          backgroundColor: selectedColor.properties.secondaryAccent,
+          border: `1px solid ${selectedColor.properties.borderColor}`,
+        }}
         backdrop="blur"
         isOpen={isOpen}
         onOpenChange={onOpenChange}
@@ -177,7 +187,7 @@ const WalletMaintenance = () => {
                   onChange={handleChangeInput}
                   onKeyDown={(event) => handleKeyPress(event, onClose)}
                   name="title"
-                  color="primary"
+                  color={selectedColor.background}
                   label="Budget Title"
                   isRequired
                   placeholder="Enter budget title"
@@ -188,7 +198,7 @@ const WalletMaintenance = () => {
                   onChange={handleChangeInput}
                   onKeyDown={(event) => handleKeyPress(event, onClose)}
                   name="description"
-                  color="primary"
+                  color={selectedColor.background}
                   isRequired
                   label="Short description"
                   placeholder="Enter short description"
@@ -199,7 +209,7 @@ const WalletMaintenance = () => {
                   onChange={handleChangeInput}
                   onKeyDown={(event) => handleKeyPress(event, onClose)}
                   name="amount"
-                  color="primary"
+                  color={selectedColor.background}
                   label="Amount"
                   isRequired
                   type="number"
@@ -216,7 +226,10 @@ const WalletMaintenance = () => {
                 <Button variant="light" color="danger" onPress={onClose}>
                   Close
                 </Button>
-                <Button color="primary" onPress={() => handleSave(onClose)}>
+                <Button
+                  color={selectedColor.background}
+                  onPress={() => handleSave(onClose)}
+                >
                   Save
                 </Button>
               </ModalFooter>
@@ -238,8 +251,16 @@ const WalletMaintenance = () => {
                 {yearList.map((year) => (
                   <DropdownItem
                     key={year}
-                    color={year === selectedYear ? "primary" : "default"}
-                    className={year === selectedYear ? "bg-primary" : ""}
+                    color={
+                      year === selectedYear
+                        ? selectedColor.background
+                        : "default"
+                    }
+                    className={
+                      year === selectedYear
+                        ? `bg-${selectedColor.background}`
+                        : ""
+                    }
                     onClick={() => setSelectedYear(year)}
                   >
                     {year}
@@ -249,7 +270,7 @@ const WalletMaintenance = () => {
             </Dropdown>
             <Button
               isIconOnly
-              color="primary"
+              color={selectedColor.background}
               variant="light"
               aria-label="Take a photo"
               size="sm"
@@ -260,8 +281,8 @@ const WalletMaintenance = () => {
           </div>
         </WrapperHeader>
         <WrapperContent className="flex flex-col" scrollable>
-          <SuspenseContainer data={context?.walletBudget}>
-            {context?.isWalletBudgetPending.current && <CardListSkeleton />}
+          <SuspenseContainer data={walletBudget}>
+            {isWalletBudgetPending.current && <CardListSkeleton />}
             {walletBudgetList.map((budget) => (
               <CardList
                 key={budget.ID}
@@ -272,7 +293,7 @@ const WalletMaintenance = () => {
                   budget.description,
                   "l"
                 )}
-                value={formatMoney(budget.amount, context.isMasked)}
+                value={formatMoney(budget.amount, isMasked)}
                 handleDblClick={() => showWalletBudgetDialog(budget)}
               />
             ))}
@@ -282,7 +303,7 @@ const WalletMaintenance = () => {
           <h3 className="text-default-500">Total:</h3>
           <p className="text-default-500">
             {" "}
-            {formatMoney(totalExpenses, context.isMasked)}
+            {formatMoney(totalExpenses, isMasked)}
           </p>
         </WrapperFooter>
       </Wrapper>

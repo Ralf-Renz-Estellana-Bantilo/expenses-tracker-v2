@@ -1,5 +1,6 @@
 "use client"
 
+import { AppContext } from "@/app/context/context"
 import { SearchIcon } from "@/app/icons/icons"
 import {
   Button,
@@ -19,6 +20,10 @@ type TModal = {
 const SearchModal = (props: TModal) => {
   const { isOpen, onOpenChange } = props
 
+  const context = AppContext()
+  if (!context) return null
+  const { selectedColor } = context
+
   const [query, setQuery] = useState("")
 
   const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -27,7 +32,7 @@ const SearchModal = (props: TModal) => {
 
   return (
     <Modal
-      className="border-1 border-border-color bg-container-secondary"
+      className={`border-1 border-${selectedColor.background}-border-color bg-container-${selectedColor.background}-secondary`}
       backdrop="blur"
       isOpen={isOpen}
       onOpenChange={onOpenChange}

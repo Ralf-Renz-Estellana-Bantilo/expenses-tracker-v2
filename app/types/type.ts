@@ -1,5 +1,6 @@
 import { DateValue } from "@nextui-org/react"
 import { Dispatch, SetStateAction, JSX, MutableRefObject } from "react"
+import { ColorList } from "../database/colorThemeTable"
 
 interface TAuthor {
   created_by?: string
@@ -26,6 +27,8 @@ export type ContextType = {
   isWalletBudgetPending: MutableRefObject<boolean>
   isLoadingState: MutableRefObject<boolean>
   monthlyExpensesBreakdown: MonthlyExpensesBreakdownType
+  selectedColor: ColorList
+  setSelectedColor: Dispatch<SetStateAction<ColorList>>
   setMonthlyExpensesBreakdown: Dispatch<
     SetStateAction<MonthlyExpensesBreakdownType>
   >

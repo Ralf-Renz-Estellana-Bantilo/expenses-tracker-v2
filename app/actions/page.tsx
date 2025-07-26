@@ -39,9 +39,6 @@ const EXPENSES_COLUMNS = {
   category: "exp.category",
   categoryID: "exp.categoryID",
   description: "exp.description",
-  // created_by: 'exp.created_by',
-  // created_on: 'exp.created_on',
-  // status: 'exp.status',
 }
 
 type TDateRange = {
@@ -59,12 +56,13 @@ const ActionCenterPage = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const context = AppContext()
 
+  if (!context) return null
+  const { selectedColor, categories, isMasked } = context
+
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const { replace } = useRouter()
 
-  // const monthList = useMonth()
-  // const yearList = useYear()
   const categoryList = useCategory()
   const sortList = [
     {
@@ -105,8 +103,6 @@ const ActionCenterPage = () => {
   })
 
   const [filters, setFilters] = useState<TFilters>({
-    // month: searchParams.get("month")?.toString() ?? "",
-    // year: searchParams.get("year")?.toString() ?? "",
     category: searchParams.get("category")?.toString() ?? "",
     sort: searchParams.get("sort")?.toString() ?? "",
     order: searchParams.get("order")?.toString() ?? "",
@@ -132,7 +128,7 @@ const ActionCenterPage = () => {
   }
 
   const findCategory = (categoryID: number) => {
-    return context?.categories?.find(({ ID }) => ID === categoryID)
+    return categories?.find(({ ID }) => ID === categoryID)
   }
 
   const onUpdate = ({ header, ...restData }: ExpenseFormType) => {
@@ -152,18 +148,12 @@ const ActionCenterPage = () => {
   }
 
   const getExpenses = async () => {
-    const {
-      category,
-      // month,
-      // year,
-      sort,
-      order,
-    } = filters
+    const { category, sort, order } = filters
     const { dateStart, dateEnd } = dateRange
 
     const allFilter = { ...filters, ...dateRange }
 
-    const params = new URLSearchParams(searchParams)
+    const params = new URLSearchParams(searchParams as any)
 
     let hasSavedFilter = false
 
@@ -187,8 +177,6 @@ const ActionCenterPage = () => {
           dateStart: dateStart?.toString() ?? "",
           dateEnd: dateEnd?.toString() ?? "",
           category,
-          // month,
-          // year,
           sort,
           order,
         })) as TodaysExpensesType[]
@@ -224,8 +212,6 @@ const ActionCenterPage = () => {
   const selectedCategoryKeys = filters.category
     ? filters.category.split(",")
     : []
-  // const selectedMonthKeys = filters.month ? filters.month.split(",") : []
-  // const selectedYearKeys = filters.year ? filters.year.split(",") : []
   const selectedSortKeys = filters.sort ? filters.sort.split(",") : []
   const selectedOrderKeys = filters.order ? filters.order.split(",") : []
 
@@ -257,7 +243,7 @@ const ActionCenterPage = () => {
               <Tooltip color="warning" content="Clear Filters">
                 <Button
                   isIconOnly
-                  color="warning"
+                  color="default"
                   size="sm"
                   variant="light"
                   aria-label="Clear Filters"
@@ -269,12 +255,12 @@ const ActionCenterPage = () => {
               </Tooltip>
 
               <Tooltip
-                color="primary"
+                color={selectedColor.background}
                 content={isExpanded ? "Collapse" : "Expand"}
               >
                 <Button
                   isIconOnly
-                  color="primary"
+                  color={selectedColor.background}
                   size="sm"
                   variant="light"
                   aria-label="Collapse"
@@ -298,6 +284,7 @@ const ActionCenterPage = () => {
                   selectedKeys={selectedCategoryKeys}
                   onChange={handleChangeInput}
                   className="flex-1"
+                  color={selectedColor.background}
                   isDisabled={isPending}
                 >
                   {categoryList.map((category) => (
@@ -319,52 +306,6 @@ const ActionCenterPage = () => {
                     </SelectItem>
                   ))}
                 </Select>
-                {/* <Select
-                  label="Month"
-                  variant="bordered"
-                  placeholder="Select month/s"
-                  selectionMode="multiple"
-                  name="month"
-                  selectedKeys={selectedMonthKeys}
-                  onChange={handleChangeInput}
-                  className="flex-1"
-                >
-                  {monthList.map((month) => (
-                    <SelectItem
-                      key={month.value}
-                      value={month.value}
-                      startContent={
-                        <Image
-                          src={
-                            require(`@/public/assets/icons/${month.code}.png`)
-                              .default
-                          }
-                          alt="icon"
-                          height={27}
-                        />
-                      }
-                    >
-                      {month.label}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <Select
-                  label="Year"
-                  variant="bordered"
-                  placeholder="Select year/s"
-                  selectionMode="multiple"
-                  name="year"
-                  selectedKeys={selectedYearKeys}
-                  onChange={handleChangeInput}
-                  className="flex-1"
-                >
-                  {yearList.map((year) => (
-                    <SelectItem key={year.value} value={year.value}>
-                      {year.label}
-                    </SelectItem>
-                  ))}
-                </Select> */}
-
                 <div className="flex gap-2">
                   <DatePicker
                     name="dateStart"
@@ -431,7 +372,7 @@ const ActionCenterPage = () => {
                 </div>
 
                 <Button
-                  color="primary"
+                  color={selectedColor.background}
                   onClick={getExpenses}
                   isDisabled={isPending}
                 >
@@ -482,7 +423,7 @@ const ActionCenterPage = () => {
           <WrapperFooter className="flex items-center justify-between">
             <h3 className="text-default-500">Total:</h3>
             <p className="text-default-500">
-              {formatMoney(resultSum, context?.isMasked)}
+              {formatMoney(resultSum, isMasked)}
             </p>
           </WrapperFooter>
         </Wrapper>

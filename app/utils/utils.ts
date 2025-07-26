@@ -3,6 +3,8 @@ import {
   FormattedPreviousExpensesType,
   PreviousExpensesType,
 } from "../types/type"
+import { ColorType } from "../database/colorThemeTable"
+import { CSSProperties } from "react"
 
 interface FormatExpensesProps {
   previousExpenses: PreviousExpensesType[]
@@ -176,4 +178,19 @@ export const setRandomColor = (ID: number | string) => {
 
 export const daysInMonth = (year: number, month: number) => {
   return new Date(year, month, 0).getDate()
+}
+
+type FilterPropertyType = CSSProperties["filter"]
+
+export const iconFilterModerator = (type: ColorType) => {
+  const hueMap: Record<ColorType, FilterPropertyType> = {
+    default: "grayscale(60%)",
+    primary: "hue-rotate(0deg)",
+    secondary: "hue-rotate(77deg)",
+    success: "hue-rotate(300deg)",
+    warning: "hue-rotate(209deg)",
+    danger: "hue-rotate(129deg)",
+  }
+
+  return hueMap[type] ?? hueMap["primary"]
 }
