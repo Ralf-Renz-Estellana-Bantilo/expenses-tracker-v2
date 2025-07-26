@@ -23,23 +23,26 @@ const TodaysExpenses = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [preview, setPreview] = useState<TodaysExpensesType | null>(null)
 
+  if (!context) return null
+  const { todayExpenses, isTodayExpensePending, selectedColor } = context
+
   const showExpenseDialog = useCallback(
     (expense: TodaysExpensesType | null) => {
       onOpen()
       setPreview(expense)
     },
-    [onOpen, context]
+    [onOpen]
   )
 
   const totalTodaysExpenses: number = useMemo(() => {
     const result =
-      context?.todayExpenses?.reduce(
+      todayExpenses?.reduce(
         (accumulator, item) => Number(accumulator) + Number(item.amount),
         0
       ) ?? 0
 
     return result
-  }, [context?.todayExpenses])
+  }, [todayExpenses])
 
   return (
     <>
@@ -57,7 +60,7 @@ const TodaysExpenses = () => {
           {totalBalance > 0 && (
             <Button
               isIconOnly
-              color="primary"
+              color={selectedColor.background}
               size="sm"
               variant="light"
               aria-label="Take a photo"
@@ -68,9 +71,9 @@ const TodaysExpenses = () => {
           )}
         </WrapperHeader>
         <WrapperContent className="flex flex-col" scrollable>
-          <SuspenseContainer data={context?.todayExpenses}>
-            {context?.isTodayExpensePending.current && <CardListSkeleton />}
-            {context?.todayExpenses?.map((expense) => (
+          <SuspenseContainer data={todayExpenses}>
+            {isTodayExpensePending.current && <CardListSkeleton />}
+            {todayExpenses?.map((expense) => (
               <CardList
                 key={expense.ID}
                 title={expense.category}

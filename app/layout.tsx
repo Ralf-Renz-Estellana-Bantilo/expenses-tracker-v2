@@ -23,6 +23,15 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link
+          rel="icon"
+          href="/icon?<generated>"
+          type="image/<generated>"
+          sizes="<generated>"
+        />
+      </head>
       <body className={`gradient-background dark ${quicksand.className}`}>
         <SessionProvider session={session}>
           <ContentContainer>{children}</ContentContainer>

@@ -38,6 +38,11 @@ const PreviousExpenses = () => {
   const context = AppContext()
   const { showAlert } = useAlert()
 
+  if (!context) return null
+
+  const { getPreviousExpenses, selectedColor, previousExpenses, isMasked } =
+    context
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const [monthList, setMonthList] = useState<TMonthList[]>([])
@@ -60,15 +65,12 @@ const PreviousExpenses = () => {
   }
 
   const onSelectMonth = async (item: TMonthList) => {
-    if (context) {
-      const { getPreviousExpenses } = context
-      setSelectedMonth(item)
-      await getPreviousExpenses(item.monthID)
-    }
+    setSelectedMonth(item)
+    await getPreviousExpenses(item.monthID)
   }
 
   const totalPreviousExpenses: number =
-    context?.previousExpenses?.reduce(
+    previousExpenses?.reduce(
       (accumulator, item) => Number(accumulator) + Number(item.total),
       0
     ) ?? 0
@@ -85,12 +87,12 @@ const PreviousExpenses = () => {
 
     setMonthList(result.sort((a, b) => b.monthID - a.monthID))
 
-    const previousExpenses = context?.previousExpenses ?? []
+    const previousExpensesList = previousExpenses ?? []
     const monthlyExpenseSummary: TMonthList =
-      previousExpenses.length > 0
+      previousExpensesList.length > 0
         ? {
-            month: getCurrentMonth(previousExpenses[0].monthID),
-            monthID: previousExpenses[0].monthID,
+            month: getCurrentMonth(previousExpensesList[0].monthID),
+            monthID: previousExpensesList[0].monthID,
           }
         : CURRENT_MONTH
     setSelectedMonth(monthlyExpenseSummary)
@@ -120,11 +122,13 @@ const PreviousExpenses = () => {
                   key={item.monthID}
                   color={
                     item.monthID === selectedMonth?.monthID
-                      ? "primary"
+                      ? selectedColor.background
                       : "default"
                   }
                   className={
-                    item.monthID === selectedMonth?.monthID ? "bg-primary" : ""
+                    item.monthID === selectedMonth?.monthID
+                      ? `bg-${selectedColor.background}`
+                      : ""
                   }
                   onClick={() => onSelectMonth(item)}
                 >
@@ -135,8 +139,8 @@ const PreviousExpenses = () => {
           </Dropdown>
         </WrapperHeader>
         <WrapperContent className="flex flex-col" scrollable>
-          <SuspenseContainer data={context?.previousExpenses}>
-            {context?.previousExpenses?.map((expense) => (
+          <SuspenseContainer data={previousExpenses}>
+            {previousExpenses?.map((expense) => (
               <CardList
                 key={expense.ID}
                 iconName={monthCode}
@@ -151,7 +155,7 @@ const PreviousExpenses = () => {
           <h3 className="text-default-500">Total:</h3>
           <p className="text-default-500">
             {" "}
-            {formatMoney(totalPreviousExpenses, context?.isMasked)}
+            {formatMoney(totalPreviousExpenses, isMasked)}
           </p>
         </WrapperFooter>
       </Wrapper>

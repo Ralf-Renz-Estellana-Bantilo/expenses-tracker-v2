@@ -2,7 +2,7 @@
 
 import React, { ReactNode } from "react"
 import { NextUIProvider } from "@nextui-org/react"
-import ComponentContextProvider from "./context/context"
+import ComponentContextProvider, { AppContext } from "./context/context"
 import { ToastContainer } from "react-toastify"
 import CacheContextProvider from "./context/cacheContext"
 
@@ -11,7 +11,7 @@ const ContentContainer = ({ children }: { children: ReactNode }) => {
     <NextUIProvider>
       <ComponentContextProvider>
         <CacheContextProvider>
-          <main className="dark flex h-dvh flex-col relative overflow-y-auto lg:max-w-[500px] md:max-w-[500px] md:mx-auto lg:mx-auto">
+          <MainSection>
             {children}
             <ToastContainer
               position="bottom-right"
@@ -25,10 +25,37 @@ const ContentContainer = ({ children }: { children: ReactNode }) => {
               pauseOnHover
               theme="dark"
             />
-          </main>
+          </MainSection>
         </CacheContextProvider>
       </ComponentContextProvider>
     </NextUIProvider>
+  )
+}
+
+const MainSection = ({ children }: { children: ReactNode }) => {
+  const context = AppContext()
+  if (!context) return null
+
+  const { selectedColor } = context
+
+  return (
+    <main className={`gradient-background-${selectedColor.background} dark `}>
+      <section className="flex h-dvh w-dvw flex-col relative overflow-y-auto lg:max-w-[500px] md:max-w-[500px] md:mx-auto lg:mx-auto">
+        {children}
+        <ToastContainer
+          position="bottom-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
+      </section>
+    </main>
   )
 }
 

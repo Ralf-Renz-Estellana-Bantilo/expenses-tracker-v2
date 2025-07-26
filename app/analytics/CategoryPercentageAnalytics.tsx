@@ -1,6 +1,17 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@nextui-org/react"
+import { useEffect, useState } from "react"
+import SuspenseContainer from "../components/SuspenseContainer"
+import { Wrapper } from "../components/Wrapper"
+import { ResponseCacheContext } from "../context/cacheContext"
+import { AppContext } from "../context/context"
 import { fetchMonthlyPercentageBreakdown } from "../controller/controller"
 import { AnalyticsPercentageType } from "../types/type"
 import {
@@ -10,17 +21,6 @@ import {
   getCurrentMonth,
   setRandomColor,
 } from "../utils/utils"
-import {
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from "@nextui-org/react"
-import SuspenseContainer from "../components/SuspenseContainer"
-import { Wrapper } from "../components/Wrapper"
-import { AppContext } from "../context/context"
-import { ResponseCacheContext } from "../context/cacheContext"
 
 type TMonthList = {
   monthID: number
@@ -39,6 +39,10 @@ const CURRENT_MONTH: TMonthList = {
 
 const CategoryPercentageAnalytics = () => {
   const context = AppContext()
+
+  if (!context) return null
+  const { selectedColor, previousExpenses } = context
+
   const cacheContext = ResponseCacheContext()
 
   const [percentageBreakdown, setPercentageBreakdown] = useState<
@@ -48,13 +52,11 @@ const CategoryPercentageAnalytics = () => {
   const [selectedMonth, setSelectedMonth] = useState<TMonthList | null>(null)
 
   const onSelectMonth = async (item: TMonthList) => {
-    if (context) {
-      setSelectedMonth(item)
-      getMonthlyPercentageBreakdown({
-        monthID: item.monthID,
-        year: CURRENT_YEAR,
-      })
-    }
+    setSelectedMonth(item)
+    getMonthlyPercentageBreakdown({
+      monthID: item.monthID,
+      year: CURRENT_YEAR,
+    })
   }
 
   const getMonthlyPercentageBreakdown = async (options?: TOptions) => {
@@ -98,12 +100,12 @@ const CategoryPercentageAnalytics = () => {
 
     setMonthList(result.sort((a, b) => b.monthID - a.monthID))
 
-    const previousExpenses = context?.previousExpenses ?? []
+    const previousExpensesList = previousExpenses ?? []
     const monthlyExpenseSummary: TMonthList =
-      previousExpenses.length > 0
+      previousExpensesList.length > 0
         ? {
-            month: getCurrentMonth(previousExpenses[0].monthID),
-            monthID: previousExpenses[0].monthID,
+            month: getCurrentMonth(previousExpensesList[0].monthID),
+            monthID: previousExpensesList[0].monthID,
           }
         : CURRENT_MONTH
     setSelectedMonth(monthlyExpenseSummary)
@@ -125,11 +127,13 @@ const CategoryPercentageAnalytics = () => {
                 key={item.monthID}
                 color={
                   item.monthID === selectedMonth?.monthID
-                    ? "primary"
+                    ? selectedColor.background
                     : "default"
                 }
                 className={
-                  item.monthID === selectedMonth?.monthID ? "bg-primary" : ""
+                  item.monthID === selectedMonth?.monthID
+                    ? `bg-${selectedColor.background} text-${selectedColor.foreground}`
+                    : ""
                 }
                 onClick={() => onSelectMonth(item)}
               >

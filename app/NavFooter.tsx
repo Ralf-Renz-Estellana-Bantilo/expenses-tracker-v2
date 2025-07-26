@@ -1,39 +1,41 @@
 "use client"
 
-import React from "react"
-import { AppContext } from "./context/context"
 import { Button, ButtonGroup } from "@nextui-org/react"
+import { usePathname, useRouter } from "next/navigation"
+import { AppContext } from "./context/context"
 import { TabType } from "./types/type"
-import { useRouter, usePathname } from "next/navigation"
 
 const NavFooter = () => {
   const context = AppContext()
   const router = useRouter()
   const pathname = usePathname()
 
+  if (!context) return null
+  const { tabs, setActiveTab, selectedColor } = context
+
   const changeTab = (tab: TabType) => {
-    if (context) {
-      const { setActiveTab } = context
-      setActiveTab(tab)
-      router.push(tab.path)
-    }
+    setActiveTab(tab)
+    router.push(tab.path)
   }
 
   return (
     <div className="z-10 flex sticky bottom-0">
       <ButtonGroup
-        className="bg-container-primary border-t-1 border-border-color"
         fullWidth
+        style={{
+          backgroundColor: selectedColor.properties.mainAccent,
+          borderTop: `1px solid ${selectedColor.properties.borderColor}`,
+        }}
       >
-        {context?.tabs.map((tab) => {
+        {tabs.map((tab) => {
           const isActive = tab.path === pathname
           return (
             <Button
               key={tab.ID}
               className={`h-12 ${
                 isActive
-                  ? "bg-primary"
-                  : "bg-container-primary text-default-500"
+                  ? `bg-${selectedColor.background} text-${selectedColor.foreground}`
+                  : `bg-container-${selectedColor.background}-main text-default-500`
               }`}
               onClick={() => changeTab(tab)}
             >

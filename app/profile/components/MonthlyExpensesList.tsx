@@ -37,6 +37,14 @@ import { ResponseCacheContext } from "@/app/context/cacheContext"
 
 const MonthlyExpensesList = () => {
   const context = AppContext()
+  if (!context) return null
+  const {
+    selectedColor,
+    todayExpenses,
+    monthlyExpenses: monthlyExpensesContext,
+    isMasked: isMaskedContext,
+  } = context
+
   const cacheContext = ResponseCacheContext()
   const { data: session } = useSession()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
@@ -47,10 +55,8 @@ const MonthlyExpensesList = () => {
     FormattedPreviousExpensesType[] | null
   >(null)
 
-  const { todayExpenses } = context
-
   const monthlyExpenses: MonthlyExpensesType[] | undefined =
-    context.monthlyExpenses?.filter((expense) => expense.year === selectedYear)
+    monthlyExpensesContext?.filter((expense) => expense.year === selectedYear)
 
   const totalExpenses: number = useMemo(() => {
     const result =
@@ -64,7 +70,7 @@ const MonthlyExpensesList = () => {
 
   const onSelectMonth = useCallback(
     async ({ monthID, year }: MonthlyExpensesType) => {
-      const isMasked = context.isMasked ?? false
+      const isMasked = isMaskedContext ?? false
       if (!isMasked) {
         if (cacheContext) {
           const { useResponse } = cacheContext
@@ -120,14 +126,14 @@ const MonthlyExpensesList = () => {
         }
       }
     },
-    [setExpensesList, context.isMasked, cacheContext?.cacheList]
+    [setExpensesList, isMaskedContext, cacheContext?.cacheList]
   )
 
   useEffect(() => {
     if (!context) return
 
     const yearList = [
-      ...new Set(context.monthlyExpenses?.map((expense) => expense.year)),
+      ...new Set(monthlyExpenses?.map((expense) => expense.year)),
     ].sort((a, b) => b - a)
 
     setYearList([...new Set([CURRENT_YEAR, ...yearList])])
@@ -153,8 +159,14 @@ const MonthlyExpensesList = () => {
               {yearList.map((year) => (
                 <DropdownItem
                   key={year}
-                  color={year === selectedYear ? "primary" : "default"}
-                  className={year === selectedYear ? "bg-primary" : ""}
+                  color={
+                    year === selectedYear ? selectedColor.background : "default"
+                  }
+                  className={
+                    year === selectedYear
+                      ? `bg-${selectedColor.background}`
+                      : ""
+                  }
                   onClick={() => setSelectedYear(year)}
                 >
                   {year}
@@ -171,7 +183,7 @@ const MonthlyExpensesList = () => {
                 iconName={month.monthCode}
                 handleDblClick={() => onSelectMonth(month)}
                 title={month.month}
-                value={formatMoney(month.total, context.isMasked)}
+                value={formatMoney(month.total, isMaskedContext)}
               />
             ))}
           </SuspenseContainer>
@@ -180,7 +192,7 @@ const MonthlyExpensesList = () => {
           <h3 className="text-default-500">Total:</h3>
           <p className="text-default-500">
             {" "}
-            {formatMoney(totalExpenses, context.isMasked)}
+            {formatMoney(totalExpenses, isMaskedContext)}
           </p>
         </WrapperFooter>
       </Wrapper>
