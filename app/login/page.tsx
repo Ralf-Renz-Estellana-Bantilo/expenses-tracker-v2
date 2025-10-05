@@ -1,8 +1,8 @@
-import React from "react"
-import SignInForm from "./SignInForm"
+import React from 'react'
+import SignInForm from './SignInForm'
 
 const LoginPage = async () => {
-  return <SignInForm />
+    return <SignInForm />
 }
 
 export default LoginPage

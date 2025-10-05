@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server"
-import { createNewDbConnection } from "../../database/db"
-import { assertCheckSessionData } from "../helper"
+import { NextRequest, NextResponse } from 'next/server'
+import { createNewDbConnection } from '../../database/db'
+import { assertCheckSessionData } from '../helper'
 
 /* 
 const MASTERDATA_PAYLOAD_SYNTAX = {
@@ -9,41 +9,44 @@ const MASTERDATA_PAYLOAD_SYNTAX = {
 */
 
 export const POST = async (req: NextRequest) => {
-  return assertCheckSessionData(req, async () => {
-    const db = createNewDbConnection()
+    return assertCheckSessionData(req, async () => {
+        const db = createNewDbConnection()
 
-    const { tables } = await req.json()
-    let responseArray: any = []
-    await new Promise(function (resolve, reject) {
-      let isRejected: boolean = false
+        const { tables } = await req.json()
+        let responseArray: any = []
+        await new Promise(function (resolve, reject) {
+            let isRejected: boolean = false
 
-      for (let a = 0; a < tables.length; a++) {
-        const table = tables[a]
-        db.query(`SELECT * FROM ${table}`, function (err, rows) {
-          if (isRejected) {
-            return NextResponse.json({
-              message: "Error on line 33!",
-              data: err,
-            })
-          }
+            for (let a = 0; a < tables.length; a++) {
+                const table = tables[a]
+                db.query(`SELECT * FROM ${table}`, function (err, rows) {
+                    if (isRejected) {
+                        return NextResponse.json({
+                            message: 'Error on line 33!',
+                            data: err,
+                        })
+                    }
 
-          if (!err) {
-            responseArray = { ...responseArray, [table]: rows }
-          } else {
-            isRejected = true
-            reject(err)
-            return NextResponse.json({ message: "Error!", data: err })
-          }
+                    if (!err) {
+                        responseArray = { ...responseArray, [table]: rows }
+                    } else {
+                        isRejected = true
+                        reject(err)
+                        return NextResponse.json({
+                            message: 'Error!',
+                            data: err,
+                        })
+                    }
 
-          if (a == tables.length - 1) {
-            db.end()
-            resolve(responseArray)
-          }
+                    if (a == tables.length - 1) {
+                        db.end()
+                        resolve(responseArray)
+                    }
+                })
+            }
         })
-      }
-    })
 
-    db.end()
-    return NextResponse.json(responseArray)
-  })
+        db.end()
+        return NextResponse.json(responseArray)
+    })
 }

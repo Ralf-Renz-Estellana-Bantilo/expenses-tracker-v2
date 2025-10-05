@@ -1,43 +1,54 @@
-.default, .primary, .secondary, .success, .warning, .danger {
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-   border: 1px solid transparent;
-   cursor: pointer;
+.default,
+.primary,
+.secondary,
+.success,
+.warning,
+.danger {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid transparent;
+    cursor: pointer;
 }
 
 .default:hover {
-   border: 1px solid #333435;
-   background-color: var(--container-default-secondary);
-   backdrop-filter: blur(5px);
+    border: 1px solid #333435;
+    background-color: var(--container-default-secondary);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
 }
 
 .primary:hover {
-   border: 1px solid #25313f;
-   background-color: var(--container-primary-secondary);
-   backdrop-filter: blur(5px);
+    border: 1px solid #25313f;
+    background-color: var(--container-primary-secondary);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
 }
 
 .secondary:hover {
-   border: 1px solid #3f2539;
-   background-color: var(--container-secondary-secondary);
-   backdrop-filter: blur(5px);
+    border: 1px solid #3f2539;
+    background-color: var(--container-secondary-secondary);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
 }
 
 .success:hover {
-   border: 1px solid #1b3022ff;
-   background-color: var(--container-success-secondary);
-   backdrop-filter: blur(5px);
+    border: 1px solid #1b3022ff;
+    background-color: var(--container-success-secondary);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
 }
 
 .warning:hover {
-   border: 1px solid #35312b;
-   background-color: var(--container-warning-secondary);
-   backdrop-filter: blur(5px);
+    border: 1px solid #35312b;
+    background-color: var(--container-warning-secondary);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
 }
 
 .danger:hover {
-   border: 1px solid #3f252b;
-   background-color: var(--container-danger-secondary);
-   backdrop-filter: blur(5px);
+    border: 1px solid #3f252b;
+    background-color: var(--container-danger-secondary);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
 }
