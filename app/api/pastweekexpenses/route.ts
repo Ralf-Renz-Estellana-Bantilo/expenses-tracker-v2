@@ -1,14 +1,14 @@
-import { NextRequest, NextResponse } from "next/server"
-import { createNewDbConnection } from "../../database/db"
-import { assertCheckSessionData } from "../helper"
+import { NextRequest, NextResponse } from 'next/server'
+import { createNewDbConnection } from '../../database/db'
+import { assertCheckSessionData } from '../helper'
 
 export const POST = async (req: NextRequest) => {
-  return assertCheckSessionData(req, async (session) => {
-    const db = createNewDbConnection()
+    return assertCheckSessionData(req, async (session) => {
+        const db = createNewDbConnection()
 
-    const user = session?.email
+        const user = session?.email
 
-    const query = `SELECT * FROM expenses_view exp
+        const query = `SELECT * FROM expenses_view exp
          INNER JOIN (
             SELECT 
                DATE(created_on) AS date 
@@ -20,9 +20,9 @@ export const POST = async (req: NextRequest) => {
             ON DATE(exp.created_on) = DATE(days.date) 
          
          WHERE created_by = '${user}';`
-    const result = await db.promise().query(query)
+        const result = await db.promise().query(query)
 
-    db.end()
-    return NextResponse.json(result[0], { status: 200 })
-  })
+        db.end()
+        return NextResponse.json(result[0], { status: 200 })
+    })
 }

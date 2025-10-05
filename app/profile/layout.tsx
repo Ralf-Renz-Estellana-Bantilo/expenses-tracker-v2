@@ -1,16 +1,16 @@
-import Header from "../Header"
-import NavFooter from "../NavFooter"
+import Header from '../Header'
+import NavFooter from '../NavFooter'
 
 export default async function ProfileLayout({
-  children,
+    children,
 }: {
-  children: React.ReactNode
+    children: React.ReactNode
 }) {
-  return (
-    <section className="flex flex-col h-screen relative">
-      <Header />
-      <div className="flex-1 p-3">{children}</div>
-      <NavFooter />
-    </section>
-  )
+    return (
+        <section className="flex flex-col h-screen relative">
+            <Header />
+            <div className="flex-1 p-3">{children}</div>
+            <NavFooter />
+        </section>
+    )
 }

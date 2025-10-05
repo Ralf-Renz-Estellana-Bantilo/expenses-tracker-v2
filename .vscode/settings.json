@@ -1,3 +1,4 @@
 {
-   "reactSnippets.settings.prettierEnabled": true
+    "reactSnippets.settings.prettierEnabled": true,
+    "typescript.tsdk": "node_modules\\typescript\\lib"
 }
