@@ -54,6 +54,7 @@ const CardList = ({
                                 .default
                         }
                         alt="icon"
+                        width={27}
                         height={27}
                         style={{
                             filter: iconFilterModerator(
