@@ -2,7 +2,7 @@
 
 import { AppContext } from '@/app/context/context'
 import { DeleteIcon } from '@/app/icons/icons'
-import { setCookie } from '@/app/utils/helper'
+import { deleteCookie, setCookie } from '@/app/utils/helper'
 import {
     Button,
     Input,
@@ -36,6 +36,7 @@ export default function Mode() {
 
     const handleDelete = () => {
         setMode('')
+        deleteCookie('mode')
         onClose()
     }
 
