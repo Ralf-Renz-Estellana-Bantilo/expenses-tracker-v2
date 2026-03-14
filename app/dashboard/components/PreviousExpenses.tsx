@@ -13,7 +13,7 @@ import {
     WrapperHeader,
 } from '../../components/Wrapper'
 import ExpensesListModal from '../../components/modals/ExpensesListModal'
-import { AppContext } from '../../context/context'
+import { useAppContext } from '../../context/context'
 import useAlert from '../../hook/useAlert'
 import { FormattedPreviousExpensesType } from '../../types/type'
 import {
@@ -33,7 +33,7 @@ const CURRENT_MONTH: TMonthList = {
 }
 
 const PreviousExpenses = () => {
-    const context = AppContext()
+    const context = useAppContext()
     const { showAlert } = useAlert()
 
     const { getPreviousExpenses, previousExpenses, isMasked } = context

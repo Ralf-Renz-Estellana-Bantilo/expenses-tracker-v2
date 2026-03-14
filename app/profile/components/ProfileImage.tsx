@@ -1,13 +1,13 @@
 'use client'
 
-import { AppContext } from '@/app/context/context'
+import { useAppContext } from '@/app/context/context'
 import { Avatar, Chip } from '@nextui-org/react'
 import { useSession } from 'next-auth/react'
 import React from 'react'
 
 const ProfileImage = () => {
     const { data: session } = useSession()
-    const context = AppContext()
+    const context = useAppContext()
     const { mode, selectedColor } = context
 
     return (

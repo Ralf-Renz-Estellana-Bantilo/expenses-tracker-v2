@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import { Wrapper, WrapperContent, WrapperHeader } from '../components/Wrapper'
-import { AppContext } from '../context/context'
+import { useAppContext } from '../context/context'
 import { ColorList } from '../database/colorThemeTable'
 import { setCookie } from '../utils/helper'
 import ColorTheme from './components/ColorTheme'
@@ -12,7 +12,7 @@ const ModeWithNoSSR = dynamic(() => import('./components/Mode'), {
 })
 
 const GeneralSettings = () => {
-    const context = AppContext()
+    const context = useAppContext()
     const { selectedColor, setSelectedColor } = context
 
     const onChangeColorTheme = (color: ColorList) => {

@@ -1,6 +1,6 @@
 'use client'
 
-import { AppContext } from '@/app/context/context'
+import { useAppContext } from '@/app/context/context'
 import { TMonthList } from '@/app/dashboard/components/PreviousExpenses'
 import { CURRENT_MONTHID, getCurrentMonth } from '@/app/utils/utils'
 import {
@@ -23,7 +23,7 @@ const CURRENT_MONTH: TMonthList = {
 }
 
 const MonthListDropDown = ({ value, onChange }: IMonthList) => {
-    const context = AppContext()
+    const context = useAppContext()
     const { previousExpenses, selectedColor } = context
     const [monthList, setMonthList] = useState<TMonthList[]>([])
 

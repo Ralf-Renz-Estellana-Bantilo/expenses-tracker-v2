@@ -13,10 +13,10 @@ import {
 import useDelay from '../hook/useDelay'
 import SearchResults from '../components/modals/SearchResults'
 import { ExpensesType } from '../types/type'
-import { AppContext } from '../context/context'
+import { useAppContext } from '../context/context'
 
 const SearchPage = () => {
-    const { selectedColor } = AppContext()
+    const { selectedColor } = useAppContext()
     const [query, setQuery] = useState('')
     const [result, setResult] = useState<ExpensesType[]>([])
     const deferredQuery = useDelay(query, 1000)

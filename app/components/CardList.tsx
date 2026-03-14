@@ -3,7 +3,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { Skeleton } from '@nextui-org/react'
-import { AppContext } from '../context/context'
+import { useAppContext } from '../context/context'
 import { iconFilterModerator } from '../utils/utils'
 import './CardList.css'
 
@@ -24,7 +24,7 @@ const CardList = ({
     handleClick,
     handleDblClick,
 }: CardListType) => {
-    const context = AppContext()
+    const context = useAppContext()
     const { selectedColor } = context
 
     const singleClick = () => {
@@ -41,7 +41,7 @@ const CardList = ({
 
     return (
         <div
-            className={`${selectedColor.background} p-2 rounded-lg`}
+            className={`${selectedColor.background} p-2 rounded-lg gap-2`}
             id={selectedColor.background}
             onClick={singleClick}
             onDoubleClick={doubleClick}
@@ -64,9 +64,9 @@ const CardList = ({
                     />
                 )}
 
-                <div className="flex flex-col">
+                <div className="flex flex-col min-w-0 ">
                     <span>{title}</span>
-                    <small className="text-default-500 whitespace-nowrap overflow-clip text-ellipsis max-w-[12rem] sm:max-w-[20rem]">
+                    <small className="text-default-500 whitespace-nowrap overflow-clip text-ellipsis max-w-[12rem] sm:max-w-[17rem]">
                         {description}
                     </small>
                 </div>

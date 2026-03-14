@@ -2,12 +2,12 @@
 
 import React from 'react'
 import { Wrapper } from '../../components/Wrapper'
-import { AppContext } from '../../context/context'
+import { useAppContext } from '../../context/context'
 import { formatMoney } from '../../utils/utils'
 import useCredit from '../../hook/useCredit'
 
 const Summary = () => {
-    const context = AppContext()
+    const context = useAppContext()
     const { isMasked, selectedColor } = context
 
     const { totalBalance, totalBudget, totalExpenses } = useCredit()

@@ -1,13 +1,13 @@
 'use client'
 
 import React from 'react'
-import { AppContext } from '../context/context'
+import { useAppContext } from '../context/context'
 import { Wrapper, WrapperContent, WrapperHeader } from '../components/Wrapper'
 import SuspenseContainer from '../components/SuspenseContainer'
 import { CardList } from '../components/CardList'
 
 const CategoryMaintenance = () => {
-    const context = AppContext()
+    const context = useAppContext()
     const { categories } = context
 
     return (

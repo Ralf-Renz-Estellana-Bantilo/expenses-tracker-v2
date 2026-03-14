@@ -37,30 +37,7 @@ import {
     MONTHLIST,
 } from '../utils/utils'
 
-export const ComponentContext = createContext<ContextType>({
-    tabs: null as any,
-    activeTab: null as any,
-    todayExpenses: null as any,
-    previousExpenses: null as any,
-    monthlyExpenses: null as any,
-    walletBudget: null as any,
-    categories: null as any,
-    isMasked: null as any,
-    isTodayExpensePending: null as any,
-    isWalletBudgetPending: null as any,
-    isLoadingState: null as any,
-    monthlyExpensesBreakdown: null as any,
-    setIsMasked: (() => {}) as any,
-    setActiveTab: (() => {}) as any,
-    handleUpdateExpense: (() => {}) as any,
-    handleUpdateWalletBudget: (() => {}) as any,
-    getPreviousExpenses: (() => {}) as any,
-    setMonthlyExpensesBreakdown: (() => {}) as any,
-    selectedColor: (() => {}) as any,
-    setSelectedColor: (() => {}) as any,
-    mode: null as any,
-    setMode: (() => {}) as any,
-})
+export const ComponentContext = createContext<ContextType>(null as any)
 
 export default function ComponentContextProvider({
     children,
@@ -260,9 +237,7 @@ export default function ComponentContextProvider({
                 column: ['ID', 'description', 'sequence', 'imgPath', 'status'],
             }
 
-            const response = (await fetchMasterSelect(
-                payload
-            )) as CategoryType[]
+            const response = await fetchMasterSelect<CategoryType[]>(payload)
             response.sort((a, b) => a.sequence - b.sequence)
             setCategories(response)
         } catch (error) {
@@ -331,13 +306,13 @@ export default function ComponentContextProvider({
             isTodayExpensePending.current = type === 'add'
 
             let updatedExpenses: TodaysExpensesType[] | null = null
-            let payload: SaveDataPayloadType = {
+            let payload: SaveDataPayloadType<TodaysExpensesType> = {
                 table: 'expenses',
                 values: {
                     amount: newExpense.amount,
                     description: newExpense.description,
                     categoryID: newExpense.categoryID,
-                    created_by: session?.user?.email,
+                    created_by: session?.user?.email ?? '',
                     status: newExpense.status,
                 },
             }
@@ -359,9 +334,10 @@ export default function ComponentContextProvider({
                 }
             }
 
-            const response = (await fetchSaveData(
-                payload
-            )) as SaveDataResponseType
+            const response = await fetchSaveData<
+                SaveDataResponseType,
+                TodaysExpensesType
+            >(payload)
             if (type === 'add') {
                 newExpense.ID = response.insertId
                 const todayExpensesCopy = todayExpenses ? todayExpenses : []
@@ -394,7 +370,7 @@ export default function ComponentContextProvider({
             isWalletBudgetPending.current = type === 'add'
 
             let updatedWalletBudget: WalletBudgeType[] | null = null
-            let payload: SaveDataPayloadType = {
+            let payload: SaveDataPayloadType<WalletBudgeType> = {
                 table: 'wallet_budget',
                 values: {
                     title: newBudget.title,
@@ -471,7 +447,7 @@ export default function ComponentContextProvider({
     )
 }
 
-export const AppContext = () => {
+export const useAppContext = () => {
     const context = useContext(ComponentContext)
 
     if (!context) {

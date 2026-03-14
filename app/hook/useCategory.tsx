@@ -1,7 +1,7 @@
-import { AppContext } from '../context/context'
+import { useAppContext } from '../context/context'
 
 const useCategory = () => {
-    const context = AppContext()
+    const context = useAppContext()
     const { categories } = context
 
     const categoriesList = Array.from(categories ?? [], (category) => {

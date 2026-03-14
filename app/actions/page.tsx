@@ -29,7 +29,7 @@ import {
     MinusIcon,
     RefreshIcon,
 } from '../icons/icons'
-import { AppContext } from '../context/context'
+import { useAppContext } from '../context/context'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { getLocalTimeZone, parseDate, today } from '@internationalized/date'
 
@@ -54,7 +54,7 @@ type TFilters = {
 
 const ActionCenterPage = () => {
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
-    const context = AppContext()
+    const context = useAppContext()
     const { selectedColor, categories, isMasked } = context
 
     const searchParams = useSearchParams()
@@ -305,8 +305,9 @@ const ActionCenterPage = () => {
                                             startContent={
                                                 <Image
                                                     src={
-                                                        require(`@/public/assets/icons/${category.icon}.png`)
-                                                            .default
+                                                        require(
+                                                            `@/public/assets/icons/${category.icon}.png`
+                                                        ).default
                                                     }
                                                     alt="icon"
                                                     height={27}

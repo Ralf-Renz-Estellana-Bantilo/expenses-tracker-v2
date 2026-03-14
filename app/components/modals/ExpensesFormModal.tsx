@@ -1,7 +1,7 @@
 'use client'
 
 import { ResponseCacheContext } from '@/app/context/cacheContext'
-import { AppContext } from '@/app/context/context'
+import { useAppContext } from '@/app/context/context'
 import useAlert from '@/app/hook/useAlert'
 import useCredit from '@/app/hook/useCredit'
 import { DeleteIcon, EyeHiddenIcon } from '@/app/icons/icons'
@@ -73,7 +73,7 @@ const ExpensesFormModal = ({
     afterHandler,
 }: ExpensesModalType<TodaysExpensesType>) => {
     const { data: session } = useSession()
-    const context = AppContext()
+    const context = useAppContext()
     const {
         handleUpdateExpense,
         isTodayExpensePending,
@@ -306,8 +306,9 @@ const ExpensesFormModal = ({
                                             startContent={
                                                 <Image
                                                     src={
-                                                        require(`@/public/assets/icons/${category.imgPath}.png`)
-                                                            .default
+                                                        require(
+                                                            `@/public/assets/icons/${category.imgPath}.png`
+                                                        ).default
                                                     }
                                                     alt="icon"
                                                     height={27}

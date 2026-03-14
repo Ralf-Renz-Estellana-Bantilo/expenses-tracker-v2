@@ -2,7 +2,7 @@
 
 import React, { ReactNode } from 'react'
 import { NextUIProvider } from '@nextui-org/react'
-import ComponentContextProvider, { AppContext } from './context/context'
+import ComponentContextProvider, { useAppContext } from './context/context'
 import { ToastContainer } from 'react-toastify'
 import CacheContextProvider from './context/cacheContext'
 
@@ -33,7 +33,7 @@ const ContentContainer = ({ children }: { children: ReactNode }) => {
 }
 
 const MainSection = ({ children }: { children: ReactNode }) => {
-    const context = AppContext()
+    const context = useAppContext()
     const { selectedColor } = context
 
     return (

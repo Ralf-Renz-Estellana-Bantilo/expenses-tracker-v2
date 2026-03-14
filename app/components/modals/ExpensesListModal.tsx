@@ -16,14 +16,14 @@ import {
     ExpensesModalType,
     FormattedPreviousExpensesType,
 } from '@/app/types/type'
-import { AppContext } from '@/app/context/context'
+import { useAppContext } from '@/app/context/context'
 
 const ExpensesListModal = ({
     data,
     isOpen,
     onOpenChange,
 }: ExpensesModalType<FormattedPreviousExpensesType>) => {
-    const context = AppContext()
+    const context = useAppContext()
     const { categories, selectedColor } = context
 
     const findCategory = (categoryID: number) => {

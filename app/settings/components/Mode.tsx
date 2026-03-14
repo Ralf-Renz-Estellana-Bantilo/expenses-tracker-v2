@@ -1,6 +1,6 @@
 'use client'
 
-import { AppContext } from '@/app/context/context'
+import { useAppContext } from '@/app/context/context'
 import { DeleteIcon } from '@/app/icons/icons'
 import { deleteCookie, setCookie } from '@/app/utils/helper'
 import {
@@ -16,7 +16,7 @@ import {
 import { useState } from 'react'
 
 export default function Mode() {
-    const context = AppContext()
+    const context = useAppContext()
     const { selectedColor, mode, setMode } = context
 
     const { isOpen, onOpen, onClose } = useDisclosure()

@@ -20,7 +20,7 @@ import {
     WrapperFooter,
     WrapperHeader,
 } from '../components/Wrapper'
-import { AppContext } from '../context/context'
+import { useAppContext } from '../context/context'
 import useAlert from '../hook/useAlert'
 import { PlusIcon } from '../icons/icons'
 import { WalletBudgeType } from '../types/type'
@@ -39,7 +39,7 @@ const DEFAULT_FORM = {
 }
 
 const WalletMaintenance = () => {
-    const context = AppContext()
+    const context = useAppContext()
     const {
         handleUpdateWalletBudget,
         isMasked,

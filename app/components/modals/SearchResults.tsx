@@ -1,6 +1,6 @@
 'use client'
 
-import { AppContext } from '@/app/context/context'
+import { useAppContext } from '@/app/context/context'
 import { fetchSearch } from '@/app/controller/controller'
 import useAlert from '@/app/hook/useAlert'
 import { WarningIcon } from '@/app/icons/icons'
@@ -18,7 +18,7 @@ const SearchResults = ({
     query: string
     setResult: Dispatch<React.SetStateAction<ExpensesType[]>>
 }) => {
-    const context = AppContext()
+    const context = useAppContext()
     const [data, setData] = useState<ExpensesType[]>([])
     const { showAlert } = useAlert()
 

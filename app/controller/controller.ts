@@ -22,8 +22,8 @@ const fetchURL = async <T>(url: string, payload?: unknown): Promise<T> => {
     }
 }
 
-export const fetchSaveData = async <T>(
-    payload: SaveDataPayloadType
+export const fetchSaveData = async <T, K>(
+    payload: SaveDataPayloadType<K>
 ): Promise<T> => {
     return await fetchURL(URL_SAVEDATA, payload)
 }

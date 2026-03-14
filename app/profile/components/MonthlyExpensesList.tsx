@@ -10,7 +10,7 @@ import {
     WrapperHeader,
 } from '@/app/components/Wrapper'
 import { ResponseCacheContext } from '@/app/context/cacheContext'
-import { AppContext } from '@/app/context/context'
+import { useAppContext } from '@/app/context/context'
 import { fetchMasterSelect } from '@/app/controller/controller'
 import {
     FormattedPreviousExpensesType,
@@ -30,7 +30,7 @@ import { useCallback, useMemo, useState } from 'react'
 import MonthlyExpensesModal from './MonthlyExpensesModal'
 
 const MonthlyExpensesList = () => {
-    const context = AppContext()
+    const context = useAppContext()
     const {
         todayExpenses,
         monthlyExpenses: monthlyExpensesContext,
