@@ -12,6 +12,8 @@ const useDimension = (size?: SizeType) => {
     return size ? SIZE_TABLE[`${size}`] : SIZE_TABLE['sm']
 }
 
+// Icon Library: icon8 -> 3D Fluency
+
 export const DashboardIcon = ({ size }: { size?: SizeType }) => {
     const dimension = useDimension(size)
     return (

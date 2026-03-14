@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react'
 import SuspenseContainer from '../../components/SuspenseContainer'
 import { Wrapper } from '../../components/Wrapper'
 import { ResponseCacheContext } from '../../context/cacheContext'
-import { AppContext } from '../../context/context'
+import { useAppContext } from '../../context/context'
 import { fetchMonthlyPercentageBreakdown } from '../../controller/controller'
 import { AnalyticsPercentageType } from '../../types/type'
 import {
@@ -38,7 +38,7 @@ const CURRENT_MONTH: TMonthList = {
 }
 
 const CategoryPercentageAnalytics = () => {
-    const context = AppContext()
+    const context = useAppContext()
     const { selectedColor, previousExpenses } = context
 
     const cacheContext = ResponseCacheContext()

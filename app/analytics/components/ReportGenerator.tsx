@@ -3,10 +3,10 @@
 import { Button } from '@nextui-org/react'
 import React from 'react'
 import { EllipsisVertical } from '../../icons/icons'
-import { AppContext } from '../../context/context'
+import { useAppContext } from '../../context/context'
 
 const ReportGenerator = () => {
-    const context = AppContext()
+    const context = useAppContext()
     const { selectedColor } = context
 
     return (

@@ -11,14 +11,14 @@ import {
     AnalyticsMonthlyAverageType,
 } from '../../types/type'
 import { formatMoney } from '../../utils/utils'
-import { AppContext } from '../../context/context'
+import { useAppContext } from '../../context/context'
 import { Wrapper } from '../../components/Wrapper'
 import { ResponseCacheContext } from '../../context/cacheContext'
 import moment from 'moment'
 
 const AverageExpenses = () => {
     const { data: session } = useSession()
-    const context = AppContext()
+    const context = useAppContext()
     const cacheContext = ResponseCacheContext()
 
     const [average, setAverage] = useState({

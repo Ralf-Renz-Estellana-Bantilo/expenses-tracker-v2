@@ -2,11 +2,11 @@
 
 import { Button, ButtonGroup } from '@nextui-org/react'
 import { usePathname, useRouter } from 'next/navigation'
-import { AppContext } from './context/context'
+import { useAppContext } from './context/context'
 import { TabType } from './types/type'
 
 const NavFooter = () => {
-    const context = AppContext()
+    const context = useAppContext()
     const router = useRouter()
     const pathname = usePathname()
 

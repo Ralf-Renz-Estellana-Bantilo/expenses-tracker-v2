@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useCallback, useMemo, useState } from 'react'
-import { AppContext } from '../../context/context'
+import { useAppContext } from '../../context/context'
 import { Button, useDisclosure } from '@nextui-org/react'
 import {
     Wrapper,
@@ -18,7 +18,7 @@ import { CardList, CardListSkeleton } from '../../components/CardList'
 import useCredit from '../../hook/useCredit'
 
 const TodaysExpenses = () => {
-    const context = AppContext()
+    const context = useAppContext()
     const { totalBalance } = useCredit()
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
     const [preview, setPreview] = useState<TodaysExpensesType | null>(null)

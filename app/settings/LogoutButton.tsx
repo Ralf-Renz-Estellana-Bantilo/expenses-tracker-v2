@@ -4,10 +4,10 @@ import { Button } from '@nextui-org/react'
 import { signOut } from 'next-auth/react'
 import { redirect } from 'next/navigation'
 import React from 'react'
-import { AppContext } from '../context/context'
+import { useAppContext } from '../context/context'
 
 const LogoutButton = () => {
-    const context = AppContext()
+    const context = useAppContext()
     const { selectedColor } = context
 
     const handleSignOut = async () => {

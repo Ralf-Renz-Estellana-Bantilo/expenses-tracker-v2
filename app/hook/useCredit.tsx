@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
-import { AppContext } from '../context/context'
+import { useAppContext } from '../context/context'
 
 const useCredit = () => {
-    const context = AppContext()
+    const context = useAppContext()
 
     const totalBudget = useMemo(() => {
         const result =

@@ -2,7 +2,7 @@
 
 import { CardList } from '@/app/components/CardList'
 import SuspenseContainer from '@/app/components/SuspenseContainer'
-import { AppContext } from '@/app/context/context'
+import { useAppContext } from '@/app/context/context'
 import { FormattedPreviousExpensesType } from '@/app/types/type'
 import {
     CURRENT_MONTHID,
@@ -30,7 +30,7 @@ const MonthlyExpensesModal = ({
     isOpen,
     onOpenChange,
 }: ModalProps) => {
-    const context = AppContext()
+    const context = useAppContext()
     const { selectedColor, isMasked } = context
 
     const totalPreviousExpenses: number = useMemo(() => {

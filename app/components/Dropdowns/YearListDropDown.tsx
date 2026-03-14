@@ -1,6 +1,6 @@
 'use client'
 
-import { AppContext } from '@/app/context/context'
+import { useAppContext } from '@/app/context/context'
 import { CURRENT_YEAR } from '@/app/utils/utils'
 import {
     Button,
@@ -17,7 +17,7 @@ interface IYearList {
 }
 
 const YearListDropDown = ({ value, onChange }: IYearList) => {
-    const context = AppContext()
+    const context = useAppContext()
     const { selectedColor, monthlyExpenses } = context
 
     const [yearList, setYearList] = useState<number[]>([CURRENT_YEAR])

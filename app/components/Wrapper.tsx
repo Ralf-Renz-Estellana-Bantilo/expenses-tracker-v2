@@ -2,12 +2,12 @@
 
 import { ScrollShadow } from '@nextui-org/react'
 import React, { DetailedHTMLProps, HTMLAttributes } from 'react'
-import { AppContext } from '../context/context'
+import { useAppContext } from '../context/context'
 
 const Wrapper = (
     props?: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 ) => {
-    const context = AppContext()
+    const context = useAppContext()
     const { selectedColor } = context
 
     return (
@@ -28,7 +28,7 @@ type TWrapperHeader = DetailedHTMLProps<
     HTMLDivElement
 > & { hasBorder?: boolean }
 const WrapperHeader = (props?: TWrapperHeader) => {
-    const context = AppContext()
+    const context = useAppContext()
     const { selectedColor } = context
 
     const hasBorder = props?.hasBorder !== undefined ? props.hasBorder : true
@@ -74,7 +74,7 @@ const WrapperContent = (
 const WrapperFooter = (
     props?: DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>
 ) => {
-    const context = AppContext()
+    const context = useAppContext()
     const { selectedColor } = context
 
     return (

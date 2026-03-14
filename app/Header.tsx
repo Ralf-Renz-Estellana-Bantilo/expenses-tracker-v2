@@ -10,7 +10,7 @@ import {
 } from '@nextui-org/react'
 import { signOut, useSession } from 'next-auth/react'
 import { redirect, useRouter } from 'next/navigation'
-import { AppContext } from './context/context'
+import { useAppContext } from './context/context'
 import {
     AnalyticsIcon,
     BackIcon,
@@ -30,7 +30,7 @@ const Header = ({
     title?: string
     showActions?: boolean
 }) => {
-    const context = AppContext()
+    const context = useAppContext()
     const { setIsMasked, isMasked, selectedColor, setActiveTab, tabs } = context
 
     const { data: session } = useSession()

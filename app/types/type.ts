@@ -61,7 +61,7 @@ export interface MonthType {
     ID: number
     code: string
     description: string
-    status: number
+    status: StatusType
 }
 
 export interface ExpensesType extends TAuthor {
@@ -125,10 +125,10 @@ export interface MasterDataPayloadType<T> {
     tables: Array<keyof T & string>
 }
 
-export interface SaveDataPayloadType {
+export interface SaveDataPayloadType<T> {
     table: string
-    values: any
-    key?: any
+    values: Partial<T>
+    key?: Partial<T>
 }
 
 export interface SaveDataResponseType {
