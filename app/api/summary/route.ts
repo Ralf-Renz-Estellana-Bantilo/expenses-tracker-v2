@@ -1,21 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createNewDbConnection } from '../../database/db'
+import { supabaseAdmin } from '../../database/supabase'
 import { assertCheckSessionData } from '../helper'
 
 export const POST = async (req: NextRequest) => {
     return assertCheckSessionData(req, async (session) => {
-        const db = createNewDbConnection()
         const user = session?.email
-
-        const query = `SELECT 
-        ROUND(SUM(exp.amount), 2) AS totalExpenses,
-        ROUND((SELECT SUM(wal.amount) FROM wallet_budget wal WHERE created_by = '${user}'), 2) AS totalBudget,
-        (ROUND((SELECT SUM(wal.amount) FROM wallet_budget wal WHERE created_by = '${user}'), 2) - SUM(exp.amount)) AS totalBalance
-        FROM expenses_view exp
-            WHERE created_by = '${user}';`
-        const result = await db.promise().query(query)
-
-        db.end()
-        return NextResponse.json(result[0], { status: 200 })
+        const { data, error } = await supabaseAdmin.rpc('summary_totals', {
+            p_user: user,
+        })
+        if (error) {
+            return NextResponse.json(
+                { message: 'Error!', data: error },
+                { status: 500 }
+            )
+        }
+        return NextResponse.json(data, { status: 200 })
     })
 }

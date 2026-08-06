@@ -1,19 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createNewDbConnection } from '../../database/db'
+import { supabaseAdmin } from '../../database/supabase'
 import { assertCheckSessionData } from '../helper'
 
 export const POST = async (req: NextRequest) => {
     return assertCheckSessionData(req, async (session) => {
-        const db = createNewDbConnection()
-
-        const { searchText } = await req.json()
-
-        const user = session?.email
-
         try {
-            const query = `SELECT * FROM expenses_view WHERE (description LIKE '%${searchText}%' OR category LIKE '%${searchText}%') AND status=1 AND created_by = '${user}';`
-            const result = await db.promise().query(query)
-            return NextResponse.json(result[0], { status: 200 })
+            const { searchText } = await req.json()
+            const user = session?.email
+            const escaped = String(searchText ?? '').replace(/[%,]/g, '')
+            const pattern = `%${escaped}%`
+
+            const { data, error } = await supabaseAdmin
+                .from('expenses_view')
+                .select('*')
+                .eq('status', 1)
+                .eq('created_by', user)
+                .or(`description.ilike.${pattern},category.ilike.${pattern}`)
+            if (error) throw error
+            return NextResponse.json(data, { status: 200 })
         } catch (err) {
             return NextResponse.json(
                 { message: 'Error!', data: err },

@@ -9,7 +9,14 @@ import {
     useState,
 } from 'react'
 import { USERS } from '../api/users/users_db'
-import { fetchMasterSelect, fetchSaveData } from '../controller/controller'
+import {
+    fetchCategories,
+    fetchMonthExpenses,
+    fetchMonthlyBreakdown,
+    fetchSaveData,
+    fetchTodayExpenses,
+    fetchWalletBudget,
+} from '../controller/controller'
 import { getColorThemeById } from '../database/colorThemeTable'
 import useAlert from '../hook/useAlert'
 import { DashboardIcon, ProfileIcon, SettingsIcon } from '../icons/icons'
@@ -17,10 +24,8 @@ import {
     CategoryType,
     ContextType,
     FormattedPreviousExpensesType,
-    MasterSelectPayloadType,
     MonthlyExpensesBreakdownType,
     MonthlyExpensesType,
-    PreviousExpensesType,
     SaveDataPayloadType,
     SaveDataResponseType,
     TabType,
@@ -104,16 +109,7 @@ export default function ComponentContextProvider({
 
     const getTodayExpenses = async () => {
         try {
-            const payload: MasterSelectPayloadType<TodaysExpensesType> = {
-                table: 'today_expenses_view',
-                filter: { created_by: user, status: 1 },
-                sort: {
-                    ID: 'DESC',
-                },
-            }
-            const response = (await fetchMasterSelect(
-                payload
-            )) as TodaysExpensesType[]
+            const response = await fetchTodayExpenses()
             setTodayExpenses(response)
         } catch (error) {
             logger.error(error)
@@ -125,21 +121,12 @@ export default function ComponentContextProvider({
         monthID = CURRENT_MONTHID
     ): Promise<void> => {
         try {
-            const payload: MasterSelectPayloadType<PreviousExpensesType> = {
-                table: 'previous_expenses_view',
-                filter: {
-                    monthID,
-                    year: CURRENT_YEAR,
-                    created_by: user,
-                    status: 1,
-                },
-                sort: {
-                    created_on: 'DESC',
-                },
-            }
-            const response = (await fetchMasterSelect(
-                payload
-            )) as PreviousExpensesType[]
+            const response = await fetchMonthExpenses({
+                monthID,
+                year: CURRENT_YEAR,
+                sortBy: 'created_on',
+                sortDir: 'DESC',
+            })
 
             const result = formatPreviousExpenses({
                 previousExpenses: response,
@@ -156,14 +143,7 @@ export default function ComponentContextProvider({
 
     const getMonthlyExpenses = async () => {
         try {
-            const payload: MasterSelectPayloadType<MonthlyExpensesType> = {
-                table: 'monthly_expenses_view',
-                filter: { user },
-                sort: { monthID: 'ASC' },
-            }
-            const response = (await fetchMasterSelect(
-                payload
-            )) as MonthlyExpensesType[]
+            const response = await fetchMonthlyBreakdown()
 
             const yearList = [...new Set(response.map((res) => res.year))]
 
@@ -210,19 +190,7 @@ export default function ComponentContextProvider({
 
     const getBudgetWallet = async () => {
         try {
-            const payload: MasterSelectPayloadType<WalletBudgeType> = {
-                table: 'wallet_budget',
-                filter: {
-                    created_by: user,
-                    status: 1,
-                },
-                sort: {
-                    ID: 'DESC',
-                },
-            }
-            const response = (await fetchMasterSelect(
-                payload
-            )) as WalletBudgeType[]
+            const response = await fetchWalletBudget()
             setWalletBudget(response)
         } catch (error) {
             logger.error(error)
@@ -232,13 +200,7 @@ export default function ComponentContextProvider({
 
     const getCategories = async () => {
         try {
-            const payload: MasterSelectPayloadType<CategoryType> = {
-                table: 'categories',
-                column: ['ID', 'description', 'sequence', 'imgPath', 'status'],
-            }
-
-            const response = await fetchMasterSelect<CategoryType[]>(payload)
-            response.sort((a, b) => a.sequence - b.sequence)
+            const response = await fetchCategories()
             setCategories(response)
         } catch (error) {
             alert(error)
