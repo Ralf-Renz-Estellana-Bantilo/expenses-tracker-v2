@@ -6,15 +6,6 @@ import { useSession } from 'next-auth/react'
 import React, { useEffect, useState } from 'react'
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
 
-const data = [
-    { name: 'Group A', value: 400 },
-    { name: 'Group B', value: 300 },
-    { name: 'Group C', value: 150 },
-    { name: 'Group D', value: 150 },
-]
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042']
-
 const RADIAN = Math.PI / 180
 const renderCustomizedLabel = ({
     cx,
@@ -23,7 +14,6 @@ const renderCustomizedLabel = ({
     innerRadius,
     outerRadius,
     percent,
-    index,
 }) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5
     const x = cx + radius * Math.cos(-midAngle * RADIAN)

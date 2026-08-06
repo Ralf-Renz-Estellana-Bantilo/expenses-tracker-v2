@@ -18,12 +18,11 @@ export default function SuspenseContainer<T extends { length: number }>({
         return data.length > 0 ? (
             <>{children}</>
         ) : (
-            <div className="text-center pt-1">
-                <Chip
-                    startContent={<WarningIcon className="w-4 h-4" />}
-                    variant="light"
-                    color="warning"
-                >
+            <div className="flex flex-col items-center justify-center gap-3 py-6">
+                <div className="p-3 rounded-full bg-warning-500/10 border border-warning-500/30">
+                    <WarningIcon className="w-6 h-6 text-warning-400" />
+                </div>
+                <Chip variant="light" color="warning">
                     {noDataMsg || 'No data found!'}
                 </Chip>
             </div>

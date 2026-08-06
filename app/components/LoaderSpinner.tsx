@@ -11,8 +11,8 @@ const LoaderSpinner = () => {
     if (!isLoading) return null
 
     return (
-        <div className="fixed h-dvh w-dvw z-50 flex justify-center items-center select-none">
-            <Wrapper className="absolute top=[50%]">
+        <div className="fixed inset-0 h-dvh w-dvw z-50 flex justify-center items-center select-none bg-black/30 backdrop-blur-sm">
+            <Wrapper className="shadow-2xl shadow-black/50">
                 <Spinner color="primary" size="lg" />
             </Wrapper>
         </div>

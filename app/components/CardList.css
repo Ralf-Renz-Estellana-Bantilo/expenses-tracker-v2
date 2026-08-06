@@ -9,6 +9,17 @@
     align-items: center;
     border: 1px solid transparent;
     cursor: pointer;
+    transition: background-color 150ms ease-out, border-color 150ms ease-out,
+        transform 150ms ease-out;
+}
+
+.default:active,
+.primary:active,
+.secondary:active,
+.success:active,
+.warning:active,
+.danger:active {
+    transform: scale(0.99);
 }
 
 .default:hover {

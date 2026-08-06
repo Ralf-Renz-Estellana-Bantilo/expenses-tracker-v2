@@ -7,15 +7,48 @@ import { WarningIcon } from '@/app/icons/icons'
 import { ExpensesType, TodaysExpensesType } from '@/app/types/type'
 import { formatMoney, getExpenseDescription } from '@/app/utils/utils'
 import { Chip, useDisclosure } from '@nextui-org/react'
-import React, { Dispatch, useCallback, useEffect, useState } from 'react'
+import React, {
+    Dispatch,
+    useCallback,
+    useEffect,
+    useMemo,
+    useState,
+} from 'react'
 import { CardList } from '../CardList'
 import ExpensesFormModal from './ExpensesFormModal'
 
+export type SortKey = 'date-desc' | 'date-asc' | 'amount-desc' | 'amount-asc'
+
+const sortExpenses = (items: ExpensesType[], sortBy: SortKey) => {
+    const arr = [...items]
+    switch (sortBy) {
+        case 'date-asc':
+            return arr.sort(
+                (a, b) =>
+                    new Date(a.created_on ?? 0).getTime() -
+                    new Date(b.created_on ?? 0).getTime()
+            )
+        case 'amount-desc':
+            return arr.sort((a, b) => Number(b.amount) - Number(a.amount))
+        case 'amount-asc':
+            return arr.sort((a, b) => Number(a.amount) - Number(b.amount))
+        case 'date-desc':
+        default:
+            return arr.sort(
+                (a, b) =>
+                    new Date(b.created_on ?? 0).getTime() -
+                    new Date(a.created_on ?? 0).getTime()
+            )
+    }
+}
+
 const SearchResults = ({
     query,
+    sortBy,
     setResult,
 }: {
     query: string
+    sortBy: SortKey
     setResult: Dispatch<React.SetStateAction<ExpensesType[]>>
 }) => {
     const context = useAppContext()
@@ -34,7 +67,7 @@ const SearchResults = ({
 
                 setData(result)
                 setResult(result)
-            } catch (error) {
+            } catch {
                 showAlert({
                     message: 'Error fetching data...',
                     type: 'error',
@@ -75,6 +108,8 @@ const SearchResults = ({
         fetchData()
     }, [query])
 
+    const sortedData = useMemo(() => sortExpenses(data, sortBy), [data, sortBy])
+
     return (
         <>
             {preview && (
@@ -90,7 +125,7 @@ const SearchResults = ({
             )}
 
             <div className="flex flex-col">
-                {data?.map((expense) => (
+                {sortedData?.map((expense) => (
                     <CardList
                         key={expense.ID}
                         iconName={expense.imgPath}

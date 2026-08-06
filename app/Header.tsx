@@ -61,9 +61,9 @@ const Header = ({
     return (
         <>
             <div
-                className="z-20 flex items-center justify-between p-2 sticky top-0"
+                className="z-20 flex items-center justify-between p-2 sticky top-0 backdrop-blur-md shadow-md shadow-black/20"
                 style={{
-                    backgroundColor: selectedColor.properties.mainAccent,
+                    backgroundColor: `${selectedColor.properties.mainAccent}E6`,
                     borderBottom: `1px solid ${selectedColor.properties.borderColor}`,
                 }}
             >
