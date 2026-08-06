@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '../../database/supabase'
-import { assertCheckSessionData } from '../helper'
+import { supabaseAdmin } from '@/app/database/supabase'
+import { assertCheckSessionData } from '../../helper'
 
-export const POST = async (req: NextRequest) => {
+export const GET = async (req: NextRequest) => {
     return assertCheckSessionData(req, async (session) => {
         const user = session?.email
-        const { data, error } = await supabaseAdmin.rpc('daily_summary', {
-            p_user: user,
-        })
+        const { data, error } = await supabaseAdmin
+            .from('monthly_expenses_view')
+            .select('*')
+            .eq('user', user)
+            .order('monthID', { ascending: true })
+
         if (error) {
             return NextResponse.json(
                 { message: 'Error!', data: error },

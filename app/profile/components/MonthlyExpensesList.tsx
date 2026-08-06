@@ -11,10 +11,9 @@ import {
 } from '@/app/components/Wrapper'
 import { ResponseCacheContext } from '@/app/context/cacheContext'
 import { useAppContext } from '@/app/context/context'
-import { fetchMasterSelect } from '@/app/controller/controller'
+import { fetchMonthExpenses } from '@/app/controller/controller'
 import {
     FormattedPreviousExpensesType,
-    MasterSelectPayloadType,
     MonthlyExpensesType,
     PreviousExpensesType,
 } from '@/app/types/type'
@@ -25,7 +24,6 @@ import {
     formatPreviousExpenses,
 } from '@/app/utils/utils'
 import { useDisclosure } from '@nextui-org/react'
-import { useSession } from 'next-auth/react'
 import { useCallback, useMemo, useState } from 'react'
 import MonthlyExpensesModal from './MonthlyExpensesModal'
 
@@ -38,7 +36,6 @@ const MonthlyExpensesList = () => {
     } = context
 
     const cacheContext = ResponseCacheContext()
-    const { data: session } = useSession()
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
     const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR)
@@ -70,22 +67,15 @@ const MonthlyExpensesList = () => {
 
                     const cachedID = `${monthID}-${year}-mel`
 
-                    const payload: MasterSelectPayloadType<PreviousExpensesType> =
-                        {
-                            table: 'previous_expenses_view',
-                            filter: {
-                                monthID,
-                                year,
-                                created_by: session?.user?.email ?? '',
-                                status: 1,
-                            },
-                            sort: {
-                                ID: 'ASC',
-                            },
-                        }
                     let response = await useResponse<PreviousExpensesType[]>(
                         cachedID,
-                        () => fetchMasterSelect(payload)
+                        () =>
+                            fetchMonthExpenses({
+                                monthID,
+                                year,
+                                sortBy: 'ID',
+                                sortDir: 'ASC',
+                            })
                     )
 
                     if (response) {

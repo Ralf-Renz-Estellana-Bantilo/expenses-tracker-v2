@@ -11,7 +11,7 @@ type ResponseCacheType = {
     removeCacheByID: (cachedID: string) => void
     useResponse: <T>(
         key: string,
-        callback: () => Promise<void> | void
+        callback: () => Promise<T> | T
     ) => Promise<T> | null
     cacheList: CacheType
 }
@@ -51,9 +51,9 @@ export default function CacheContextProvider({
         setCache(cache)
     }
 
-    const useResponse = async (
+    const useResponse = async <T,>(
         key: string,
-        callback: () => Promise<void> | void
+        callback: () => Promise<T> | T
     ) => {
         const fetchData = async () => {
             return await callback()
