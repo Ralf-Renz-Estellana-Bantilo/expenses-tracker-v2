@@ -6,7 +6,7 @@ export default async function AnalyticsLayout({
     children: React.ReactNode
 }) {
     return (
-        <section className="flex flex-col h-screen relative">
+        <section className="flex flex-col h-dvh relative">
             <Header title="Analytics" showActions={false} />
             <div className="flex-1 p-3">{children}</div>
         </section>
