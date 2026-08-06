@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createNewDbConnection } from '../../database/db'
+import { supabaseAdmin } from '../../database/supabase'
 import { assertCheckSessionData } from '../helper'
+import { isWritableTable } from '../allowlist'
 
-/* 
+/*
 const SAVEDATA_PAYLOAD_SYNTAX = {
    table: 'table_name',
    values: {
@@ -12,49 +13,37 @@ const SAVEDATA_PAYLOAD_SYNTAX = {
    key?: {
       [`primary_key`]: `ID`,
    }
-} 
+}
 */
 export const POST = async (req: NextRequest) => {
     return assertCheckSessionData(req, async () => {
-        const db = createNewDbConnection()
-
         try {
             const { table, values, key } = await req.json()
 
-            let fieldsNum = []
-            let objKeys = Object.keys(values)
-            let objValues = Object.values(values)
-
-            for (let a = 0; a < objKeys.length; a++) {
-                const item = key ? `${objKeys[a]} = ?` : '?'
-                fieldsNum.push(item)
+            if (!isWritableTable(table)) {
+                return NextResponse.json(
+                    { message: `Table '${table}' is not writable` },
+                    { status: 400 }
+                )
             }
-
-            let query = `INSERT INTO ${table} (${objKeys.join(
-                ', '
-            )}) VALUES (${fieldsNum.join(', ')})`
 
             if (key) {
-                const primaryKeys: string[] = Object.keys(key)
-                const indexing: string[] = []
-
-                for (let a = 0; a < primaryKeys.length; a++) {
-                    const primaryKey = primaryKeys[a]
-                    const primaryValue = Object.values(key)[a]
-
-                    indexing.push(`${primaryKey} = ${primaryValue}`)
+                let query = supabaseAdmin.from(table).update(values)
+                for (const [col, val] of Object.entries(key)) {
+                    query = query.eq(col, val as string | number)
                 }
-
-                query = `UPDATE ${table} SET ${fieldsNum.join(
-                    ', '
-                )} WHERE ${indexing.join(' AND ')}`
+                const { data, error } = await query.select()
+                if (error) throw error
+                return NextResponse.json(data, { status: 200 })
             }
 
-            const results = await db.promise().query(query, objValues)
-            db.end()
-            return NextResponse.json(results[0], { status: 200 })
+            const { data, error } = await supabaseAdmin
+                .from(table)
+                .insert(values)
+                .select()
+            if (error) throw error
+            return NextResponse.json(data, { status: 200 })
         } catch (err) {
-            db.end()
             return NextResponse.json(
                 { message: 'Error!', data: err },
                 { status: 500 }
