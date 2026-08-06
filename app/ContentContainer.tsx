@@ -38,9 +38,13 @@ const MainSection = ({ children }: { children: ReactNode }) => {
 
     return (
         <main
-            className={`gradient-background-${selectedColor.background} dark `}
+            className={`gradient-background-${selectedColor.background} dark relative`}
         >
-            <section className="flex h-dvh w-dvw flex-col relative overflow-y-auto lg:max-w-[500px] md:max-w-[500px] md:mx-auto lg:mx-auto">
+            <div
+                aria-hidden
+                className="pointer-events-none fixed inset-0 dot-pattern z-0"
+            />
+            <section className="flex h-dvh w-dvw flex-col relative overflow-y-auto lg:max-w-[500px] md:max-w-[500px] md:mx-auto lg:mx-auto z-10">
                 {children}
                 <ToastContainer
                     position="bottom-right"

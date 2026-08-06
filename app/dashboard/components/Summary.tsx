@@ -26,7 +26,7 @@ const Summary = () => {
             </div>
 
             <div className="flex gap-2">
-                <div className="flex items-center justify-between border-1 border-green-800 bg-green-500 backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-lg p-2 flex-1 max-[420px]:flex-col">
+                <div className="flex items-center justify-between border border-green-700/60 bg-green-500/10 backdrop-blur-sm rounded-xl p-3 flex-1 max-[420px]:flex-col transition-all duration-200 hover:bg-green-500/15 hover:border-green-600/70 shadow-sm shadow-green-900/20">
                     <p className="text-accent-secondary text-sm">
                         Total Budget
                     </p>
@@ -34,7 +34,7 @@ const Summary = () => {
                         {formatMoney(totalBudget, isMasked)}
                     </span>
                 </div>
-                <div className="flex items-center justify-between border-1 border-red-800 bg-red-500 backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-lg p-2 flex-1 max-[420px]:flex-col">
+                <div className="flex items-center justify-between border border-red-700/60 bg-red-500/10 backdrop-blur-sm rounded-xl p-3 flex-1 max-[420px]:flex-col transition-all duration-200 hover:bg-red-500/15 hover:border-red-600/70 shadow-sm shadow-red-900/20">
                     <p className="text-accent-secondary text-sm">
                         Total Expenses
                     </p>

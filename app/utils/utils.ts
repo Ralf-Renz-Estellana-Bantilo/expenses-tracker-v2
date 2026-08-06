@@ -139,7 +139,7 @@ export const maskNumber = (money: string) => {
         } else {
             return money // No decimal part to mask
         }
-    } catch (error) {
+    } catch {
         return money
     }
 }

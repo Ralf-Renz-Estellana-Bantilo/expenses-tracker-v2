@@ -18,11 +18,11 @@ const NavFooter = () => {
     }
 
     return (
-        <div className="z-10 flex sticky bottom-0">
+        <div className="z-10 flex sticky bottom-0 backdrop-blur-md shadow-[0_-4px_16px_rgba(0,0,0,0.2)]">
             <ButtonGroup
                 fullWidth
                 style={{
-                    backgroundColor: selectedColor.properties.mainAccent,
+                    backgroundColor: `${selectedColor.properties.mainAccent}E6`,
                     borderTop: `1px solid ${selectedColor.properties.borderColor}`,
                 }}
             >
@@ -31,10 +31,10 @@ const NavFooter = () => {
                     return (
                         <Button
                             key={tab.ID}
-                            className={`h-12 ${
+                            className={`h-12 transition-all duration-200 rounded-none ${
                                 isActive
-                                    ? `bg-${selectedColor.background} text-${selectedColor.foreground}`
-                                    : `bg-container-${selectedColor.background}-main text-default-500`
+                                    ? `bg-${selectedColor.background} text-${selectedColor.foreground} scale-[1.03]`
+                                    : `bg-transparent text-default-500 hover:text-accent-primary`
                             }`}
                             onClick={() => changeTab(tab)}
                         >

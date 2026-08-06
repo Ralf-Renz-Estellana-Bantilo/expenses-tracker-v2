@@ -13,7 +13,7 @@ const Wrapper = (
     return (
         <div
             {...props}
-            className={`bg-slate-500 backdrop-filter backdrop-blur-sm bg-opacity-10 p-2 rounded-lg ease-in-out duration-75 ${props?.className}`}
+            className={`bg-slate-500/10 backdrop-blur-sm p-3 rounded-xl shadow-md shadow-black/10 transition-all duration-200 ${props?.className}`}
             style={{
                 border: `1px solid ${selectedColor.properties.borderColor}`,
             }}

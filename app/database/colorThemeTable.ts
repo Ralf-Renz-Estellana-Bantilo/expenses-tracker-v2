@@ -1,10 +1,5 @@
 export type ColorType =
-    | 'default'
-    | 'primary'
-    | 'secondary'
-    | 'success'
-    | 'warning'
-    | 'danger'
+    'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'
 
 export interface ColorList {
     id: number
