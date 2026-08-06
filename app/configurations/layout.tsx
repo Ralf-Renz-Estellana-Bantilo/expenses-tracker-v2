@@ -6,7 +6,7 @@ export default async function ConfigurationsLayout({
     children: React.ReactNode
 }) {
     return (
-        <section className="flex flex-col h-screen relative">
+        <section className="flex flex-col h-dvh relative">
             <Header title="Configurations" showActions={false} />
             <div className="flex-1 p-3">{children}</div>
         </section>

@@ -7,7 +7,7 @@ export default async function DashboardLayout({
     children: React.ReactNode
 }) {
     return (
-        <section className="flex flex-col h-screen relative">
+        <section className="flex flex-col h-dvh relative">
             <Header />
             <div className="flex-1 p-3">{children}</div>
             <NavFooter />
