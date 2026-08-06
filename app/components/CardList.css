@@ -9,7 +9,9 @@
     align-items: center;
     border: 1px solid transparent;
     cursor: pointer;
-    transition: background-color 150ms ease-out, border-color 150ms ease-out,
+    transition:
+        background-color 150ms ease-out,
+        border-color 150ms ease-out,
         transform 150ms ease-out;
 }
 

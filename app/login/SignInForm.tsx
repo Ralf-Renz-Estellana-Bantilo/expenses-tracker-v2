@@ -72,7 +72,8 @@ const SignInForm = () => {
                 </div>
 
                 <p className="text-xs text-center text-accent-secondary/50">
-                    By continuing, you agree to sign in with your Google account.
+                    By continuing, you agree to sign in with your Google
+                    account.
                 </p>
             </div>
         </div>

@@ -153,9 +153,5 @@ body {
         black 0%,
         transparent 70%
     );
-    mask-image: radial-gradient(
-        ellipse at center,
-        black 0%,
-        transparent 70%
-    );
+    mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
 }
