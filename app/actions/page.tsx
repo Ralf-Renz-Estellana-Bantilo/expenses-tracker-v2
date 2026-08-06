@@ -129,6 +129,7 @@ const ActionCenterPage = () => {
         return categories?.find(({ ID }) => ID === categoryID)
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const onUpdate = ({ header, ...restData }: ExpenseFormType) => {
         const updatedExpense = expensesList?.map((exp) =>
             exp.ID === restData.ID
@@ -183,7 +184,7 @@ const ActionCenterPage = () => {
                 })) as TodaysExpensesType[]
 
                 setExpensesList(result)
-            } catch (error) {
+            } catch {
                 setExpensesList([])
             }
         }

@@ -1,4 +1,9 @@
-export const WRITABLE_TABLES = ['expenses', 'wallet_budget', 'categories', 'users'] as const
+export const WRITABLE_TABLES = [
+    'expenses',
+    'wallet_budget',
+    'categories',
+    'users',
+] as const
 export type WritableTable = (typeof WRITABLE_TABLES)[number]
 
 export const isWritableTable = (t: string): t is WritableTable =>
