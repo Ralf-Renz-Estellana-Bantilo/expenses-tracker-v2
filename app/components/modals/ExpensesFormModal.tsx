@@ -144,6 +144,7 @@ const ExpensesFormModal = ({
                     ID,
                     category: categoryList?.description,
                     categoryID: Number(categoryID),
+                    imgPath: categoryList?.imgPath,
                     description,
                     amount: Number(amount),
                     created_by: session?.user?.email || '',
