@@ -36,6 +36,7 @@ export default function Mode() {
 
     const handleDelete = () => {
         setMode('')
+        setModeValue('')
         deleteCookie('mode')
         onClose()
     }

@@ -141,6 +141,7 @@ export interface WalletBudgeType extends TAuthor {
 export interface AnalyticsPercentageType {
     categoryID: number
     category: string
+    imgPath?: string
     total: string
     monthly_total: string
     percentage: string

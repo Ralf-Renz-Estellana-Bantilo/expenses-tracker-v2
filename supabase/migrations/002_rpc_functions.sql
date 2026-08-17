@@ -53,6 +53,7 @@ CREATE OR REPLACE FUNCTION monthly_percentage_breakdown(
 RETURNS TABLE (
   "categoryID"    bigint,
   category        varchar,
+  "imgPath"       varchar,
   "monthID"       int,
   total           numeric,
   monthly_total   numeric,
@@ -63,6 +64,7 @@ LANGUAGE sql STABLE SECURITY INVOKER AS $$
   SELECT
     exp."categoryID",
     exp.category,
+    exp."imgPath",
     EXTRACT(MONTH FROM exp.created_on AT TIME ZONE 'Asia/Manila')::int AS "monthID",
     SUM(exp.amount::numeric)                                            AS total,
     mon.total                                                           AS monthly_total,
@@ -76,7 +78,7 @@ LANGUAGE sql STABLE SECURITY INVOKER AS $$
   WHERE exp.created_by = p_user
     AND mon."monthID"  = p_month
     AND mon.year       = p_year
-  GROUP BY exp."categoryID", exp.category, mon.total, exp.created_by,
+  GROUP BY exp."categoryID", exp.category, exp."imgPath", mon.total, exp.created_by,
            EXTRACT(MONTH FROM exp.created_on AT TIME ZONE 'Asia/Manila');
 $$;
 
