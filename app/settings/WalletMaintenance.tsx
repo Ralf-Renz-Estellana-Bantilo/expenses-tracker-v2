@@ -8,6 +8,7 @@ import {
     ModalContent,
     ModalFooter,
     ModalHeader,
+    Tooltip,
     useDisclosure,
 } from '@nextui-org/react'
 import React, { useCallback, useMemo, useState } from 'react'
@@ -22,7 +23,7 @@ import {
 } from '../components/Wrapper'
 import { useAppContext } from '../context/context'
 import useAlert from '../hook/useAlert'
-import { PlusIcon } from '../icons/icons'
+import { DeleteIcon, PlusIcon } from '../icons/icons'
 import { WalletBudgeType } from '../types/type'
 import {
     CURRENT_YEAR,
@@ -39,6 +40,7 @@ const DEFAULT_FORM = {
 }
 
 const WalletMaintenance = () => {
+    const { showAlert } = useAlert()
     const context = useAppContext()
     const {
         handleUpdateWalletBudget,
@@ -52,16 +54,19 @@ const WalletMaintenance = () => {
     const [formData, setFormData] = useState(DEFAULT_FORM)
     const [selectedYear, setSelectedYear] = useState(CURRENT_YEAR)
 
-    const handleSave = (onClose: () => void) => {
-        const { showAlert } = useAlert()
-        const { ID, amount, description, title } = formData
-
-        if (
+    const validateFormData = (data: typeof DEFAULT_FORM) => {
+        const { title, description, amount } = data
+        return (
             title !== '' &&
             description !== '' &&
             amount !== '' &&
             Number(amount) !== 0
-        ) {
+        )
+    }
+
+    const handleSave = (onClose: () => void) => {
+        if (validateFormData(formData)) {
+            const { ID, amount, description, title } = formData
             const ACTION_TYPE = ID === DEFAULT_FORM.ID ? 'add' : 'edit'
 
             const dateObj = new Date()
@@ -84,6 +89,31 @@ const WalletMaintenance = () => {
 
             setFormData(DEFAULT_FORM)
             showAlert({ type: 'success', message: alertMessage })
+            onClose()
+        } else {
+            showAlert({
+                type: 'warning',
+                message: 'Error! Form data is invalid!',
+            })
+        }
+    }
+
+    const handleDeleteWalletBudget = (onClose: () => void) => {
+        if (validateFormData(formData)) {
+            const { ID, amount, description, title } = formData
+
+            const updatedBudget: WalletBudgeType = {
+                ID,
+                title,
+                description,
+                amount: Number(amount),
+                status: 0,
+            }
+
+            handleUpdateWalletBudget(updatedBudget, 'edit')
+
+            setFormData(DEFAULT_FORM)
+            showAlert({ type: 'success', message: 'Expense has been deleted!' })
             onClose()
         } else {
             showAlert({
@@ -173,9 +203,9 @@ const WalletMaintenance = () => {
                                 <Input
                                     value={formData.title}
                                     onChange={handleChangeInput}
-                                    onKeyDown={(event) =>
+                                    onKeyDown={(event) => {
                                         handleKeyPress(event, onClose)
-                                    }
+                                    }}
                                     autoFocus
                                     name="title"
                                     color={selectedColor.background}
@@ -187,9 +217,9 @@ const WalletMaintenance = () => {
                                 <Input
                                     value={formData.description}
                                     onChange={handleChangeInput}
-                                    onKeyDown={(event) =>
+                                    onKeyDown={(event) => {
                                         handleKeyPress(event, onClose)
-                                    }
+                                    }}
                                     name="description"
                                     color={selectedColor.background}
                                     isRequired
@@ -200,9 +230,9 @@ const WalletMaintenance = () => {
                                 <Input
                                     value={formData.amount}
                                     onChange={handleChangeInput}
-                                    onKeyDown={(event) =>
+                                    onKeyDown={(event) => {
                                         handleKeyPress(event, onClose)
-                                    }
+                                    }}
                                     name="amount"
                                     color={selectedColor.background}
                                     label="Amount"
@@ -219,20 +249,36 @@ const WalletMaintenance = () => {
                                     }
                                 />
                             </ModalBody>
-                            <ModalFooter>
-                                <Button
-                                    variant="light"
-                                    color="danger"
-                                    onPress={onClose}
-                                >
-                                    Close
-                                </Button>
-                                <Button
-                                    color={selectedColor.background}
-                                    onPress={() => handleSave(onClose)}
-                                >
-                                    Save
-                                </Button>
+                            <ModalFooter className="flex items-center justify-between">
+                                <Tooltip content="Delete">
+                                    <Button
+                                        isIconOnly
+                                        aria-label="Delete"
+                                        color="danger"
+                                        size="sm"
+                                        variant="light"
+                                        onPress={() => {
+                                            handleDeleteWalletBudget(onClose)
+                                        }}
+                                    >
+                                        <DeleteIcon size="xs" />
+                                    </Button>
+                                </Tooltip>
+                                <div className="flex items-center justify-center gap-2">
+                                    <Button
+                                        variant="light"
+                                        color="danger"
+                                        onPress={onClose}
+                                    >
+                                        Close
+                                    </Button>
+                                    <Button
+                                        color={selectedColor.background}
+                                        onPress={() => handleSave(onClose)}
+                                    >
+                                        Save
+                                    </Button>
+                                </div>
                             </ModalFooter>
                         </>
                     )}
@@ -261,7 +307,7 @@ const WalletMaintenance = () => {
                     </div>
                 </WrapperHeader>
                 <WrapperContent className="flex flex-col" scrollable>
-                    <SuspenseContainer data={walletBudget}>
+                    <SuspenseContainer data={walletBudgetList}>
                         {isWalletBudgetPending.current && <CardListSkeleton />}
                         {walletBudgetList.map((budget) => (
                             <CardList
