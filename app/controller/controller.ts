@@ -34,6 +34,15 @@ const postURL = async <T>(url: string, payload?: unknown): Promise<T> => {
     }
 }
 
+const patchURL = async <T>(url: string, payload?: T): Promise<T> => {
+    try {
+        const result = await axios.patch(url, payload)
+        return result.data
+    } catch (error) {
+        throw error
+    }
+}
+
 const getURL = async <T>(
     url: string,
     params?: Record<string, string | number | undefined>
@@ -46,10 +55,14 @@ const getURL = async <T>(
     }
 }
 
-export const fetchSaveData = async <T, K>(
+export const createData = async <T, K>(
     payload: SaveDataPayloadType<K>
 ): Promise<T> => {
     return await postURL(URL_SAVEDATA, payload)
+}
+
+export const updateData = async <T>(payload: T): Promise<T> => {
+    return await patchURL(URL_SAVEDATA, payload)
 }
 
 export const fetchPastWeekExpense = async <T>(): Promise<T> => {

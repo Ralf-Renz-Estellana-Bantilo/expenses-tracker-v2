@@ -13,7 +13,7 @@ import {
     fetchCategories,
     fetchMonthExpenses,
     fetchMonthlyBreakdown,
-    fetchSaveData,
+    createData,
     fetchTodayExpenses,
     fetchWalletBudget,
 } from '../controller/controller'
@@ -296,7 +296,7 @@ export default function ComponentContextProvider({
                 }
             }
 
-            const response = await fetchSaveData<
+            const response = await createData<
                 SaveDataResponseType,
                 TodaysExpensesType
             >(payload)
@@ -338,31 +338,33 @@ export default function ComponentContextProvider({
                     title: newBudget.title,
                     description: newBudget.description,
                     amount: newBudget.amount,
+                    status: newBudget.status ?? 1,
                     created_by: user,
                 },
             }
 
             if (type === 'edit') {
                 const payloadValues = { ...payload.values }
-                updatedWalletBudget = walletBudget?.map((budget) =>
-                    budget.ID === newBudget.ID
-                        ? {
-                              ...budget,
-                              ...payloadValues,
-                          }
-                        : budget
-                ) as WalletBudgeType[]
+                updatedWalletBudget = walletBudget
+                    ?.map((budget) =>
+                        budget.ID === newBudget.ID
+                            ? {
+                                  ...budget,
+                                  ...payloadValues,
+                              }
+                            : budget
+                    )
+                    .filter((w) => w.status === 1) as WalletBudgeType[]
 
                 payload.key = {
                     ID: newBudget.ID,
                 }
             }
 
-            const response = (await fetchSaveData(
-                payload
-            )) as SaveDataResponseType
+            const response = (await createData(payload)) as WalletBudgeType[]
+
             if (type === 'add') {
-                newBudget.ID = response.insertId
+                newBudget.ID = response[0].ID
                 const walletBudgetCopy = walletBudget ? walletBudget : []
                 updatedWalletBudget = [
                     newBudget,
